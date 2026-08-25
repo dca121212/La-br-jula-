@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v16";
+const VERSION_APP = "v17";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -3418,13 +3418,13 @@ async function generarPdfExacto() {
     };
     [...pagina.children].forEach(el => {
       if (el.classList.contains("portada")) { piezas.push({ el, nueva: true }); return; }
-      const nueva = el.classList.contains("hoja") || (el.classList.contains("seccion") && el.querySelector(".dia") !== null);
+      // Flujo continuo: nada pide pagina nueva salvo la portada; solo se salta cuando una pieza no cabe
       const hijos = [...el.children];
       const dias = hijos.filter(x => x.classList.contains("dia"));
       if (dias.length) {
-        hijos.filter(x => !x.classList.contains("dia")).forEach((x, i) => meter(x, i === 0));
-        dias.forEach(dd => { const partes = [...dd.children]; partes.forEach((x, i) => meter(x, i === 0 && !DATOS.corta)); });
-      } else meter(el, nueva);
+        hijos.filter(x => !x.classList.contains("dia")).forEach(x => meter(x, false));
+        dias.forEach(dd => [...dd.children].forEach(x => meter(x, false)));
+      } else meter(el, false);
     });
     const pintarFondo = () => { pdf.setFillColor(fondo); pdf.rect(0, 0, ANCHO, ALTO, "F"); };
     let y = 0, primera = true, n = 0, fallos = 0;
@@ -3439,7 +3439,9 @@ async function generarPdfExacto() {
       const esPortada = b.el.classList.contains("portada");
       const x = esPortada ? 0 : Math.max(0, (ANCHO - w) / 2);
       // Salto de pagina: si lo pide la pieza, o si no cabe en lo que queda
-      if (!primera && y > 0 && (b.nueva || y + h > ALTO - 24)) { pdf.addPage(); pintarFondo(); y = 0; }
+      const cabecera = b.el.classList.contains("dia-cab") || b.el.tagName === "H2" || b.el.tagName === "H5";
+      const necesario = h + (cabecera ? 120 : 0);
+      if (!primera && y > 0 && (b.nueva || y + necesario > ALTO - 24)) { pdf.addPage(); pintarFondo(); y = 0; }
       if (!esPortada && y === 0) y = 24;
       if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.88), "JPEG", x, y, w, h); y += h + (esPortada ? 0 : SEP); }
       else {
