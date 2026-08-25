@@ -314,7 +314,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v5";
+const VERSION_APP = "v6";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2599,6 +2599,22 @@ img { display:block; }
 .barra button, .barra select { font: 600 12px system-ui, sans-serif; padding: 8px 12px; border-radius: 99px; border: 1.5px solid var(--fondo); background: none; color: var(--fondo); cursor: pointer; }
 .barra button.p { background: var(--fondo); color: var(--tinta); }
 .barra .estado { margin-left:auto; opacity:.75; }
+/* Modo PDF: la pagina se maqueta a ancho A4 (794 px) y se fotografia por paginas */
+body.pdf { background: var(--fondo); }
+body.pdf .pagina { width: 794px; max-width: 794px; margin: 0; padding: 0 34px 34px; background: var(--fondo); }
+body.pdf .portada { min-height: 0; height: 1123px; margin: 0 -34px 0; page-break-after: always; break-after: page; }
+body.pdf .hoja { page-break-before: always; break-before: page; margin-top: 0; padding-top: 34px; }
+body.pdf .seccion:not(.hoja) { margin-top: 30px; }
+body.pdf .dia, body.pdf .parada, body.pdf .plato, body.pdf .salseos .s, body.pdf .caja, body.pdf .lista li { page-break-inside: avoid; break-inside: avoid; }
+body.pdf .dia { margin-top: 26px; }
+body.pdf .parada { grid-template-columns: 170px 1fr; padding: 11px 0; }
+body.pdf .parada .foto-caja { height: 125px; }
+body.pdf .hueco { padding-left: 186px; }
+body.pdf .platos { grid-template-columns: repeat(2, 1fr); }
+body.pdf .plato .foto-caja { height: 150px; }
+body.pdf .m-cuaderno .portada .foto-caja, body.pdf .m-vitrina .portada .foto-caja { height: 420px; }
+body.pdf .cierre { page-break-inside: avoid; }
+body.pdf .barra { display: none; }
 @media print { .barra { display:none !important; } .pagina { max-width:none; padding: 0; } body { font-size: 12.5px; } .parada .foto-caja { height: 120px; } .parada { grid-template-columns: 160px 1fr; } .hueco { padding-left: 176px; } @page { margin: 14mm 12mm; } }
 @media (max-width: 640px) { .parada, .corta .parada { grid-template-columns: 1fr; } .parada .foto-caja { height: 180px; } .dos, .tres, .salseos { grid-template-columns: 1fr; } .platos { grid-template-columns: 1fr 1fr; } .hueco { padding-left: 0; } }
 
@@ -2819,12 +2835,49 @@ async function cargarFotos() {
     const img = c.querySelector("img");
     const ref = c.dataset.wiki;
     const url = ref ? await fotoDe(ref, img.alt) : null;
-    if (url) { img.onload = () => { img.style.display = "block"; }; img.onerror = () => c.classList.add("sin"); img.referrerPolicy = "no-referrer"; img.src = url; }
+    if (url) { img.onload = () => { img.style.display = "block"; }; img.onerror = () => c.classList.add("sin"); img.referrerPolicy = "no-referrer"; img.crossOrigin = "anonymous"; img.src = url; }
     else c.classList.add("sin");
     hechas++; estado();
   }));
 }
 document.getElementById("btn-print").addEventListener("click", () => window.print());
+
+/* ---------- PDF de verdad: A4 a sangre, generado en el navegador y compartido con la hoja del sistema ---------- */
+let pdfListo = null;
+function nombrePdf() { return document.title.replace(/[^\\w\\u00C0-\\u017F ]+/g, "").trim() + ".pdf"; }
+async function esperarFotos() { while (pendientes && hechas < pendientes) await new Promise(r => setTimeout(r, 200)); await new Promise(r => setTimeout(r, 400)); }
+async function generarPdf() {
+  if (pdfListo) return pdfListo;
+  const e = document.getElementById("estado"); e.textContent = "Montando el PDF, unos segundos…";
+  await esperarFotos();
+  document.body.classList.add("pdf"); window.scrollTo(0, 0);
+  await document.fonts.ready;
+  const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
+  try {
+    const blob = await html2pdf().set({
+      margin: 0, filename: nombrePdf(),
+      image: { type: "jpeg", quality: 0.88 },
+      html2canvas: { scale: movil ? 1.5 : 2, useCORS: true, allowTaint: false, backgroundColor: null, logging: false, windowWidth: 794 },
+      jsPDF: { unit: "px", format: [794, 1123], orientation: "portrait", hotfixes: ["px_scaling"] },
+      pagebreak: { mode: ["css", "legacy"], avoid: [".parada", ".plato", ".s", ".caja", ".dia-cab"] }
+    }).from(document.querySelector(".pagina")).outputPdf("blob");
+    pdfListo = new File([blob], nombrePdf(), { type: "application/pdf" });
+    e.textContent = "PDF listo";
+    if (navigator.canShare && navigator.canShare({ files: [pdfListo] })) document.getElementById("btn-share").style.display = "";
+    return pdfListo;
+  } catch (err) {
+    e.textContent = "No se pudo montar el PDF; prueba Imprimir";
+    throw err;
+  } finally { document.body.classList.remove("pdf"); }
+}
+async function descargarPdf() {
+  const f = await generarPdf();
+  // En movil, la hoja de compartir es la forma de guardar en Archivos o mandar por WhatsApp
+  if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: document.title }); return; } catch (e) {} }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+}
+document.getElementById("btn-pdf").addEventListener("click", () => descargarPdf().catch(() => {}));
+document.getElementById("btn-share").addEventListener("click", () => descargarPdf().catch(() => {}));
 document.getElementById("sel-diseno").addEventListener("change", e => { window.opener && window.opener.postMessage({ regenerar: true, diseno: parseInt(e.target.value, 10), corta: document.body.dataset.corta === "1" }, "*"); });
 document.getElementById("btn-version").addEventListener("click", () => { window.opener && window.opener.postMessage({ regenerar: true, diseno: parseInt(document.getElementById("sel-diseno").value, 10), corta: document.body.dataset.corta !== "1" }, "*"); });
 cargarFotos();
@@ -2843,11 +2896,12 @@ function abrirGuia(indiceDiseno, corta) {
   const d = lista[idx];
   const html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(ultimoPlan.ciudad.nombre) + ' · La Brújula</title><style>' + cssGuia(d) + '</style></head>' +
     '<body class="m-' + d.maqueta + '" data-corta="' + (corta ? 1 : 0) + '">' +
-    '<div class="barra"><button class="p" id="btn-print" type="button">Imprimir o guardar en PDF</button>' +
+    '<div class="barra"><button class="p" id="btn-pdf" type="button">Descargar PDF</button><button class="p" id="btn-share" type="button" style="display:none">Compartir PDF</button><button id="btn-print" type="button">Imprimir</button>' +
     '<select id="sel-diseno">' + lista.map((x, i) => '<option value="' + i + '"' + (i === idx ? ' selected' : '') + '>Diseño: ' + esc(x.nombre) + '</option>').join('') + '</select>' +
     '<button id="btn-version" type="button">' + (corta ? 'Ver versión larga' : 'Ver versión corta') + '</button>' +
     '<span class="estado" id="estado">Cargando fotos…</span><span style="opacity:.5;margin-left:12px">' + VERSION_APP + '</span></div>' +
     '<div class="pagina">' + htmlGuia(ultimoPlan, d, corta) + '</div>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
     '<script>' + SCRIPT_GUIA + '<\/script></body></html>';
   const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
   if (ventanaGuia && !ventanaGuia.closed) { ventanaGuia.location.href = url; ventanaGuia.focus(); }
