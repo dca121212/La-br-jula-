@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v19";
+const VERSION_APP = "v20";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -3515,6 +3515,26 @@ async function descargarPdf() {
   if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: document.title }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
   const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
 }
+/* ---------- Guia como archivo HTML autonomo (mismo diseno, fotos ya resueltas, sin botones) ---------- */
+async function descargarHtml() {
+  await esperarFotos();
+  const estilo = document.querySelector("style").textContent;
+  const copia = document.querySelector(".pagina").cloneNode(true);
+  // Las fotos quedan como enlaces directos a Wikimedia; las que no cargaron se quitan y queda el motivo
+  copia.querySelectorAll(".foto-caja").forEach(c => {
+    const img = c.querySelector("img");
+    if (img && img.src && img.style.display !== "none" && img.complete && img.naturalWidth) { img.removeAttribute("style"); img.setAttribute("loading", "lazy"); img.setAttribute("referrerpolicy", "no-referrer"); }
+    else { if (img) img.remove(); c.classList.add("sin"); }
+    c.removeAttribute("data-wiki");
+  });
+  const html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + document.title + '</title><style>' + estilo + '</style></head><body class="' + document.body.className + '">' + copia.outerHTML + '</body></html>';
+  const nombre = document.title.replace(/[^\\w\\u00C0-\\u017F ()-]+/g, "").trim() + ".html";
+  const f = new File([html], nombre, { type: "text/html" });
+  if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: document.title }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+  document.getElementById("estado").textContent = "HTML descargado";
+}
+document.getElementById("btn-html").addEventListener("click", () => descargarHtml().catch(e => { document.getElementById("estado").textContent = "No se pudo guardar el HTML (" + e.message + ")"; }));
 document.getElementById("btn-pdf").addEventListener("click", () => descargarPdf().catch(() => {}));
 document.getElementById("btn-share").addEventListener("click", () => descargarPdf().catch(() => {}));
 
@@ -3558,7 +3578,7 @@ function abrirGuia(indiceDiseno, corta) {
   const d = lista[idx];
   const html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(ultimoPlan.ciudad.nombre) + ' · La Brújula</title><style>' + cssGuia(d) + '</style></head>' +
     '<body class="m-' + d.maqueta + '" data-corta="' + (corta ? 1 : 0) + '">' +
-    '<div class="barra"><button class="p" id="btn-pdf" type="button">Descargar PDF</button><button class="p" id="btn-share" type="button" style="display:none">Compartir PDF</button><button id="btn-print" type="button">Imprimir</button>' +
+    '<div class="barra"><button class="p" id="btn-pdf" type="button">Descargar PDF</button><button class="p" id="btn-share" type="button" style="display:none">Compartir PDF</button><button class="p" id="btn-html" type="button">Descargar HTML</button><button id="btn-print" type="button">Imprimir</button>' +
     '<select id="sel-diseno">' + lista.map((x, i) => '<option value="' + i + '"' + (i === idx ? ' selected' : '') + '>Diseño: ' + esc(x.nombre) + '</option>').join('') + '</select>' +
     '<button id="btn-version" type="button">' + (corta ? 'Ver versión larga' : 'Ver versión corta') + '</button>' +
     '<span class="estado" id="estado">Cargando fotos…</span><span style="opacity:.5;margin-left:12px">' + VERSION_APP + '</span></div>' +
