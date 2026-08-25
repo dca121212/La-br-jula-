@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v14";
+const VERSION_APP = "v15";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -3451,7 +3451,14 @@ async function generarPdfExacto() {
 async function generarPdf() {
   if (pdfListo) return pdfListo;
   try { pdfListo = await generarPdfExacto(); }
-  catch (err) { console.error(err); document.getElementById("estado").textContent = "El exacto no ha podido (" + (err && err.message ? err.message : err) + "), va el ligero…"; await new Promise(r => setTimeout(r, 1200)); pdfListo = await generarPdfLigero(); }
+  catch (err) {
+    console.error(err);
+    const motivo = (err && (err.message || err.name)) ? (err.name ? err.name + ": " : "") + (err.message || "") : String(err);
+    pdfListo = await generarPdfLigero();
+    const e = document.getElementById("estado");
+    e.textContent = "PDF ligero listo. El exacto no ha podido: " + motivo + " · " + navigator.userAgent.replace(/^.*?\((.*?)\).*$/, "$1").slice(0, 60);
+    e.style.opacity = "1"; e.style.color = "#FFD166";
+  }
   if (navigator.canShare && navigator.canShare({ files: [pdfListo] })) document.getElementById("btn-share").style.display = "";
   return pdfListo;
 }
