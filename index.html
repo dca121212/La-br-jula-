@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v11";
+const VERSION_APP = "v12";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2766,6 +2766,9 @@ body.pdf .bloque { page-break-inside: avoid; }
 `;
 }
 
+const EMOJI_GUIA = { Imprescindible: "⭐", Museo: "🖼️", Mirador: "🌅", Mercado: "🧺", Parque: "🌳", Paseo: "🚶", Bar: "🍻", Historia: "🏛️", "Fuera de ruta": "🧭", Comida: "🍽️" };
+const EMOJI_HUECO_GUIA = t => /comida/i.test(t) ? "🍴" : /descanso/i.test(t) ? "🛏️" : /atardecer/i.test(t) ? "🌇" : "☕";
+
 /* ---------- Construccion del HTML de la guia ---------- */
 function htmlGuia(plan, d, corta) {
   const { ciudad, dias, fecha } = plan;
@@ -2792,25 +2795,25 @@ function htmlGuia(plan, d, corta) {
 
   // La ciudad en dos minutos (solo version larga)
   if (!corta && g.historia) {
-    h += '<div class="seccion hoja"><h2><small>Antes de salir</small>' + esc(ciudad.nombre) + ' en dos minutos</h2><div class="prosa"><p>' + esc(g.historia) + '</p></div>';
+    h += '<div class="seccion hoja"><h2><small>Antes de salir</small>⏱️ ' + esc(ciudad.nombre) + ' en dos minutos</h2><div class="prosa"><p>' + esc(g.historia) + '</p></div>';
     h += '<div class="frases">' + (g.frases || []).map(f => '<span>' + esc(f) + '</span>').join('') + '</div>';
     h += '<div class="tres" style="margin-top:22px"><div class="caja"><h5>Bueno saber</h5>' + esc(ciudad.consejo) + '</div><div class="caja"><h5>Presupuesto</h5>' + esc(ciudad.presupuesto) + '</div><div class="caja"><h5>Si llueve</h5>' + esc(ciudad.lluvia) + '</div></div></div>';
   }
 
   // Itinerario
-  h += '<div class="seccion' + (corta ? ' corta' : '') + '"><h2><small>Día a día</small>El itinerario</h2>';
+  h += '<div class="seccion' + (corta ? ' corta' : '') + '"><h2><small>Día a día</small>🗺️ El itinerario</h2>';
   dias.forEach((dia, i) => {
     h += '<div class="dia bloque"><div class="dia-cab"><span class="num">' + (i + 1) + '</span><h3>' + esc(dia.etiqueta) + '</h3><span class="zona">' + esc(dia.zona) + '<br>atardecer ' + hhmm(dia.ocaso) + '</span></div>';
     if (dia.libre) { h += '<p class="prosa">Día libre: repetir lo que más gustó, cambiar los filtros o hacer una excursión.</p></div>'; return; }
     dia.filas.forEach(f => {
-      if (f.hueco) { h += '<div class="hueco">' + f.h + ' · ' + esc(f.texto) + '</div>'; return; }
+      if (f.hueco) { h += '<div class="hueco">' + EMOJI_HUECO_GUIA(f.texto) + ' ' + f.h + ' · ' + esc(f.texto) + '</div>'; return; }
       const p = f.parada;
       h += '<div class="parada">' + fotoBox((g.wiki || {})[p.n], p.n);
-      h += '<div><div class="hora">' + p._h + ' · ' + esc(p._t) + '</div><h4>' + esc(p.n) + '</h4>';
+      h += '<div><div class="hora">' + p._h + ' · ' + esc(p._t) + '</div><h4>' + (EMOJI_GUIA[p.tags[0]] || '📍') + ' ' + esc(p.n) + '</h4>';
       h += '<div class="tags"><span class="tag">' + esc(p.tags[0]) + '</span><span class="tag">' + esc(precioTexto(p.precio, ciudad.moneda)) + '</span><span class="tag">≈ ' + (p._esComida ? Math.max(p.dur, 80) : p.dur) + ' min</span>' + (p.reservar ? '<span class="tag res">Reservar</span>' : '') + (p._esComida ? '<span class="tag">Comida aquí</span>' : '') + '</div>';
       h += '<p class="d">' + esc(p.d) + '</p>';
-      h += '<div class="truco"><b>Truco</b>' + esc(p.truco) + '</div>';
-      h += '<div class="salseo"><b>Salseo</b>' + esc(p.salseo) + '</div>';
+      h += '<div class="truco"><b>💡 Truco</b>' + esc(p.truco) + '</div>';
+      h += '<div class="salseo"><b>🤫 Salseo</b>' + esc(p.salseo) + '</div>';
       if (p.sg) h += '<div class="sg">' + esc(p.sg) + '</div>';
       h += '</div></div>';
     });
@@ -2823,20 +2826,20 @@ function htmlGuia(plan, d, corta) {
   // Salseos: de la ciudad y de las paradas del itinerario (version larga)
   if (!corta) {
     const deParadas = dias.flatMap(dd => dd.paradas.map(p => p.salseo));
-    h += '<div class="seccion hoja"><h2><small>Lo que no sale en las guías</small>Salseos de ' + esc(ciudad.nombre) + '</h2><div class="salseos">';
+    h += '<div class="seccion hoja"><h2><small>Lo que no sale en las guías</small>🤫 Salseos de ' + esc(ciudad.nombre) + '</h2><div class="salseos">';
     (g.salseos || []).forEach((s, i) => { h += '<div class="s' + (i === 0 ? ' ancho' : '') + '">' + esc(s) + '</div>'; });
     h += '</div>';
-    h += '<h2 style="margin-top:34px"><small>De los sitios que vas a pisar</small>Salseos del itinerario</h2><ul class="lista">';
+    h += '<h2 style="margin-top:34px"><small>De los sitios que vas a pisar</small>📍 Salseos del itinerario</h2><ul class="lista">';
     dias.forEach(dd => dd.paradas.forEach(p => { h += '<li><b>' + esc(p.n) + '.</b> ' + esc(p.salseo) + '</li>'; }));
     h += '</ul></div>';
 
     // Comer
-    h += '<div class="seccion hoja"><h2><small>De comer</small>Qué pedir y dónde</h2><div class="platos">';
+    h += '<div class="seccion hoja"><h2><small>De comer</small>🍽️ Qué pedir y dónde</h2><div class="platos">';
     (g.platos || []).forEach(pl => { h += '<div class="plato">' + fotoBox(pl.wiki, pl.n) + '<h4>' + esc(pl.n) + '</h4><p>' + esc(pl.d) + '</p></div>'; });
-    h += '</div><div class="dos" style="margin-top:24px"><div><h5 class="eyebrow">Dónde comer</h5><ul class="lista">' + ciudad.comer.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div>';
-    h += '<div><h5 class="eyebrow">Sin gluten</h5><ul class="lista">' + ciudad.singluten.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div></div></div>';
+    h += '</div><div class="dos" style="margin-top:24px"><div><h5 class="eyebrow">🍴 Dónde comer</h5><ul class="lista">' + ciudad.comer.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div>';
+    h += '<div><h5 class="eyebrow">🌾 Sin gluten</h5><ul class="lista">' + ciudad.singluten.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div></div></div>';
   } else {
-    h += '<div class="seccion"><div class="dos"><div><h5 class="eyebrow">Dónde comer</h5><ul class="lista">' + ciudad.comer.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div><div><h5 class="eyebrow">Sin gluten y bueno saber</h5><ul class="lista">' + ciudad.singluten.map(c => '<li>' + esc(c) + '</li>').join('') + '<li>' + esc(ciudad.consejo) + '</li></ul></div></div></div>';
+    h += '<div class="seccion"><div class="dos"><div><h5 class="eyebrow">🍴 Dónde comer</h5><ul class="lista">' + ciudad.comer.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div><div><h5 class="eyebrow">🌾 Sin gluten y bueno saber</h5><ul class="lista">' + ciudad.singluten.map(c => '<li>' + esc(c) + '</li>').join('') + '<li>' + esc(ciudad.consejo) + '</li></ul></div></div></div>';
   }
 
   h += '<div class="cierre bloque"><div class="t">Hecho para pasearlo sin prisa</div>Horas, precios y aperturas son orientativos. Lo marcado como Reservar se agota. Fotos: Wikimedia Commons, licencia libre.</div>';
@@ -2905,10 +2908,27 @@ const FUENTES = {
   sans: { normal: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lato/Lato-Regular.ttf", bold: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lato/Lato-Bold.ttf", italic: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lato/Lato-Italic.ttf" },
   serif: { normal: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/librebaskerville/LibreBaskerville-Regular.ttf", bold: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/librebaskerville/LibreBaskerville-Bold.ttf", italic: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/librebaskerville/LibreBaskerville-Italic.ttf" }
 };
+// Emoticonos por tipo de parada y de hueco
+const EMOJI = { Imprescindible: "⭐", Museo: "🖼️", Mirador: "🌅", Mercado: "🧺", Parque: "🌳", Paseo: "🚶", Bar: "🍻", Historia: "🏛️", "Fuera de ruta": "🧭", Comida: "🍽️" };
+const EMOJI_HUECO = t => /comida/i.test(t) ? "🍴" : /descanso/i.test(t) ? "🛏️" : /atardecer/i.test(t) ? "🌇" : "☕";
 function nombrePdf() { return (DATOS.ciudad.nombre + " - La Brujula" + (DATOS.corta ? " (corta)" : "")).replace(/[^\\w\\u00C0-\\u017F ()-]+/g, "") + ".pdf"; }
 function hex(c) { const h = c.replace("#", ""); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
 function limpiar(t) { return String(t || "").replace(/≈/g, "aprox.").replace(/\\u00A0/g, " "); }
 async function esperarFotos() { while (pendientes && hechas < pendientes) await new Promise(r => setTimeout(r, 200)); }
+
+// Emoticonos: se dibujan con la fuente de emojis del sistema en un canvas y van al PDF como imagen
+const cacheEmoji = {};
+function emojiPng(ch) {
+  if (cacheEmoji[ch] !== undefined) return cacheEmoji[ch];
+  try {
+    const c = document.createElement("canvas"); c.width = c.height = 72; const x = c.getContext("2d");
+    if (!x) throw new Error("sin canvas");
+    x.font = '56px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif'; x.textAlign = "center"; x.textBaseline = "middle";
+    x.fillText(ch, 36, 40);
+    cacheEmoji[ch] = c.toDataURL("image/png");
+  } catch (e) { cacheEmoji[ch] = null; }
+  return cacheEmoji[ch];
+}
 
 // Fotos ya cargadas en la pagina: se leen del DOM y se recortan a la caja pedida (canvas pequeno)
 function fotoCargada(ref) {
@@ -2938,6 +2958,18 @@ async function cargarFuente(pdf, familia) {
   return true;
 }
 
+/* Estilo de interior segun la maquetacion del diseno */
+const ESTILOS = {
+  revista:  { marco: "ninguno", girar: false, mayus: false, dia: "banda", titulo: "banda", sep: "linea", franja: "arriba", fotoGrande: true },
+  cartel:   { marco: "ninguno", girar: false, mayus: true,  dia: "bloque", titulo: "bloque", sep: "gruesa", franja: "abajo", fotoGrande: false },
+  cuaderno: { marco: "polaroid", girar: true, mayus: false, dia: "regla", titulo: "regla", sep: "punteada", franja: "ninguna", fotoGrande: false, papel: true },
+  postal:   { marco: "papel", girar: false, mayus: false, dia: "matasellos", titulo: "regla", sep: "linea", franja: "arriba", fotoGrande: false },
+  ticket:   { marco: "ninguno", girar: false, mayus: true,  dia: "talon", titulo: "talon", sep: "perforada", franja: "ninguna", fotoGrande: false },
+  mosaico:  { marco: "baldosa", girar: false, mayus: false, dia: "bloque", titulo: "bloque", sep: "linea", franja: "ambas", fotoGrande: false },
+  vitrina:  { marco: "acento", girar: false, mayus: false, dia: "regla", titulo: "regla", sep: "fina", franja: "abajo", fotoGrande: false },
+  banda:    { marco: "papel", girar: false, mayus: false, dia: "banda", titulo: "barra", sep: "linea", franja: "arriba", fotoGrande: false }
+};
+
 async function generarPdf() {
   if (pdfListo) return pdfListo;
   const e = document.getElementById("estado");
@@ -2947,6 +2979,7 @@ async function generarPdf() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ unit: "pt", format: "a4" });
     const D = DATOS, d = D.diseno, P = d.paleta, g = D.guia, C = D.ciudad;
+    const E = ESTILOS[d.maqueta] || ESTILOS.revista;
     const serifTitulo = /Playfair|Fraunces|Cormorant|Cinzel|Bodoni|Garamond|Italiana|Marcellus|Lora|Baskerville|Yeseva|Abril|Crimson|Uncial|Rye|Instrument/i.test(d.titulo);
     const serifCuerpo = /Garamond|Lora|Baskerville|Crimson|Cormorant/i.test(d.cuerpo);
     const okSans = await cargarFuente(pdf, "sans"), okSerif = await cargarFuente(pdf, "serif");
@@ -2954,35 +2987,93 @@ async function generarPdf() {
     const FC = serifCuerpo ? (okSerif ? "serif" : "times") : (okSans ? "sans" : "helvetica");
     const oscuro = /^#[0-3]/.test(P.fondo);
     const mezclar = (a, b, t) => { const x = hex(a), y = hex(b); return x.map((v, i) => Math.round(v * t + y[i] * (1 - t))); };
-    const col = { fondo: hex(P.fondo), papel: hex(P.papel), tinta: hex(P.tinta), tinta2: hex(P.tinta2), acento: hex(P.acento), acento2: hex(P.acento2), suave: mezclar(P.acento, P.papel, oscuro ? 0.22 : 0.08), linea: mezclar(P.tinta, P.papel, 0.16) };
+    const col = { fondo: hex(P.fondo), papel: hex(P.papel), tinta: hex(P.tinta), tinta2: hex(P.tinta2), acento: hex(P.acento), acento2: hex(P.acento2), suave: mezclar(P.acento, P.papel, oscuro ? 0.22 : 0.08), linea: mezclar(P.tinta, P.papel, 0.16), motivo: mezclar(P.acento, P.fondo, oscuro ? 0.5 : 0.35) };
     const W = A4.w, H = A4.h, M = A4.m, CW = W - 2 * M;
     let y = M, pagina = 1;
-    const fondo = () => { pdf.setFillColor(...col.fondo); pdf.rect(0, 0, W, H, "F"); };
-    const pie = () => { pdf.setFont(FC, "normal"); pdf.setFontSize(7.5); pdf.setTextColor(...col.tinta2); pdf.text(limpiar(C.nombre + " · La Brújula"), M, H - 20); pdf.text(String(pagina), W - M, H - 20, { align: "right" }); };
+    const cap = t => E.mayus ? limpiar(t).toUpperCase() : limpiar(t);
+    const emoji = (ch, x, yy, s) => { const p = emojiPng(ch); if (p) { pdf.addImage(p, "PNG", x, yy, s, s); return s + 4; } return 0; };
+
+    /* --- Motivo grafico del diseno, dibujado con formas simples en una franja --- */
+    const franjaMotivo = (x0, y0, w, h) => {
+      pdf.setDrawColor(...col.motivo); pdf.setFillColor(...col.motivo); pdf.setLineWidth(0.7);
+      const m = d.motivo;
+      if (/azulejo|rombos|arlequin|zsolnay|wycinanka/.test(m)) { for (let x = x0; x < x0 + w; x += h) { pdf.lines([[h / 2, -h / 2], [h / 2, h / 2], [-h / 2, h / 2]], x, y0 + h / 2, [1, 1], /azulejo/.test(m) ? "S" : "F", true); } }
+      else if (/ondas/.test(m)) { for (let x = x0; x < x0 + w; x += h) { pdf.lines([[h / 4, -h / 3, h / 2, -h / 3, h * 0.75, 0], [h / 4, h / 3, h / 2, h / 3, h * 0.75, 0]], x, y0 + h / 2, [1, 1], "S"); } }
+      else if (/rayas|tartan/.test(m)) { for (let x = x0; x < x0 + w; x += h) pdf.rect(x, y0, h / 2, h, "F"); }
+      else if (/puntos|comic|lunares/.test(m)) { const r = /lunares/.test(m) ? h / 4 : h / 7; for (let x = x0 + h / 2; x < x0 + w; x += h) pdf.circle(x, y0 + h / 2, r, "F"); }
+      else if (/meandro/.test(m)) { for (let x = x0; x < x0 + w - h; x += h) { pdf.lines([[0, -h * 0.8], [h * 0.8, 0], [0, h * 0.5], [-h * 0.5, 0], [0, -h * 0.25]], x, y0 + h * 0.9, [1, 1], "S"); } }
+      else if (/estrellas|lirio/.test(m)) { for (let x = x0 + h / 2; x < x0 + w; x += h) { pdf.circle(x, y0 + h / 2, h / 5, "F"); pdf.circle(x, y0 + h / 2, h / 2.6, "S"); } }
+      else if (/ladrillo|cuadricula|mondrian|bauhaus/.test(m)) { for (let x = x0; x < x0 + w; x += h * 1.6) { pdf.rect(x, y0 + 1, h * 1.4, h / 2 - 2, "S"); pdf.rect(x + h * 0.8, y0 + h / 2 + 1, h * 1.4, h / 2 - 2, "S"); } }
+      else if (/artnouveau|secession|celta|gotico|puertas/.test(m)) { for (let x = x0; x < x0 + w; x += h * 1.2) { pdf.ellipse(x + h * 0.6, y0 + h / 2, h * 0.5, h * 0.42, "S"); pdf.circle(x + h * 0.6, y0 + h / 2, h * 0.12, "F"); } }
+      else { for (let x = x0 + h / 2; x < x0 + w; x += h) pdf.circle(x, y0 + h / 2, h / 7, "F"); }
+    };
+    const decorarPagina = () => {
+      if (E.papel) { pdf.setFillColor(...col.linea); for (let yy = M; yy < H - M; yy += 14) for (let xx = M; xx < W - M; xx += 14) pdf.circle(xx, yy, 0.5, "F"); }
+      if (E.franja === "arriba" || E.franja === "ambas") franjaMotivo(0, 0, W, 14);
+      if (E.franja === "abajo" || E.franja === "ambas") franjaMotivo(0, H - 14, W, 14);
+      if (d.maqueta === "banda") { pdf.setFillColor(...col.acento); pdf.rect(0, 14, W, 5, "F"); pdf.setFillColor(...col.acento2); pdf.rect(0, 19, W, 2, "F"); }
+      if (d.maqueta === "ticket") { pdf.setDrawColor(...col.linea); pdf.setLineWidth(0.8); pdf.setLineDashPattern([3, 3], 0); pdf.line(M - 16, M - 10, M - 16, H - M + 10); pdf.setLineDashPattern([], 0); }
+    };
+    const fondo = () => { pdf.setFillColor(...col.fondo); pdf.rect(0, 0, W, H, "F"); decorarPagina(); };
+    const pie = () => { pdf.setFont(FC, "normal"); pdf.setFontSize(7.5); pdf.setTextColor(...col.tinta2); pdf.text(limpiar(C.nombre + " · La Brújula · diseño " + d.nombre), M, H - 22); pdf.text(String(pagina), W - M, H - 22, { align: "right" }); };
     const nueva = () => { pie(); pdf.addPage(); pagina++; fondo(); y = M; };
-    const espacio = h => { if (y + h > H - M - 10) nueva(); };
+    const espacio = h => { if (y + h > H - M - 12) nueva(); };
     const fuente = (fam, estilo, tam, color) => { pdf.setFont(fam, estilo); pdf.setFontSize(tam); pdf.setTextColor(...color); };
     const lineas = (t, ancho) => pdf.splitTextToSize(limpiar(t), ancho);
     const alto = (t, ancho, tam, inter) => lineas(t, ancho).length * tam * (inter || 1.35);
-    // Parrafo: escribe lineas y devuelve la altura; corta de pagina si hace falta
     const parrafo = (t, x, ancho, tam, inter, fam, estilo, color) => {
       fuente(fam || FC, estilo || "normal", tam, color || col.tinta);
       const ls = lineas(t, ancho), lh = tam * (inter || 1.35);
       ls.forEach(l => { espacio(lh); pdf.text(l, x, y + tam * 0.85); y += lh; });
       return ls.length * lh;
     };
-    const eyebrow = (t, x, yy, color) => { fuente(FC, "bold", 7.5, color || col.acento2); pdf.text(limpiar(t).toUpperCase(), x, yy, { charSpace: 1.6 }); };
-    const titulo2 = (sub, t) => {
-      espacio(70); eyebrow(sub, M, y + 8); y += 16;
-      fuente(FT, "bold", 24, col.acento); pdf.text(limpiar(t), M, y + 20); y += 34;
-      pdf.setDrawColor(...col.acento); pdf.setLineWidth(1.2); pdf.line(M, y, M + 46, y); y += 16;
+    const eyebrow = (t, x, yy, color, opts) => { fuente(FC, "bold", 7.5, color || col.acento2); pdf.text(limpiar(t).toUpperCase(), x, yy, Object.assign({ charSpace: 1.6 }, opts || {})); };
+    const separador = () => {
+      pdf.setDrawColor(...col.linea); pdf.setLineWidth(E.sep === "gruesa" ? 1.6 : E.sep === "fina" ? 0.3 : 0.6);
+      if (E.sep === "punteada") pdf.setLineDashPattern([1, 3], 0); else if (E.sep === "perforada") pdf.setLineDashPattern([4, 3], 0);
+      if (E.sep === "gruesa") pdf.setDrawColor(...col.acento);
+      pdf.line(M, y, M + CW, y); pdf.setLineDashPattern([], 0);
     };
-    const foto = (ref, x, yy, w, h, radio) => {
-      const img = fotoCargada(ref);
-      pdf.setFillColor(...col.suave);
-      if (radio) pdf.roundedRect(x, yy, w, h, radio, radio, "F"); else pdf.rect(x, yy, w, h, "F");
-      if (img) { const data = recortar(img, w, h); if (data) { pdf.addImage(data, "JPEG", x, yy, w, h); return true; } }
-      return false;
+
+    /* Titulo de seccion, con estilo segun maqueta y emoticono */
+    const titulo2 = (sub, t, ico) => {
+      espacio(74);
+      if (E.titulo === "bloque") {
+        fuente(FT, "bold", 22, col.papel); const tw = pdf.getTextWidth(cap(t)) + 60;
+        pdf.setFillColor(...col.acento); pdf.rect(M, y, Math.min(tw, CW), 40, "F");
+        eyebrow(sub, M + 14, y + 13, col.papel);
+        let x = M + 14; x += emoji(ico, x, y + 18, 16); fuente(FT, "bold", 22, col.papel); pdf.text(cap(t), x, y + 33); y += 54;
+      } else if (E.titulo === "banda") {
+        pdf.setFillColor(...col.suave); pdf.rect(M - 12, y, CW + 24, 46, "F");
+        eyebrow(sub, M, y + 14); let x = M; x += emoji(ico, x, y + 20, 18); fuente(FT, "bold", 24, col.acento); pdf.text(cap(t), x, y + 37); y += 60;
+      } else if (E.titulo === "barra") {
+        pdf.setFillColor(...col.acento2); pdf.rect(M, y, 7, 44, "F");
+        eyebrow(sub, M + 16, y + 12); let x = M + 16; x += emoji(ico, x, y + 18, 18); fuente(FT, "bold", 24, col.acento); pdf.text(cap(t), x, y + 36); y += 58;
+      } else if (E.titulo === "talon") {
+        pdf.setFillColor(...col.papel); pdf.setDrawColor(...col.linea); pdf.roundedRect(M, y, CW, 46, 8, 8, "FD");
+        pdf.setFillColor(...col.fondo); pdf.circle(M, y + 23, 7, "F"); pdf.circle(M + CW, y + 23, 7, "F");
+        eyebrow(sub, M + 18, y + 15); let x = M + 18; x += emoji(ico, x, y + 20, 16); fuente(FT, "bold", 22, col.acento); pdf.text(cap(t), x, y + 36); y += 60;
+      } else {
+        eyebrow(sub, M, y + 8); y += 16;
+        let x = M; x += emoji(ico, x, y + 2, 20); fuente(FT, "bold", 24, col.acento); pdf.text(cap(t), x, y + 20); y += 34;
+        pdf.setDrawColor(...col.acento); pdf.setLineWidth(1.2); pdf.line(M, y, M + 46, y); y += 16;
+      }
+    };
+
+    /* Foto con marco segun maqueta */
+    const foto = (ref, x, yy, w, h, opciones) => {
+      const img = fotoCargada(ref), o = opciones || {};
+      const marco = o.marco === undefined ? E.marco : o.marco;
+      const rot = E.girar && !o.sinGiro ? (o.impar ? 1.8 : -1.8) : 0;
+      if (marco === "polaroid") { pdf.setFillColor(...col.papel); pdf.rect(x - 5, yy - 5, w + 10, h + 16, "F"); pdf.setDrawColor(...col.linea); pdf.setLineWidth(0.4); pdf.rect(x - 5, yy - 5, w + 10, h + 16, "S"); }
+      if (marco === "papel") { pdf.setFillColor(...col.papel); pdf.rect(x - 4, yy - 4, w + 8, h + 8, "F"); }
+      if (marco === "baldosa") { pdf.setFillColor(...col.papel); pdf.rect(x - 4, yy - 4, w + 8, h + 8, "F"); pdf.setDrawColor(...col.linea); pdf.rect(x - 4, yy - 4, w + 8, h + 8, "S"); }
+      pdf.setFillColor(...col.suave); pdf.rect(x, yy, w, h, "F");
+      let ok = false;
+      if (img) { const data = recortar(img, w, h); if (data) { pdf.addImage(data, "JPEG", x, yy, w, h, undefined, "FAST", rot); ok = true; } }
+      if (marco === "acento") { pdf.setDrawColor(...col.acento2); pdf.setLineWidth(1.4); pdf.rect(x - 2, yy - 2, w + 4, h + 4, "S"); }
+      if (!ok) franjaMotivo(x, yy + h / 2 - 5, w, 10);
+      return ok;
     };
     const chip = (t, x, yy, relleno) => {
       fuente(FC, "bold", 6.8, relleno ? col.papel : col.tinta2);
@@ -2993,45 +3084,84 @@ async function generarPdf() {
       return w + 5;
     };
 
+    /* Cabecera de dia segun maqueta */
+    const cabeceraDia = (dia, i) => {
+      espacio(70);
+      const tit = cap(dia.etiqueta), info1 = limpiar(dia.zona).toUpperCase(), info2 = ("atardecer " + dia.ocaso).toUpperCase();
+      if (E.dia === "bloque") {
+        pdf.setFillColor(...col.acento); pdf.rect(M, y, 44, 44, "F"); fuente(FT, "bold", 26, col.papel); pdf.text(String(i + 1), M + 22, y + 31, { align: "center" });
+        let x = M + 56; x += emoji("📅", x, y + 8, 14); fuente(FC, "bold", 14, col.tinta); pdf.text(tit, x, y + 20);
+        fuente(FC, "bold", 7.5, col.tinta2); pdf.text(info1 + "   ·   " + info2, M + 56, y + 36, { charSpace: 1.2 });
+        y += 56;
+      } else if (E.dia === "banda") {
+        pdf.setFillColor(...col.acento); pdf.rect(M - 12, y, CW + 24, 40, "F");
+        fuente(FT, "bold", 24, col.papel); pdf.text(String(i + 1), M + 4, y + 29);
+        let x = M + 34; x += emoji("📅", x, y + 12, 14); fuente(FC, "bold", 13, col.papel); pdf.text(tit, x, y + 26);
+        fuente(FC, "bold", 7.5, col.papel); pdf.text(info1, M + CW, y + 16, { align: "right", charSpace: 1.2 }); pdf.text(info2, M + CW, y + 29, { align: "right", charSpace: 1.2 });
+        y += 52;
+      } else if (E.dia === "talon") {
+        pdf.setFillColor(...col.papel); pdf.setDrawColor(...col.linea); pdf.roundedRect(M, y, CW, 46, 6, 6, "FD");
+        pdf.setLineDashPattern([3, 3], 0); pdf.line(M + 60, y, M + 60, y + 46); pdf.setLineDashPattern([], 0);
+        fuente(FT, "bold", 26, col.acento); pdf.text(String(i + 1), M + 30, y + 32, { align: "center" });
+        let x = M + 74; x += emoji("🎟️", x, y + 10, 14); fuente(FC, "bold", 13, col.tinta); pdf.text(tit, x, y + 24);
+        fuente(FC, "bold", 7.5, col.tinta2); pdf.text(info1 + "   ·   " + info2, M + 74, y + 38, { charSpace: 1.2 });
+        y += 58;
+      } else if (E.dia === "matasellos") {
+        pdf.setDrawColor(...col.acento); pdf.setLineWidth(1.2); pdf.circle(M + 22, y + 22, 21, "S"); pdf.setLineWidth(0.5); pdf.circle(M + 22, y + 22, 17, "S");
+        fuente(FT, "bold", 20, col.acento); pdf.text(String(i + 1), M + 22, y + 29, { align: "center" });
+        let x = M + 56; x += emoji("📮", x, y + 8, 14); fuente(FC, "bold", 13, col.tinta); pdf.text(tit, x, y + 20);
+        fuente(FC, "bold", 7.5, col.tinta2); pdf.text(info1 + "   ·   " + info2, M + 56, y + 36, { charSpace: 1.2 });
+        y += 54;
+      } else {
+        fuente(FT, "bold", 30, col.acento); pdf.text(String(i + 1), M, y + 26);
+        let x = M + 30; x += emoji("📅", x, y + 12, 14); fuente(FC, "bold", 13, col.tinta); pdf.text(tit, x, y + 24);
+        fuente(FC, "bold", 7.5, col.tinta2); pdf.text(info1, M + CW, y + 14, { align: "right", charSpace: 1.2 }); pdf.text(info2, M + CW, y + 26, { align: "right", charSpace: 1.2 });
+        y += 34; pdf.setDrawColor(...col.acento); pdf.setLineWidth(1.4); pdf.line(M, y, M + CW, y); y += 10;
+      }
+    };
+
     /* ===== PORTADA ===== */
     fondo();
     const estiloPortada = /revista|banda|mosaico/.test(d.maqueta) ? "sangre" : /vitrina|cartel/.test(d.maqueta) ? "marco" : "tarjeta";
-    const fechaTxt = D.rango;
+    const metaTxt = limpiar(D.rango + "  ·  " + D.dias.length + (D.dias.length === 1 ? " día" : " días") + "  ·  desde las 11:00").toUpperCase();
     if (estiloPortada === "sangre") {
-      foto(g.portada, 0, 0, W, H * 0.58);
+      foto(g.portada, 0, 0, W, H * 0.58, { marco: "ninguno", sinGiro: true });
       pdf.setFillColor(...col.acento); pdf.rect(0, H * 0.58, W, H * 0.42, "F");
+      franjaMotivo(0, H * 0.58, W, 12);
       eyebrow(C.pais, M, H * 0.58 + 44, col.papel);
-      fuente(FT, "bold", 54, col.papel); pdf.text(limpiar(C.nombre), M, H * 0.58 + 100);
+      fuente(FT, "bold", 54, col.papel); pdf.text(cap(C.nombre), M, H * 0.58 + 100);
       fuente(FC, "italic", 14, col.papel); pdf.text(lineas(C.claim, CW), M, H * 0.58 + 128);
-      eyebrow(fechaTxt + "   ·   " + D.dias.length + (D.dias.length === 1 ? " día" : " días") + "   ·   desde las 11:00", M, H - 70, col.papel);
-      eyebrow("Diseño · " + d.nombre, M, H - 48, col.papel);
+      emoji("🧭", M, H - 96, 18);
+      eyebrow(metaTxt, M + 24, H - 82, col.papel);
+      eyebrow("Diseño · " + d.nombre, M + 24, H - 66, col.papel);
     } else if (estiloPortada === "marco") {
-      pdf.setFillColor(...col.fondo); pdf.rect(0, 0, W, H, "F");
       pdf.setDrawColor(...col.acento2); pdf.setLineWidth(1); pdf.rect(M - 10, M - 10, W - 2 * M + 20, H - 2 * M + 20, "S");
-      pdf.setLineWidth(2.5); pdf.setDrawColor(...col.acento);
-      foto(g.portada, M + 16, M + 40, CW - 32, 330); pdf.rect(M + 16, M + 40, CW - 32, 330, "S");
-      eyebrow(C.pais, W / 2, M + 420, col.acento2); pdf.text("", 0, 0);
-      fuente(FT, "bold", 52, col.acento); pdf.text(limpiar(C.nombre), W / 2, M + 476, { align: "center" });
+      franjaMotivo(M - 10, M - 10, W - 2 * M + 20, 12);
+      foto(g.portada, M + 16, M + 40, CW - 32, 330, { marco: "ninguno", sinGiro: true });
+      pdf.setLineWidth(2.5); pdf.setDrawColor(...col.acento); pdf.rect(M + 16, M + 40, CW - 32, 330, "S");
+      eyebrow(C.pais, W / 2, M + 420, col.acento2, { align: "center" });
+      fuente(FT, "bold", 52, col.acento); pdf.text(cap(C.nombre), W / 2, M + 476, { align: "center" });
       fuente(FC, "italic", 14, col.tinta); pdf.text(lineas(C.claim, CW - 40), W / 2, M + 506, { align: "center" });
-      fuente(FC, "bold", 8, col.tinta2); pdf.text(limpiar(fechaTxt + "  ·  " + D.dias.length + (D.dias.length === 1 ? " día" : " días") + "  ·  desde las 11:00").toUpperCase(), W / 2, H - 90, { align: "center", charSpace: 1.4 });
+      emoji("🧭", W / 2 - 9, H - 120, 18);
+      fuente(FC, "bold", 8, col.tinta2); pdf.text(metaTxt, W / 2, H - 90, { align: "center", charSpace: 1.4 });
       pdf.text(("Diseño · " + d.nombre).toUpperCase(), W / 2, H - 70, { align: "center", charSpace: 1.4 });
     } else {
-      pdf.setFillColor(...col.fondo); pdf.rect(0, 0, W, H, "F");
       const tx = M + 20, tw = CW - 40, ty = M + 60;
       pdf.setFillColor(...col.papel); pdf.roundedRect(tx - 14, ty - 14, tw + 28, 400, 6, 6, "F");
-      foto(g.portada, tx, ty, tw, 300);
-      pdf.setFillColor(...col.acento2); pdf.rect(tx + tw - 70, ty + 14, 46, 56, "F"); pdf.setFillColor(...col.papel); pdf.rect(tx + tw - 66, ty + 18, 38, 48, "F");
-      fuente(FT, "bold", 40, col.acento); pdf.text(limpiar(C.nombre), tx + 4, ty + 350);
+      foto(g.portada, tx, ty, tw, 300, { marco: "ninguno", sinGiro: true });
+      pdf.setFillColor(...col.acento2); pdf.rect(tx + tw - 70, ty + 14, 46, 56, "F"); pdf.setFillColor(...col.papel); pdf.rect(tx + tw - 66, ty + 18, 38, 48, "F"); franjaMotivo(tx + tw - 66, ty + 38, 38, 8);
+      fuente(FT, "bold", 40, col.acento); pdf.text(cap(C.nombre), tx + 4, ty + 350);
       fuente(FC, "italic", 12, col.tinta2); pdf.text(lineas(C.claim, tw - 8)[0], tx + 4, ty + 372);
-      eyebrow(C.pais, W / 2, ty + 460, col.acento2);
-      fuente(FC, "bold", 8, col.tinta2); pdf.text(limpiar(fechaTxt + "  ·  " + D.dias.length + (D.dias.length === 1 ? " día" : " días") + "  ·  desde las 11:00").toUpperCase(), W / 2, ty + 480, { align: "center", charSpace: 1.4 });
+      emoji("🧭", W / 2 - 9, ty + 430, 18);
+      eyebrow(C.pais, W / 2, ty + 466, col.acento2, { align: "center" });
+      fuente(FC, "bold", 8, col.tinta2); pdf.text(metaTxt, W / 2, ty + 484, { align: "center", charSpace: 1.4 });
       pdf.text(("Diseño · " + d.nombre).toUpperCase(), W / 2, H - 60, { align: "center", charSpace: 1.4 });
     }
 
     /* ===== EN DOS MINUTOS (larga) ===== */
     if (!D.corta && g.historia) {
       nueva();
-      titulo2("Antes de salir", C.nombre + " en dos minutos");
+      titulo2("Antes de salir", C.nombre + " en dos minutos", "⏱️");
       parrafo(g.historia, M, CW, 11, 1.5); y += 8;
       let cx = M, cy = y + 12;
       (g.frases || []).forEach(f => {
@@ -3040,65 +3170,64 @@ async function generarPdf() {
         pdf.setFillColor(...col.papel); pdf.setDrawColor(...col.linea); pdf.roundedRect(cx, cy - 12, w, 17, 8.5, 8.5, "FD"); pdf.text(limpiar(f), cx + 8, cy); cx += w + 6;
       });
       y = cy + 22;
-      const cajas = [["Bueno saber", C.consejo], ["Presupuesto", C.presupuesto], ["Si llueve", C.lluvia]];
+      const cajas = [["Bueno saber", C.consejo, "💡"], ["Presupuesto", C.presupuesto, "💶"], ["Si llueve", C.lluvia, "🌧️"]];
       const bw = (CW - 20) / 3; let bh = 0;
-      cajas.forEach(([t, c]) => { bh = Math.max(bh, alto(c, bw - 20, 8.8, 1.4) + 34); });
+      cajas.forEach(([t, c]) => { bh = Math.max(bh, alto(c, bw - 20, 8.8, 1.4) + 40); });
       espacio(bh);
-      cajas.forEach(([t, c], i) => {
+      cajas.forEach(([t, c, ico], i) => {
         const bx = M + i * (bw + 10);
         pdf.setFillColor(...col.papel); pdf.setDrawColor(...col.linea); pdf.roundedRect(bx, y, bw, bh, 6, 6, "FD");
-        eyebrow(t, bx + 10, y + 16);
-        fuente(FC, "normal", 8.8, col.tinta); pdf.text(lineas(c, bw - 20), bx + 10, y + 30, { lineHeightFactor: 1.4 });
+        let x = bx + 10; x += emoji(ico, x, y + 8, 12); eyebrow(t, x, y + 17);
+        fuente(FC, "normal", 8.8, col.tinta); pdf.text(lineas(c, bw - 20), bx + 10, y + 34, { lineHeightFactor: 1.4 });
       });
       y += bh + 16;
     }
 
     /* ===== ITINERARIO ===== */
     nueva();
-    titulo2("Día a día", "El itinerario");
-    const fw = D.corta ? 72 : 118, fh = D.corta ? 50 : 82;
+    titulo2("Día a día", "El itinerario", "🗺️");
+    const fw = D.corta ? 72 : (E.fotoGrande ? 140 : 118), fh = D.corta ? 50 : (E.fotoGrande ? 96 : 82);
+    let impar = false;
     D.dias.forEach((dia, i) => {
-      if (!D.corta && i > 0) nueva(); else espacio(64);
-      fuente(FT, "bold", 30, col.acento); pdf.text(String(i + 1), M, y + 26);
-      fuente(FC, "bold", 13, col.tinta); pdf.text(limpiar(dia.etiqueta), M + 30, y + 24);
-      fuente(FC, "bold", 7.5, col.tinta2); pdf.text(limpiar(dia.zona).toUpperCase(), M + CW, y + 14, { align: "right", charSpace: 1.2 });
-      pdf.text(("atardecer " + dia.ocaso).toUpperCase(), M + CW, y + 26, { align: "right", charSpace: 1.2 });
-      y += 34; pdf.setDrawColor(...col.acento); pdf.setLineWidth(1.4); pdf.line(M, y, M + CW, y); y += 10;
+      if (!D.corta && i > 0) nueva();
+      cabeceraDia(dia, i);
       if (dia.libre) { parrafo("Día libre: repetir lo que más gustó, cambiar los filtros o hacer una excursión.", M, CW, 10, 1.4); y += 10; return; }
       dia.filas.forEach(f => {
         if (f.hueco) {
-          espacio(18); fuente(FC, "bold", 7.5, col.tinta2); pdf.text(limpiar(f.h + "   " + f.texto).toUpperCase(), M + fw + 12, y + 10, { charSpace: 1 });
-          pdf.setDrawColor(...col.linea); pdf.setLineWidth(0.5); pdf.setLineDashPattern([2, 2], 0); pdf.line(M, y + 15, M + CW, y + 15); pdf.setLineDashPattern([], 0); y += 20; return;
+          espacio(20); let x = M + fw + 14; x += emoji(EMOJI_HUECO(f.texto), x, y + 1, 11);
+          fuente(FC, "bold", 7.5, col.tinta2); pdf.text(limpiar(f.h + "   " + f.texto).toUpperCase(), x, y + 10, { charSpace: 1 });
+          y += 16; separador(); y += 6; return;
         }
-        const p = f.parada, tx = M + fw + 12, tw = CW - fw - 12;
-        // Altura estimada para no partir la parada
+        const p = f.parada, tx = M + fw + 14, tw = CW - fw - 14;
         let h = 30 + (D.corta ? 0 : alto(p.d, tw, 10, 1.4) + 6) + alto(p.truco, tw - 16, 9.3, 1.4) + 18 + (D.corta ? 0 : alto(p.salseo, tw - 14, 9.5, 1.4) + 18) + (p.sg && !D.corta ? 12 : 0);
-        h = Math.max(h, fh + 8);
+        h = Math.max(h, fh + 18);
         espacio(h);
-        const y0 = y;
-        foto(p.wiki, M, y0, fw, fh, 4);
+        const y0 = y; impar = !impar;
+        foto(p.wiki, M, y0 + (E.marco === "polaroid" ? 5 : 0), fw, fh, { impar });
         fuente(FC, "bold", 7.5, col.acento2); pdf.text(limpiar(p.h + "  ·  " + p.t).toUpperCase(), tx, y0 + 8, { charSpace: 1 });
-        fuente(FC, "bold", D.corta ? 11 : 13.5, col.tinta); pdf.text(limpiar(p.n), tx, y0 + 22);
+        let nx = tx; nx += emoji(EMOJI[p.tag] || "📍", nx, y0 + 11, 13);
+        fuente(FC, "bold", D.corta ? 11 : 13.5, col.tinta); pdf.text(cap(p.n), nx, y0 + 22);
         let cx = tx, cy = y0 + 36;
         cx += chip(p.tag, cx, cy); cx += chip(p.precio, cx, cy); cx += chip("aprox. " + p.dur + " min", cx, cy);
         if (p.reservar) cx += chip("Reservar", cx, cy, true);
         if (p.comida) cx += chip("Comida aquí", cx, cy);
         y = cy + 8;
         if (!D.corta) { parrafo(p.d, tx, tw, 10, 1.4); y += 4; }
-        // Truco en caja suave
         const th = alto(p.truco, tw - 16, 9.3, 1.4) + 18;
         pdf.setFillColor(...col.suave); pdf.roundedRect(tx, y, tw, th, 4, 4, "F");
-        eyebrow("Truco", tx + 8, y + 10); fuente(FC, "normal", 9.3, col.tinta); pdf.text(lineas(p.truco, tw - 16), tx + 8, y + 21, { lineHeightFactor: 1.4 });
+        let ex = tx + 8; ex += emoji("💡", ex, y + 3, 9); eyebrow("Truco", ex, y + 10);
+        fuente(FC, "normal", 9.3, col.tinta); pdf.text(lineas(p.truco, tw - 16), tx + 8, y + 21, { lineHeightFactor: 1.4 });
         y += th + 5;
         if (!D.corta) {
           const sh = alto(p.salseo, tw - 14, 9.5, 1.4) + 16;
           pdf.setFillColor(...col.acento2); pdf.rect(tx, y, 2.5, sh, "F");
-          eyebrow("Salseo", tx + 10, y + 10); fuente(FC, "italic", 9.5, col.tinta); pdf.text(lineas(p.salseo, tw - 14), tx + 10, y + 21, { lineHeightFactor: 1.4 });
+          let sx = tx + 10; sx += emoji("🤫", sx, y + 3, 9); eyebrow("Salseo", sx, y + 10);
+          fuente(FC, "italic", 9.5, col.tinta); pdf.text(lineas(p.salseo, tw - 14), tx + 10, y + 21, { lineHeightFactor: 1.4 });
           y += sh + 4;
-          if (p.sg) { fuente(FC, "normal", 7.8, col.tinta2); pdf.text(limpiar("Sin gluten: " + p.sg), tx, y + 8); y += 12; }
+          if (p.sg) { emoji("🌾", tx, y + 1, 9); fuente(FC, "normal", 7.8, col.tinta2); pdf.text(limpiar("Sin gluten: " + p.sg), tx + 13, y + 8); y += 12; }
         }
-        y = Math.max(y, y0 + fh + 8);
-        pdf.setDrawColor(...col.linea); pdf.setLineWidth(0.5); pdf.line(M, y, M + CW, y); y += 8;
+        y = Math.max(y, y0 + fh + 18);
+        separador(); y += 8;
       });
       y += 10;
     });
@@ -3106,19 +3235,22 @@ async function generarPdf() {
     /* ===== SALSEOS (larga) ===== */
     if (!D.corta) {
       nueva();
-      titulo2("Lo que no sale en las guías", "Salseos de " + C.nombre);
+      titulo2("Lo que no sale en las guías", "Salseos de " + C.nombre, "🤫");
       const sw = (CW - 12) / 2;
+      let filaY = y, filaAlto = 0;
       (g.salseos || []).forEach((s, i) => {
-        const w = i === 0 ? CW : sw, x = (i === 0 || i % 2 === 1) ? M : M + sw + 12;
+        const w = i === 0 ? CW : sw;
+        const izquierda = i === 0 || i % 2 === 1;
         const sh = alto(s, w - 44, 9, 1.45) + 24;
-        if (i === 0 || i % 2 === 1) espacio(sh + 8);
-        const yy = (i > 0 && i % 2 === 0) ? y - (alto(g.salseos[i - 1], sw - 44, 9, 1.45) + 24 + 10) : y;
-        pdf.setFillColor(...col.papel); pdf.setDrawColor(...col.linea); pdf.roundedRect(x, yy, w, sh, 6, 6, "FD");
-        fuente(FT, "bold", 22, col.acento2); pdf.text(String(i + 1), x + 10, yy + 26);
-        fuente(FC, "normal", 9, col.tinta); pdf.text(lineas(s, w - 44), x + 34, yy + 16, { lineHeightFactor: 1.45 });
-        if (i === 0 || i % 2 === 0 || i === g.salseos.length - 1) y = Math.max(y, yy + sh + 10); else y = yy + sh + 10;
+        if (izquierda) { espacio(sh + 8); filaY = y; filaAlto = 0; }
+        const x = izquierda ? M : M + sw + 12;
+        pdf.setFillColor(...col.papel); pdf.setDrawColor(...col.linea); pdf.roundedRect(x, filaY, w, sh, 6, 6, "FD");
+        fuente(FT, "bold", 22, col.acento2); pdf.text(String(i + 1), x + 10, filaY + 26);
+        fuente(FC, "normal", 9, col.tinta); pdf.text(lineas(s, w - 44), x + 34, filaY + 16, { lineHeightFactor: 1.45 });
+        filaAlto = Math.max(filaAlto, sh);
+        if (!izquierda || i === 0 || i === g.salseos.length - 1) y = filaY + filaAlto + 10;
       });
-      y += 14; titulo2("De los sitios que vas a pisar", "Salseos del itinerario");
+      y += 14; titulo2("De los sitios que vas a pisar", "Salseos del itinerario", "📍");
       D.dias.forEach(dia => (dia.paradas || []).forEach(p => {
         const ancho = CW - 12, h = alto(p.n + ". " + p.salseo, ancho, 9, 1.45) + 8;
         espacio(h);
@@ -3127,8 +3259,6 @@ async function generarPdf() {
         const wl = pdf.getTextWidth(nom);
         pdf.text(nom, M + 12, y + 9);
         fuente(FC, "normal", 9, col.tinta);
-        const resto = pdf.splitTextToSize(limpiar(p.salseo), ancho - wl - 4);
-        // Primera linea a continuacion del nombre, el resto debajo
         const primera = pdf.splitTextToSize(limpiar(p.salseo), ancho - wl - 4)[0] || "";
         pdf.text(primera, M + 12 + wl + 4, y + 9);
         const cola = pdf.splitTextToSize(limpiar(p.salseo).slice(primera.length).trim(), ancho);
@@ -3140,34 +3270,35 @@ async function generarPdf() {
 
     /* ===== COMER ===== */
     nueva();
-    titulo2("De comer", D.corta ? "Dónde comer" : "Qué pedir y dónde");
+    titulo2("De comer", D.corta ? "Dónde comer" : "Qué pedir y dónde", "🍽️");
     if (!D.corta) {
       const pw = (CW - 12) / 2, ph = 96;
       (g.platos || []).forEach((pl, i) => {
         const x = i % 2 === 0 ? M : M + pw + 12;
-        if (i % 2 === 0) espacio(ph + 60);
+        if (i % 2 === 0) espacio(ph + 66);
         const yy = y;
-        foto(pl.wiki, x, yy, pw, ph, 5);
-        fuente(FC, "bold", 11, col.tinta); pdf.text(limpiar(pl.n), x, yy + ph + 16);
-        fuente(FC, "normal", 8.6, col.tinta2); pdf.text(lineas(pl.d, pw), x, yy + ph + 29, { lineHeightFactor: 1.35 });
-        if (i % 2 === 1 || i === g.platos.length - 1) y = yy + ph + 56;
+        foto(pl.wiki, x, yy + (E.marco === "polaroid" ? 5 : 0), pw, ph, { impar: i % 2 === 0 });
+        fuente(FC, "bold", 11, col.tinta); pdf.text(limpiar(pl.n), x, yy + ph + 20);
+        fuente(FC, "normal", 8.6, col.tinta2); pdf.text(lineas(pl.d, pw), x, yy + ph + 33, { lineHeightFactor: 1.35 });
+        if (i % 2 === 1 || i === g.platos.length - 1) y = yy + ph + 60;
       });
       y += 10;
     }
-    const lista = (t, items, x, w) => {
-      eyebrow(t, x, y + 8); let yy = y + 20;
+    const lista = (t, items, x, w, ico) => {
+      let ix = x; ix += emoji(ico, ix, y - 1, 11); eyebrow(t, ix, y + 8); let yy = y + 22;
       items.forEach(it => { const ls = lineas(it, w - 14); pdf.setFillColor(...col.acento2); pdf.rect(x, yy + 3, 6, 1.5, "F"); fuente(FC, "normal", 8.8, col.tinta); pdf.text(ls, x + 12, yy + 6, { lineHeightFactor: 1.4 }); yy += ls.length * 12.3 + 6; });
       return yy;
     };
     const lw = (CW - 16) / 2;
-    espacio(140);
-    const y1 = lista("Dónde comer", C.comer, M, lw);
-    const y2 = lista("Sin gluten", C.singluten.concat(D.corta ? [C.consejo] : []), M + lw + 16, lw);
+    espacio(150);
+    const y1 = lista("Dónde comer", C.comer, M, lw, "🍴");
+    const y2 = lista("Sin gluten", C.singluten.concat(D.corta ? [C.consejo] : []), M + lw + 16, lw, "🌾");
     y = Math.max(y1, y2) + 20;
 
     /* ===== CIERRE ===== */
-    espacio(60);
-    pdf.setDrawColor(...col.linea); pdf.setLineWidth(0.5); pdf.line(M, y, M + CW, y); y += 22;
+    espacio(70);
+    separador(); y += 22;
+    emoji("🩴", W / 2 - 9, y - 4, 18); y += 24;
     fuente(FT, "bold", 14, col.acento); pdf.text("Hecho para pasearlo sin prisa", W / 2, y, { align: "center" }); y += 16;
     fuente(FC, "normal", 7.5, col.tinta2); pdf.text(lineas("Horas, precios y aperturas son orientativos. Lo marcado como Reservar se agota. Fotos: Wikimedia Commons, licencia libre.", CW - 60), W / 2, y, { align: "center" });
     pie();
