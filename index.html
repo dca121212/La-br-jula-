@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v18";
+const VERSION_APP = "v19";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2710,6 +2710,10 @@ body.pdf .m-ticket .portada .talon { border-left: 2px dashed var(--linea); borde
 body.pdf .m-cuaderno .portada .foto-caja, body.pdf .m-vitrina .portada .foto-caja { width: 84%; height: 360px; }
 body.pdf .m-fiesta .portada .foto-caja { width: 82%; height: 340px; }
 body.pdf .barra { display: none; }
+body.pdf .seccion > h2, body.pdf .parada .foto-caja, body.pdf .parada .tag, body.pdf .dia-cab .num, body.pdf .plato .foto-caja { transform: none !important; }
+body.pdf .seccion > h2 { display: block; box-shadow: none; }
+body.pdf .m-fiesta .seccion > h2, body.pdf .m-mosaico .seccion > h2, body.pdf .m-cartel .seccion > h2 { display: block; }
+body.pdf .dia-cab, body.pdf .parada, body.pdf .hueco, body.pdf .seccion > h2, body.pdf .prosa, body.pdf .frases, body.pdf .tres, body.pdf .dos, body.pdf .salseos, body.pdf .platos, body.pdf .lista, body.pdf .cierre { width: 584px; box-sizing: border-box; }
 @media print { .barra { display:none !important; } .pagina { max-width:none; padding: 0; } body { font-size: 12.5px; } .parada .foto-caja { height: 120px; } .parada { grid-template-columns: 160px 1fr; } .hueco { padding-left: 176px; } @page { margin: 14mm 12mm; } }
 @media (max-width: 640px) {
   body:not(.pdf) { font-size: ${base - 1.5}px; }
@@ -3393,7 +3397,7 @@ async function generarPdfExacto() {
   const { jsPDF } = window.jspdf;
   const ANCHO = 640, ALTO = 905, SEP = 10;   // proporcion A4, maquetado para leerse bien en movil
   const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
-  const escala = movil ? 1.6 : 2.2;
+  const escala = movil ? 2 : 2.5;
   document.body.classList.add("pdf"); window.scrollTo(0, 0);
   // Safari no deja fotografiar SVG incrustados ni fotos de otro dominio: se convierten a PNG/JPEG locales
   const motivoPng = await rasterizarMotivo();
@@ -3438,25 +3442,28 @@ async function generarPdfExacto() {
     for (const b of piezas) {
       n++; e.textContent = "Montando el PDF exacto: pieza " + n + " de " + piezas.length;
       let canvas;
+      const giroPrevio = b.el.style.transform; b.el.style.transform = "none";
       try { canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY }); }
       catch (err) { console.error("pieza " + n, err); fallos++; if (fallos > 3) throw err; continue; }
+      finally { b.el.style.transform = giroPrevio; }
       let w = canvas.width / escala, h = canvas.height / escala;
       if (w > ANCHO) { h = h * ANCHO / w; w = ANCHO; }
       const esPortada = b.el.classList.contains("portada");
-      const x = esPortada ? 0 : Math.max(0, (ANCHO - w) / 2);
+      // Alineacion: todo al margen izquierdo (28 px); solo lo que desborda el ancho util se centra
+      const x = esPortada ? 0 : (w > ANCHO - 56 ? Math.max(0, (ANCHO - w) / 2) : 28);
       // Salto de pagina: si lo pide la pieza, o si no cabe en lo que queda
       const cabecera = b.el.classList.contains("dia-cab") || b.el.tagName === "H2" || b.el.tagName === "H5";
       const necesario = h + (cabecera ? 120 : 0);
       if (!primera && y > 0 && (b.nueva || y + necesario > ALTO - 24)) { pdf.addPage(); pintarFondo(); y = 0; }
       if (!esPortada && y === 0) y = 24;
-      if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.88), "JPEG", x, y, w, h); y += h + (esPortada ? 0 : SEP); }
+      if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG", x, y, w, h); y += h + (esPortada ? 0 : SEP); }
       else {
         let offset = 0;
         while (offset < h) {
           const franja = Math.min(ALTO - y, h - offset);
           const trozo = document.createElement("canvas"); trozo.width = canvas.width; trozo.height = Math.round(franja * escala);
           trozo.getContext("2d").drawImage(canvas, 0, Math.round(offset * escala), canvas.width, trozo.height, 0, 0, canvas.width, trozo.height);
-          pdf.addImage(trozo.toDataURL("image/jpeg", 0.88), "JPEG", x, y, w, franja);
+          pdf.addImage(trozo.toDataURL("image/jpeg", 0.92), "JPEG", x, y, w, franja);
           offset += franja; y += franja;
           if (offset < h) { pdf.addPage(); pintarFondo(); y = 0; }
         }
