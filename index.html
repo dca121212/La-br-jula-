@@ -314,7 +314,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v8";
+const VERSION_APP = "v10";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2624,6 +2624,13 @@ body.pdf .plato .foto-caja { height: 150px; }
 body.pdf .m-cuaderno .portada .foto-caja, body.pdf .m-vitrina .portada .foto-caja { height: 420px; }
 body.pdf .cierre { page-break-inside: avoid; }
 body.pdf .barra { display: none; }
+body.pdf .m-cartel .portada .foto-caja { height: 440px; }
+body.pdf .m-mosaico .portada .foto-caja { height: 520px; }
+body.pdf .m-banda .portada .foto-caja { height: 520px; margin: 60px 60px 0; }
+body.pdf .m-revista .portada .titulo { padding-top: 420px; }
+body.pdf .m-postal .portada .tarjeta .foto-caja { height: 420px; }
+body.pdf .m-ticket .portada .billete .foto-caja { height: 360px; }
+body.pdf .m-banda .portada { background: repeating-linear-gradient(to bottom, var(--acento) 0 34px, var(--acento2) 34px 42px, var(--papel) 42px 50px); }
 body.pdf .portada h1 { font-size: 92px; }
 body.pdf .m-cartel .portada h1 { font-size: 120px; }
 body.pdf .m-postal .portada h1, body.pdf .m-ticket .portada h1 { font-size: 70px; }
@@ -2898,6 +2905,14 @@ async function generarPdf() {
   const e = document.getElementById("estado"); e.textContent = "Montando el PDF, unos segundos…";
   await esperarFotos();
   document.body.classList.add("pdf"); window.scrollTo(0, 0);
+  // El generador no entiende object-fit: cada foto pasa a ser fondo recortado de su caja
+  document.querySelectorAll(".foto-caja").forEach(c => {
+    const img = c.querySelector("img");
+    if (img && img.src && img.style.display !== "none" && img.complete && img.naturalWidth) {
+      c.style.backgroundImage = "url(" + img.src + ")"; c.style.backgroundSize = "cover"; c.style.backgroundPosition = "center"; c.style.backgroundRepeat = "no-repeat";
+      img.style.visibility = "hidden";
+    }
+  });
   await document.fonts.ready; await new Promise(r => setTimeout(r, 300));
   const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
   const escala = movil ? 1.25 : 1.8;
@@ -2927,11 +2942,12 @@ async function generarPdf() {
     pintarFondo();
     for (const b of bloques) {
       n++; e.textContent = "Montando el PDF: bloque " + n + " de " + bloques.length;
-      const canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: null, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY });
-      const h = canvas.height / escala, w = canvas.width / escala;
+      const canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY });
+      let w = canvas.width / escala, h = canvas.height / escala;
+      if (w > ANCHO) { h = h * ANCHO / w; w = ANCHO; }
       const x = Math.max(0, (ANCHO - w) / 2);
       // Bloque en pagina nueva si lo pide, o si no cabe y cabe entero en una pagina
-      if (!primera && (b.nueva || (y + h > ALTO && h <= ALTO))) { pdf.addPage(); pintarFondo(); y = 0; }
+      if (!primera && y > 0 && (b.nueva || (y + h > ALTO && h <= ALTO))) { pdf.addPage(); pintarFondo(); y = 0; }
       if (h <= ALTO) {
         pdf.addImage(canvas.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, h);
         y += h;
@@ -2960,7 +2976,10 @@ async function generarPdf() {
     console.error(err);
     e.textContent = "No se pudo montar el PDF (" + (err && err.message ? err.message : err) + "); prueba Imprimir";
     throw err;
-  } finally { document.body.classList.remove("pdf"); }
+  } finally {
+    document.body.classList.remove("pdf");
+    document.querySelectorAll(".foto-caja").forEach(c => { c.style.backgroundImage = ""; c.style.backgroundSize = ""; c.style.backgroundPosition = ""; const img = c.querySelector("img"); if (img) img.style.visibility = ""; });
+  }
 }
 async function descargarPdf() {
   const f = await generarPdf();
