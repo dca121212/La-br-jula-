@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v12";
+const VERSION_APP = "v13";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2970,11 +2970,10 @@ const ESTILOS = {
   banda:    { marco: "papel", girar: false, mayus: false, dia: "banda", titulo: "barra", sep: "linea", franja: "arriba", fotoGrande: false }
 };
 
-async function generarPdf() {
-  if (pdfListo) return pdfListo;
+async function generarPdfLigero() {
   const e = document.getElementById("estado");
   e.textContent = "Esperando las fotos…"; await esperarFotos();
-  e.textContent = "Montando el PDF…";
+  e.textContent = "Montando el PDF ligero…";
   try {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ unit: "pt", format: "a4" });
@@ -3304,15 +3303,89 @@ async function generarPdf() {
     pie();
 
     const blob = pdf.output("blob");
-    pdfListo = new File([blob], nombrePdf(), { type: "application/pdf" });
     e.textContent = "PDF listo (" + Math.round(blob.size / 1024) + " KB)";
-    if (navigator.canShare && navigator.canShare({ files: [pdfListo] })) document.getElementById("btn-share").style.display = "";
-    return pdfListo;
+    return new File([blob], nombrePdf(), { type: "application/pdf" });
   } catch (err) {
     console.error(err);
     e.textContent = "No se pudo montar el PDF (" + (err && err.message ? err.message : err) + ")";
     throw err;
   }
+}
+
+/* ---------- PDF exacto: la pagina tal como la pinta el navegador, bloque a bloque ---------- */
+async function generarPdfExacto() {
+  const e = document.getElementById("estado");
+  e.textContent = "Esperando las fotos…"; await esperarFotos();
+  await document.fonts.ready;
+  const { jsPDF } = window.jspdf;
+  const ANCHO = 794, ALTO = 1123;
+  const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
+  const escala = movil ? 1.35 : 2;
+  document.body.classList.add("pdf"); window.scrollTo(0, 0);
+  // Las fotos pasan a fondo recortado (el generador no entiende object-fit)
+  document.querySelectorAll(".foto-caja").forEach(c => {
+    const img = c.querySelector("img");
+    if (img && img.src && img.style.display !== "none" && img.complete && img.naturalWidth) {
+      c.style.backgroundImage = "url(" + img.src + ")"; c.style.backgroundSize = "cover"; c.style.backgroundPosition = "center"; c.style.backgroundRepeat = "no-repeat"; img.style.visibility = "hidden";
+    }
+  });
+  await new Promise(r => setTimeout(r, 250));
+  try {
+    const fondo = getComputedStyle(document.body).getPropertyValue("--fondo").trim() || "#ffffff";
+    const pdf = new jsPDF({ unit: "px", format: [ANCHO, ALTO], orientation: "portrait", hotfixes: ["px_scaling"] });
+    const pagina = document.querySelector(".pagina");
+    const bloques = [];
+    [...pagina.children].forEach(el => {
+      if (el.classList.contains("portada")) bloques.push({ el, nueva: true });
+      else if (el.classList.contains("cierre")) bloques.push({ el, nueva: false });
+      else {
+        const hijos = [...el.children], dias = hijos.filter(x => x.classList.contains("dia"));
+        if (dias.length) {
+          hijos.filter(x => !x.classList.contains("dia")).forEach((x, i) => bloques.push({ el: x, nueva: i === 0 }));
+          dias.forEach(dd => bloques.push({ el: dd, nueva: !DATOS.corta }));
+        } else bloques.push({ el, nueva: el.classList.contains("hoja") });
+      }
+    });
+    const pintarFondo = () => { pdf.setFillColor(fondo); pdf.rect(0, 0, ANCHO, ALTO, "F"); };
+    let y = 0, primera = true, n = 0;
+    pintarFondo();
+    for (const b of bloques) {
+      n++; e.textContent = "Montando el PDF: bloque " + n + " de " + bloques.length;
+      const canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY });
+      let w = canvas.width / escala, h = canvas.height / escala;
+      if (w > ANCHO) { h = h * ANCHO / w; w = ANCHO; }
+      const x = Math.max(0, (ANCHO - w) / 2);
+      if (!primera && y > 0 && (b.nueva || (y + h > ALTO && h <= ALTO))) { pdf.addPage(); pintarFondo(); y = 0; }
+      if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, h); y += h; }
+      else {
+        let offset = 0;
+        while (offset < h) {
+          const franja = Math.min(ALTO - y, h - offset);
+          const trozo = document.createElement("canvas"); trozo.width = canvas.width; trozo.height = Math.round(franja * escala);
+          trozo.getContext("2d").drawImage(canvas, 0, Math.round(offset * escala), canvas.width, trozo.height, 0, 0, canvas.width, trozo.height);
+          pdf.addImage(trozo.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, franja);
+          offset += franja; y += franja;
+          if (offset < h) { pdf.addPage(); pintarFondo(); y = 0; }
+        }
+      }
+      if (y >= ALTO - 4) { pdf.addPage(); pintarFondo(); y = 0; }
+      primera = false; canvas.width = canvas.height = 0;
+    }
+    const blob = pdf.output("blob");
+    e.textContent = "PDF listo (" + Math.round(blob.size / 1024) + " KB)";
+    return new File([blob], nombrePdf(), { type: "application/pdf" });
+  } finally {
+    document.body.classList.remove("pdf");
+    document.querySelectorAll(".foto-caja").forEach(c => { c.style.backgroundImage = ""; c.style.backgroundSize = ""; c.style.backgroundPosition = ""; const img = c.querySelector("img"); if (img) img.style.visibility = ""; });
+  }
+}
+// Primero el exacto; si el navegador no puede (memoria en moviles viejos), el ligero
+async function generarPdf() {
+  if (pdfListo) return pdfListo;
+  try { pdfListo = await generarPdfExacto(); }
+  catch (err) { console.error(err); document.getElementById("estado").textContent = "El exacto no ha podido, va el ligero…"; pdfListo = await generarPdfLigero(); }
+  if (navigator.canShare && navigator.canShare({ files: [pdfListo] })) document.getElementById("btn-share").style.display = "";
+  return pdfListo;
 }
 async function descargarPdf() {
   const f = await generarPdf();
@@ -3368,6 +3441,7 @@ function abrirGuia(indiceDiseno, corta) {
     '<span class="estado" id="estado">Cargando fotos…</span><span style="opacity:.5;margin-left:12px">' + VERSION_APP + '</span></div>' +
     '<div class="pagina">' + htmlGuia(ultimoPlan, d, corta) + '</div>' +
     '<script>var DATOS = ' + JSON.stringify(datosGuia(ultimoPlan, d, corta)).replace(/<\//g, "<\\/") + ';<\/script>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>' +
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>' +
     '<script>' + SCRIPT_GUIA + '<\/script></body></html>';
   const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
