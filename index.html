@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v15";
+const VERSION_APP = "v16";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2669,38 +2669,47 @@ img { display:block; }
 .m-fiesta .plato .foto-caja { border: 5px solid var(--acento); border-radius: 50% 12px 50% 12px; }
 body.pdf.m-fiesta .portada .foto-caja { height: 430px; }
 
-/* Modo PDF: la pagina se maqueta a ancho A4 (794 px) y se fotografia por paginas */
-body.pdf { background: var(--fondo); }
-body.pdf .pagina { width: 794px; max-width: 794px; margin: 0; padding: 0 34px 34px; background: var(--fondo); }
-body.pdf .portada { min-height: 0; height: 1123px; margin: 0 -34px 0; page-break-after: always; break-after: page; }
-body.pdf .hoja { page-break-before: always; break-before: page; margin-top: 0; padding-top: 34px; }
-body.pdf .seccion:not(.hoja) { margin-top: 30px; }
-body.pdf .dia, body.pdf .parada, body.pdf .plato, body.pdf .salseos .s, body.pdf .caja, body.pdf .lista li { page-break-inside: avoid; break-inside: avoid; }
-body.pdf .dia { margin-top: 26px; }
-body.pdf .parada { grid-template-columns: 170px 1fr; padding: 11px 0; }
-body.pdf .parada .foto-caja { height: 125px; }
-body.pdf .hueco { padding-left: 186px; }
+/* Modo PDF: la pagina se maqueta a 640 px (proporcion A4) y se fotografia por piezas */
+body.pdf { background: var(--fondo); font-size: ${base + 2}px; }
+body.pdf .pagina { width: 640px; max-width: 640px; margin: 0; padding: 0 28px 28px; background: var(--fondo); }
+body.pdf .portada { min-height: 0; height: 905px; margin: 0 -28px 0; }
+body.pdf .hoja { margin-top: 0; padding-top: 0; }
+body.pdf .seccion { margin-top: 0; padding-top: 16px; }
+body.pdf .seccion > h2 { font-size: 30px; margin-bottom: 10px; }
+body.pdf .dia { margin-top: 0; }
+body.pdf .dia-cab { margin-bottom: 4px; }
+body.pdf .parada { grid-template-columns: 150px 1fr; padding: 12px 0; }
+body.pdf .parada .foto-caja { height: 110px; }
+body.pdf .parada h4 { font-size: ${base + 5}px; }
+body.pdf .hueco { padding-left: 166px; }
 body.pdf .platos { grid-template-columns: repeat(2, 1fr); }
-body.pdf .plato .foto-caja { height: 150px; }
-body.pdf .m-cuaderno .portada .foto-caja, body.pdf .m-vitrina .portada .foto-caja { height: 420px; }
-body.pdf .cierre { page-break-inside: avoid; }
-body.pdf .barra { display: none; }
-body.pdf .m-cartel .portada .foto-caja { height: 440px; }
-body.pdf .m-mosaico .portada .foto-caja { height: 520px; }
-body.pdf .m-banda .portada .foto-caja { height: 520px; margin: 60px 60px 0; }
-body.pdf .m-revista .portada .titulo { padding-top: 420px; }
-body.pdf .m-postal .portada .tarjeta .foto-caja { height: 420px; }
-body.pdf .m-ticket .portada .billete .foto-caja { height: 360px; }
-body.pdf .m-banda .portada { background: repeating-linear-gradient(to bottom, var(--acento) 0 34px, var(--acento2) 34px 42px, var(--papel) 42px 50px); }
-body.pdf .portada h1 { font-size: 92px; }
-body.pdf .m-cartel .portada h1 { font-size: 120px; }
-body.pdf .m-postal .portada h1, body.pdf .m-ticket .portada h1 { font-size: 70px; }
-body.pdf .m-cuaderno .portada h1 { font-size: 84px; }
+body.pdf .plato .foto-caja { height: 130px; }
+body.pdf .dos, body.pdf .salseos { grid-template-columns: 1fr 1fr; }
+body.pdf .tres { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+body.pdf .caja { font-size: ${base}px; padding: 12px 12px; }
+body.pdf .prosa { font-size: ${base + 2.5}px; }
+body.pdf .portada h1 { font-size: 80px; }
+body.pdf .m-cartel .portada h1 { font-size: 96px; }
+body.pdf .m-postal .portada h1, body.pdf .m-ticket .portada h1 { font-size: 62px; }
+body.pdf .m-cuaderno .portada h1 { font-size: 74px; }
+body.pdf .m-fiesta .portada h1 { font-size: 72px; }
 body.pdf .portada .claim { font-size: 20px; }
-body.pdf .seccion > h2 { font-size: 30px; }
-body.pdf .dos, body.pdf .tres, body.pdf .salseos { grid-template-columns: 1fr 1fr; }
-body.pdf .tres { grid-template-columns: repeat(3, 1fr); }
-body.pdf .bloque { page-break-inside: avoid; }
+body.pdf .portada .titulo { padding: 32px 36px; }
+body.pdf .m-cartel .portada .foto-caja { height: 340px; }
+body.pdf .m-mosaico .portada .foto-caja { height: 420px; margin: 24px 24px 0; }
+body.pdf .m-mosaico .portada .titulo { margin: 0 24px 24px; }
+body.pdf .m-banda .portada .foto-caja { height: 400px; margin: 50px 44px 0; }
+body.pdf .m-banda .portada .titulo { margin: -24px 44px 30px; padding: 24px 30px; }
+body.pdf .m-revista .portada .titulo { padding-top: 360px; }
+body.pdf .m-postal .portada .tarjeta { width: 92%; }
+body.pdf .m-postal .portada .tarjeta .foto-caja { height: 340px; }
+body.pdf .m-postal .portada .matasellos { display: grid; }
+body.pdf .m-ticket .portada .billete { width: 94%; grid-template-columns: 1fr 170px; }
+body.pdf .m-ticket .portada .billete .foto-caja { height: 300px; }
+body.pdf .m-ticket .portada .talon { border-left: 2px dashed var(--linea); border-top: 0; flex-direction: column; }
+body.pdf .m-cuaderno .portada .foto-caja, body.pdf .m-vitrina .portada .foto-caja { width: 84%; height: 360px; }
+body.pdf .m-fiesta .portada .foto-caja { width: 82%; height: 340px; }
+body.pdf .barra { display: none; }
 @media print { .barra { display:none !important; } .pagina { max-width:none; padding: 0; } body { font-size: 12.5px; } .parada .foto-caja { height: 120px; } .parada { grid-template-columns: 160px 1fr; } .hueco { padding-left: 176px; } @page { margin: 14mm 12mm; } }
 @media (max-width: 640px) {
   body:not(.pdf) { font-size: ${base - 1.5}px; }
@@ -3382,11 +3391,10 @@ async function generarPdfExacto() {
   e.textContent = "Esperando las fotos…"; await esperarFotos();
   await document.fonts.ready;
   const { jsPDF } = window.jspdf;
-  const ANCHO = 794, ALTO = 1123;
+  const ANCHO = 640, ALTO = 905, SEP = 10;   // proporcion A4, maquetado para leerse bien en movil
   const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
-  const escala = movil ? 1.35 : 2;
+  const escala = movil ? 1.6 : 2.2;
   document.body.classList.add("pdf"); window.scrollTo(0, 0);
-  // Las fotos pasan a fondo recortado (el generador no entiende object-fit)
   document.querySelectorAll(".foto-caja").forEach(c => {
     const img = c.querySelector("img");
     if (img && img.src && img.style.display !== "none" && img.complete && img.naturalWidth) {
@@ -3395,48 +3403,57 @@ async function generarPdfExacto() {
   });
   await new Promise(r => setTimeout(r, 250));
   try {
+    if (typeof html2canvas !== "function") throw new Error("html2canvas no se ha cargado");
     const fondo = getComputedStyle(document.body).getPropertyValue("--fondo").trim() || "#ffffff";
     const pdf = new jsPDF({ unit: "px", format: [ANCHO, ALTO], orientation: "portrait", hotfixes: ["px_scaling"] });
     const pagina = document.querySelector(".pagina");
-    const bloques = [];
+    const limite = ALTO - 40;
+    // Piezas: se baja al nivel de hijo mientras un elemento no quepa en una pagina
+    const piezas = [];
+    const meter = (el, nueva) => {
+      const h = el.getBoundingClientRect().height;
+      const indivisible = el.classList.contains("parada") || el.classList.contains("portada") || el.classList.contains("plato") || el.classList.contains("s") || el.classList.contains("caja") || el.tagName === "LI" || el.tagName === "H2" || el.tagName === "P";
+      if (h <= limite || indivisible || !el.children.length) { piezas.push({ el, nueva }); return; }
+      [...el.children].forEach((c, i) => { if (c.getBoundingClientRect().height > 0) meter(c, nueva && i === 0); });
+    };
     [...pagina.children].forEach(el => {
-      if (el.classList.contains("portada")) bloques.push({ el, nueva: true });
-      else if (el.classList.contains("cierre")) bloques.push({ el, nueva: false });
-      else {
-        const hijos = [...el.children], dias = hijos.filter(x => x.classList.contains("dia"));
-        if (dias.length) {
-          hijos.filter(x => !x.classList.contains("dia")).forEach((x, i) => bloques.push({ el: x, nueva: i === 0 }));
-          dias.forEach(dd => bloques.push({ el: dd, nueva: !DATOS.corta }));
-        } else bloques.push({ el, nueva: el.classList.contains("hoja") });
-      }
+      if (el.classList.contains("portada")) { piezas.push({ el, nueva: true }); return; }
+      const nueva = el.classList.contains("hoja") || (el.classList.contains("seccion") && el.querySelector(".dia") !== null);
+      const hijos = [...el.children];
+      const dias = hijos.filter(x => x.classList.contains("dia"));
+      if (dias.length) {
+        hijos.filter(x => !x.classList.contains("dia")).forEach((x, i) => meter(x, i === 0));
+        dias.forEach(dd => { const partes = [...dd.children]; partes.forEach((x, i) => meter(x, i === 0 && !DATOS.corta)); });
+      } else meter(el, nueva);
     });
     const pintarFondo = () => { pdf.setFillColor(fondo); pdf.rect(0, 0, ANCHO, ALTO, "F"); };
-    let y = 0, primera = true, n = 0;
+    let y = 0, primera = true, n = 0, fallos = 0;
     pintarFondo();
-    if (typeof html2canvas !== "function") throw new Error("html2canvas no se ha cargado");
-    let fallos = 0;
-    for (const b of bloques) {
-      n++; e.textContent = "Montando el PDF exacto: bloque " + n + " de " + bloques.length;
+    for (const b of piezas) {
+      n++; e.textContent = "Montando el PDF exacto: pieza " + n + " de " + piezas.length;
       let canvas;
       try { canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY }); }
-      catch (err) { console.error("bloque " + n, err); fallos++; if (fallos > 2) throw err; continue; }
+      catch (err) { console.error("pieza " + n, err); fallos++; if (fallos > 3) throw err; continue; }
       let w = canvas.width / escala, h = canvas.height / escala;
       if (w > ANCHO) { h = h * ANCHO / w; w = ANCHO; }
-      const x = Math.max(0, (ANCHO - w) / 2);
-      if (!primera && y > 0 && (b.nueva || (y + h > ALTO && h <= ALTO))) { pdf.addPage(); pintarFondo(); y = 0; }
-      if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, h); y += h; }
+      const esPortada = b.el.classList.contains("portada");
+      const x = esPortada ? 0 : Math.max(0, (ANCHO - w) / 2);
+      // Salto de pagina: si lo pide la pieza, o si no cabe en lo que queda
+      if (!primera && y > 0 && (b.nueva || y + h > ALTO - 24)) { pdf.addPage(); pintarFondo(); y = 0; }
+      if (!esPortada && y === 0) y = 24;
+      if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.88), "JPEG", x, y, w, h); y += h + (esPortada ? 0 : SEP); }
       else {
         let offset = 0;
         while (offset < h) {
           const franja = Math.min(ALTO - y, h - offset);
           const trozo = document.createElement("canvas"); trozo.width = canvas.width; trozo.height = Math.round(franja * escala);
           trozo.getContext("2d").drawImage(canvas, 0, Math.round(offset * escala), canvas.width, trozo.height, 0, 0, canvas.width, trozo.height);
-          pdf.addImage(trozo.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, franja);
+          pdf.addImage(trozo.toDataURL("image/jpeg", 0.88), "JPEG", x, y, w, franja);
           offset += franja; y += franja;
           if (offset < h) { pdf.addPage(); pintarFondo(); y = 0; }
         }
       }
-      if (y >= ALTO - 4) { pdf.addPage(); pintarFondo(); y = 0; }
+      if (y >= ALTO - 24) { pdf.addPage(); pintarFondo(); y = 0; }
       primera = false; canvas.width = canvas.height = 0;
     }
     const blob = pdf.output("blob");
