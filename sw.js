@@ -1,7 +1,7 @@
 /* Service worker de La Brujula
    Guarda en cache la app y los mapas que ya se hayan visto para que
    funcione sin conexion. Al cambiar la version se limpia la cache vieja. */
-const VERSION = "brujula-v2";
+const VERSION = "brujula-v3";
 const BASE = ["./", "./index.html", "./manifest.json", "./icono-192.png", "./icono-512.png"];
 
 self.addEventListener("install", e => {
@@ -15,6 +15,7 @@ self.addEventListener("activate", e => {
 // Red primero para la app; cache primero para teselas de mapa, fuentes y Leaflet
 self.addEventListener("fetch", e => {
   const url = e.request.url;
+  if (/wikipedia\.org|wikimedia\.org/.test(url)) return;
   const estatico = /cartocdn|tile|fonts\.|cdnjs/.test(url);
   if (estatico) {
     e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).then(res => {
