@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v13";
+const VERSION_APP = "v14";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -1855,14 +1855,14 @@ GUIA.estocolmo = {
    ====================================================================== */
 const DISENOS = {
   lisboa: [
-    { nombre: "Azulejo", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F4EFE4", papel: "#FFFFFF", tinta: "#1C2A44", tinta2: "#5B6478", acento: "#1D4E89", acento2: "#C9A24B" }, motivo: "azulejo" },
+    { nombre: "Azulejo", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F4EFE4", papel: "#FFFFFF", tinta: "#1C2A44", tinta2: "#5B6478", acento: "#1D4E89", acento2: "#9c7e3a" }, motivo: "azulejo" },
     { nombre: "Calçada", maqueta: "cartel", titulo: "Bebas Neue", cuerpo: "Inter", paleta: { fondo: "#111318", papel: "#1B1E26", tinta: "#F2EEE6", tinta2: "#A8ACB5", acento: "#F2EEE6", acento2: "#E3B341" }, motivo: "ondas" },
-    { nombre: "Tranvía amarillo", maqueta: "postal", titulo: "Abril Fatface", cuerpo: "Nunito", manuscrita: "Caveat", paleta: { fondo: "#FFF6DC", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#7A6E5A", acento: "#E0A518", acento2: "#2D6A4F" }, motivo: "rayas" }
+    { nombre: "Tranvía amarillo", maqueta: "postal", titulo: "Abril Fatface", cuerpo: "Nunito", manuscrita: "Caveat", paleta: { fondo: "#FFF6DC", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#7A6E5A", acento: "#a17711", acento2: "#2D6A4F" }, motivo: "rayas" }
   ],
   oporto: [
-    { nombre: "Rabelo", maqueta: "vitrina", titulo: "Playfair Display", cuerpo: "Lora", paleta: { fondo: "#2A0F14", papel: "#3A171E", tinta: "#F3E9E1", tinta2: "#C9B3AA", acento: "#D9A441", acento2: "#8E2F3B" }, motivo: "ondas" },
-    { nombre: "Granito y azulejo", maqueta: "banda", titulo: "Marcellus", cuerpo: "Cabin", paleta: { fondo: "#EEF0F2", papel: "#FFFFFF", tinta: "#1F2933", tinta2: "#5F6B76", acento: "#1D5D8F", acento2: "#B08D3D" }, motivo: "azulejo" },
-    { nombre: "Etiqueta de bodega", maqueta: "ticket", titulo: "Cinzel", cuerpo: "EB Garamond", paleta: { fondo: "#F6F1E7", papel: "#FDFBF6", tinta: "#2E1B1E", tinta2: "#6E5A5D", acento: "#6B1F2A", acento2: "#B8952E" }, motivo: "rombos" }
+    { nombre: "Rabelo", maqueta: "vitrina", titulo: "Playfair Display", cuerpo: "Lora", paleta: { fondo: "#2A0F14", papel: "#3A171E", tinta: "#F3E9E1", tinta2: "#C9B3AA", acento: "#D9A441", acento2: "#a75d66" }, motivo: "ondas" },
+    { nombre: "Granito y azulejo", maqueta: "banda", titulo: "Marcellus", cuerpo: "Cabin", paleta: { fondo: "#EEF0F2", papel: "#FFFFFF", tinta: "#1F2933", tinta2: "#5F6B76", acento: "#1D5D8F", acento2: "#a28238" }, motivo: "azulejo" },
+    { nombre: "Etiqueta de bodega", maqueta: "ticket", titulo: "Cinzel", cuerpo: "EB Garamond", paleta: { fondo: "#F6F1E7", papel: "#FDFBF6", tinta: "#2E1B1E", tinta2: "#6E5A5D", acento: "#6B1F2A", acento2: "#9b7e27" }, motivo: "rombos" }
   ],
   paris: [
     { nombre: "Belle Époque", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Cormorant Garamond", paleta: { fondo: "#15121C", papel: "#1E1A28", tinta: "#F1EAE2", tinta2: "#BDB3A8", acento: "#D4B15F", acento2: "#7D5A8C" }, motivo: "artnouveau" },
@@ -1870,34 +1870,34 @@ const DISENOS = {
     { nombre: "Carnet de croquis", maqueta: "cuaderno", titulo: "Italiana", cuerpo: "Crimson Pro", manuscrita: "Shadows Into Light", paleta: { fondo: "#EFE9DC", papel: "#FAF6EC", tinta: "#2C2A28", tinta2: "#6E6862", acento: "#8C3A2F", acento2: "#3C5E7B" }, motivo: "puntos" }
   ],
   roma: [
-    { nombre: "Imperial", maqueta: "cartel", titulo: "Cinzel", cuerpo: "Libre Baskerville", paleta: { fondo: "#F3EBDD", papel: "#FBF7EE", tinta: "#2B211A", tinta2: "#6B5C50", acento: "#7A2E1F", acento2: "#B7902F" }, motivo: "meandro" },
+    { nombre: "Imperial", maqueta: "cartel", titulo: "Cinzel", cuerpo: "Libre Baskerville", paleta: { fondo: "#F3EBDD", papel: "#FBF7EE", tinta: "#2B211A", tinta2: "#6B5C50", acento: "#7A2E1F", acento2: "#9b7928" }, motivo: "meandro" },
     { nombre: "Dolce vita", maqueta: "revista", titulo: "Playfair Display", cuerpo: "Manrope", manuscrita: "Caveat", paleta: { fondo: "#FFF8EE", papel: "#FFFFFF", tinta: "#222018", tinta2: "#75705F", acento: "#C0392B", acento2: "#2E7D5B" }, motivo: "rayas" },
-    { nombre: "Travertino", maqueta: "vitrina", titulo: "Marcellus", cuerpo: "Lora", paleta: { fondo: "#1E1A16", papel: "#2A241E", tinta: "#F0E8DC", tinta2: "#B9AE9F", acento: "#D9B25B", acento2: "#8E4A2F" }, motivo: "estrellas" }
+    { nombre: "Travertino", maqueta: "vitrina", titulo: "Marcellus", cuerpo: "Lora", paleta: { fondo: "#1E1A16", papel: "#2A241E", tinta: "#F0E8DC", tinta2: "#B9AE9F", acento: "#D9B25B", acento2: "#9f654f" }, motivo: "estrellas" }
   ],
   florencia: [
     { nombre: "Papel florentino", maqueta: "cuaderno", titulo: "Cormorant Garamond", cuerpo: "EB Garamond", manuscrita: "Kalam", paleta: { fondo: "#F1E7D2", papel: "#FBF5E8", tinta: "#2E2418", tinta2: "#6F6150", acento: "#5B3A1E", acento2: "#9E7A2E" }, motivo: "lirio" },
     { nombre: "Cúpula", maqueta: "cartel", titulo: "Yeseva One", cuerpo: "Cabin", paleta: { fondo: "#F8F1E6", papel: "#FFFFFF", tinta: "#241C14", tinta2: "#6A5C4B", acento: "#B0472C", acento2: "#3B6E5A" }, motivo: "ladrillo" },
-    { nombre: "Uffizi", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Lora", paleta: { fondo: "#1B1712", papel: "#25201A", tinta: "#EFE6D6", tinta2: "#B8AC98", acento: "#C9A24B", acento2: "#7A2E1F" }, motivo: "rombos" }
+    { nombre: "Uffizi", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Lora", paleta: { fondo: "#1B1712", papel: "#25201A", tinta: "#EFE6D6", tinta2: "#B8AC98", acento: "#C9A24B", acento2: "#985c50" }, motivo: "rombos" }
   ],
   venecia: [
-    { nombre: "Laguna", maqueta: "revista", titulo: "Cormorant Garamond", cuerpo: "Manrope", paleta: { fondo: "#EEF2F1", papel: "#FFFFFF", tinta: "#16262B", tinta2: "#5B6C70", acento: "#1F4A5A", acento2: "#C29B4A" }, motivo: "ondas" },
-    { nombre: "Carnaval", maqueta: "vitrina", titulo: "Italiana", cuerpo: "Cormorant Garamond", paleta: { fondo: "#160F1C", papel: "#221629", tinta: "#F3ECE0", tinta2: "#C1B3C8", acento: "#D4AF37", acento2: "#8E2E4A" }, motivo: "arlequin" },
+    { nombre: "Laguna", maqueta: "revista", titulo: "Cormorant Garamond", cuerpo: "Manrope", paleta: { fondo: "#EEF2F1", papel: "#FFFFFF", tinta: "#16262B", tinta2: "#5B6C70", acento: "#1F4A5A", acento2: "#a4843f" }, motivo: "ondas" },
+    { nombre: "Carnaval", maqueta: "vitrina", titulo: "Italiana", cuerpo: "Cormorant Garamond", paleta: { fondo: "#160F1C", papel: "#221629", tinta: "#F3ECE0", tinta2: "#C1B3C8", acento: "#D4AF37", acento2: "#9f4e65" }, motivo: "arlequin" },
     { nombre: "Gondolero", maqueta: "banda", titulo: "Bebas Neue", cuerpo: "Nunito", paleta: { fondo: "#FFFFFF", papel: "#F7F9FA", tinta: "#132030", tinta2: "#5D6B7A", acento: "#1F3A5C", acento2: "#D8323C" }, motivo: "rayas" }
   ],
   verona: [
-    { nombre: "Mármol rosa", maqueta: "revista", titulo: "Playfair Display", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#F9EFEA", papel: "#FFFFFF", tinta: "#2C1B1F", tinta2: "#7A5F65", acento: "#8A2F3B", acento2: "#C7A15A" }, motivo: "ladrillo" },
-    { nombre: "Ópera en la Arena", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1A0E11", papel: "#26161A", tinta: "#F4E9E4", tinta2: "#C4ABB0", acento: "#E0B45C", acento2: "#B0384A" }, motivo: "estrellas" },
+    { nombre: "Mármol rosa", maqueta: "revista", titulo: "Playfair Display", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#F9EFEA", papel: "#FFFFFF", tinta: "#2C1B1F", tinta2: "#7A5F65", acento: "#8A2F3B", acento2: "#9b7d46" }, motivo: "ladrillo" },
+    { nombre: "Ópera en la Arena", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1A0E11", papel: "#26161A", tinta: "#F4E9E4", tinta2: "#C4ABB0", acento: "#E0B45C", acento2: "#b64858" }, motivo: "estrellas" },
     { nombre: "Carta a Julieta", maqueta: "cuaderno", titulo: "Cormorant Garamond", cuerpo: "EB Garamond", manuscrita: "Shadows Into Light", paleta: { fondo: "#F2E9DC", papel: "#FBF6EC", tinta: "#2D2320", tinta2: "#6F625C", acento: "#9B3A3A", acento2: "#5C7A5A" }, motivo: "puntos" }
   ],
   milan: [
     { nombre: "Pasarela", maqueta: "cartel", titulo: "Bodoni Moda", cuerpo: "Inter", paleta: { fondo: "#FFFFFF", papel: "#F6F6F6", tinta: "#111111", tinta2: "#666666", acento: "#111111", acento2: "#C8102E" }, motivo: "cuadricula" },
-    { nombre: "Galleria", maqueta: "vitrina", titulo: "Cinzel", cuerpo: "Lora", paleta: { fondo: "#17171A", papel: "#222226", tinta: "#F0EDE6", tinta2: "#B3AFA6", acento: "#CDA349", acento2: "#4B6B8A" }, motivo: "rombos" },
-    { nombre: "Navigli", maqueta: "banda", titulo: "Space Grotesk", cuerpo: "Manrope", paleta: { fondo: "#F2F4F1", papel: "#FFFFFF", tinta: "#1B2320", tinta2: "#5F6B66", acento: "#1F5C4A", acento2: "#E8A33D" }, motivo: "ondas" }
+    { nombre: "Galleria", maqueta: "vitrina", titulo: "Cinzel", cuerpo: "Lora", paleta: { fondo: "#17171A", papel: "#222226", tinta: "#F0EDE6", tinta2: "#B3AFA6", acento: "#CDA349", acento2: "#597793" }, motivo: "rombos" },
+    { nombre: "Navigli", maqueta: "banda", titulo: "Space Grotesk", cuerpo: "Manrope", paleta: { fondo: "#F2F4F1", papel: "#FFFFFF", tinta: "#1B2320", tinta2: "#5F6B66", acento: "#1F5C4A", acento2: "#b47f30" }, motivo: "ondas" }
   ],
   napoles: [
     { nombre: "Vesubio", maqueta: "cartel", titulo: "Bebas Neue", cuerpo: "Nunito", paleta: { fondo: "#1C1614", papel: "#27201C", tinta: "#F4EBDF", tinta2: "#B9AA9C", acento: "#E3552B", acento2: "#F2B234" }, motivo: "rayas" },
     { nombre: "Pizzería", maqueta: "banda", titulo: "Alfa Slab One", cuerpo: "Cabin", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF7EA", papel: "#FFFFFF", tinta: "#26211C", tinta2: "#6E665B", acento: "#B93B2C", acento2: "#3E7A4B" }, motivo: "cuadricula" },
-    { nombre: "Mayólica", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F5F1E6", papel: "#FFFFFF", tinta: "#1E2A3A", tinta2: "#5F6A78", acento: "#2A6B9E", acento2: "#E2B13C" }, motivo: "azulejo" }
+    { nombre: "Mayólica", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F5F1E6", papel: "#FFFFFF", tinta: "#1E2A3A", tinta2: "#5F6A78", acento: "#2A6B9E", acento2: "#a27f2b" }, motivo: "azulejo" }
   ],
   amsterdam: [
     { nombre: "Fachadas", maqueta: "banda", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F6F1E8", papel: "#FFFFFF", tinta: "#2A1F17", tinta2: "#6F6156", acento: "#B5462A", acento2: "#2E5A8F" }, motivo: "ladrillo" },
@@ -1905,34 +1905,34 @@ const DISENOS = {
     { nombre: "Canal de noche", maqueta: "vitrina", titulo: "Playfair Display", cuerpo: "Lora", paleta: { fondo: "#101820", papel: "#19232E", tinta: "#EEF1F3", tinta2: "#A9B4BF", acento: "#E5B547", acento2: "#4C86B8" }, motivo: "ondas" }
   ],
   praga: [
-    { nombre: "Art nouveau", maqueta: "vitrina", titulo: "Italiana", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1B1712", papel: "#26201A", tinta: "#F1E9DA", tinta2: "#B8AC98", acento: "#D4A94A", acento2: "#5E7A4F" }, motivo: "artnouveau" },
+    { nombre: "Art nouveau", maqueta: "vitrina", titulo: "Italiana", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1B1712", papel: "#26201A", tinta: "#F1E9DA", tinta2: "#B8AC98", acento: "#C9A24B", acento2: "#587758" }, motivo: "artnouveau" },
     { nombre: "Cien torres", maqueta: "cartel", titulo: "Cinzel Decorative", cuerpo: "Libre Baskerville", paleta: { fondo: "#F1ECE2", papel: "#FAF7F0", tinta: "#2A2420", tinta2: "#6C6157", acento: "#4A3B2A", acento2: "#B7412E" }, motivo: "gotico" },
     { nombre: "Cervecería", maqueta: "ticket", titulo: "Alfa Slab One", cuerpo: "Cabin", paleta: { fondo: "#F7EFDC", papel: "#FFFBF0", tinta: "#2B2214", tinta2: "#6E624C", acento: "#8C5A1E", acento2: "#2F5D3A" }, motivo: "rombos" }
   ],
   viena: [
-    { nombre: "Secession", maqueta: "cartel", titulo: "Cinzel", cuerpo: "Cormorant Garamond", paleta: { fondo: "#F6F2EA", papel: "#FFFFFF", tinta: "#1F1B22", tinta2: "#635C68", acento: "#3B2A4A", acento2: "#C9A83E" }, motivo: "secession" },
-    { nombre: "Café vienés", maqueta: "cuaderno", titulo: "Playfair Display", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#EFE6DA", papel: "#FAF4EA", tinta: "#2E241D", tinta2: "#6E6157", acento: "#5B3A2E", acento2: "#A88B3C" }, motivo: "puntos" },
-    { nombre: "Baile imperial", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "EB Garamond", paleta: { fondo: "#14111A", papel: "#1F1A27", tinta: "#F2ECE4", tinta2: "#BDB4C4", acento: "#D9B85A", acento2: "#7E3B5A" }, motivo: "estrellas" }
+    { nombre: "Secession", maqueta: "cartel", titulo: "Cinzel", cuerpo: "Cormorant Garamond", paleta: { fondo: "#F6F2EA", papel: "#FFFFFF", tinta: "#1F1B22", tinta2: "#635C68", acento: "#3B2A4A", acento2: "#9c8430" }, motivo: "secession" },
+    { nombre: "Café vienés", maqueta: "cuaderno", titulo: "Playfair Display", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#EFE6DA", papel: "#FAF4EA", tinta: "#2E241D", tinta2: "#6E6157", acento: "#5B3A2E", acento2: "#9b8037" }, motivo: "puntos" },
+    { nombre: "Baile imperial", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "EB Garamond", paleta: { fondo: "#14111A", papel: "#1F1A27", tinta: "#F2ECE4", tinta2: "#BDB4C4", acento: "#D9B85A", acento2: "#925973" }, motivo: "estrellas" }
   ],
   budapest: [
-    { nombre: "Balneario", maqueta: "revista", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#EEF3F1", papel: "#FFFFFF", tinta: "#1B2A28", tinta2: "#5C6D6A", acento: "#2F4A2A", acento2: "#D9A74A" }, motivo: "azulejo" },
-    { nombre: "Zsolnay", maqueta: "mosaico", titulo: "Yeseva One", cuerpo: "Cabin", paleta: { fondo: "#F7F1E4", papel: "#FFFFFF", tinta: "#2B2018", tinta2: "#6E6152", acento: "#2E7D5B", acento2: "#C9822B" }, motivo: "zsolnay" },
-    { nombre: "Bar en ruinas", maqueta: "cartel", titulo: "Rye", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#1E1B17", papel: "#292420", tinta: "#F1E8D8", tinta2: "#B3A796", acento: "#E4B04A", acento2: "#B84A3D" }, motivo: "ladrillo" }
+    { nombre: "Balneario", maqueta: "revista", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#EEF3F1", papel: "#FFFFFF", tinta: "#1B2A28", tinta2: "#5C6D6A", acento: "#2F4A2A", acento2: "#a9833a" }, motivo: "azulejo" },
+    { nombre: "Zsolnay", maqueta: "mosaico", titulo: "Yeseva One", cuerpo: "Cabin", paleta: { fondo: "#F7F1E4", papel: "#FFFFFF", tinta: "#2B2018", tinta2: "#6E6152", acento: "#2E7D5B", acento2: "#b97828" }, motivo: "zsolnay" },
+    { nombre: "Bar en ruinas", maqueta: "cartel", titulo: "Rye", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#1E1B17", papel: "#292420", tinta: "#F1E8D8", tinta2: "#B3A796", acento: "#E4B04A", acento2: "#be584d" }, motivo: "ladrillo" }
   ],
   londres: [
     { nombre: "Underground", maqueta: "banda", titulo: "Josefin Sans", cuerpo: "Inter", paleta: { fondo: "#FFFFFF", papel: "#F5F6F8", tinta: "#111827", tinta2: "#5B6270", acento: "#1F2F5A", acento2: "#DC241F" }, motivo: "cuadricula" },
-    { nombre: "Pub victoriano", maqueta: "vitrina", titulo: "Playfair Display", cuerpo: "Libre Baskerville", paleta: { fondo: "#1A1410", papel: "#26201A", tinta: "#EFE6D8", tinta2: "#B6A995", acento: "#C9A24B", acento2: "#7A2B2B" }, motivo: "rombos" },
+    { nombre: "Pub victoriano", maqueta: "vitrina", titulo: "Playfair Display", cuerpo: "Libre Baskerville", paleta: { fondo: "#1A1410", papel: "#26201A", tinta: "#EFE6D8", tinta2: "#B6A995", acento: "#C9A24B", acento2: "#985a5a" }, motivo: "rombos" },
     { nombre: "Camden", maqueta: "cartel", titulo: "Rubik Mono One", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#F5F2EB", papel: "#FFFFFF", tinta: "#131313", tinta2: "#5C5C5C", acento: "#111111", acento2: "#E63946" }, motivo: "rayas" }
   ],
   berlin: [
-    { nombre: "Bauhaus", maqueta: "mosaico", titulo: "Archivo Black", cuerpo: "Inter", paleta: { fondo: "#F3F1EC", papel: "#FFFFFF", tinta: "#141414", tinta2: "#5A5A5A", acento: "#1A1A1A", acento2: "#E3B505" }, motivo: "bauhaus" },
+    { nombre: "Bauhaus", maqueta: "mosaico", titulo: "Archivo Black", cuerpo: "Inter", paleta: { fondo: "#F3F1EC", papel: "#FFFFFF", tinta: "#141414", tinta2: "#5A5A5A", acento: "#1A1A1A", acento2: "#a38305" }, motivo: "bauhaus" },
     { nombre: "Hormigón", maqueta: "cartel", titulo: "Bebas Neue", cuerpo: "Manrope", paleta: { fondo: "#1C1C1E", papel: "#27272A", tinta: "#EDEDEA", tinta2: "#A6A6A2", acento: "#EDEDEA", acento2: "#FF4D3D" }, motivo: "cuadricula" },
     { nombre: "Ampelmann", maqueta: "banda", titulo: "Space Grotesk", cuerpo: "Nunito", paleta: { fondo: "#FFFFFF", papel: "#F6F7F5", tinta: "#1B1F1D", tinta2: "#5E6663", acento: "#2C6E49", acento2: "#E63946" }, motivo: "puntos" }
   ],
   atenas: [
-    { nombre: "Mármol y mar", maqueta: "revista", titulo: "Cormorant Garamond", cuerpo: "Manrope", paleta: { fondo: "#F5F6F4", papel: "#FFFFFF", tinta: "#16232B", tinta2: "#5E6B72", acento: "#1E4D6B", acento2: "#C8A951" }, motivo: "meandro" },
+    { nombre: "Mármol y mar", maqueta: "revista", titulo: "Cormorant Garamond", cuerpo: "Manrope", paleta: { fondo: "#F5F6F4", papel: "#FFFFFF", tinta: "#16232B", tinta2: "#5E6B72", acento: "#1E4D6B", acento2: "#9b843f" }, motivo: "meandro" },
     { nombre: "Figuras rojas", maqueta: "vitrina", titulo: "Cinzel", cuerpo: "EB Garamond", paleta: { fondo: "#1A1210", papel: "#25191A", tinta: "#F1E4D3", tinta2: "#B9A691", acento: "#C8683C", acento2: "#D9B56A" }, motivo: "meandro" },
-    { nombre: "Kiosco", maqueta: "cartel", titulo: "Bebas Neue", cuerpo: "Nunito", paleta: { fondo: "#F4EFE3", papel: "#FFFFFF", tinta: "#1D2733", tinta2: "#5F6A76", acento: "#1D5C99", acento2: "#F0B429" }, motivo: "rayas" }
+    { nombre: "Kiosco", maqueta: "cartel", titulo: "Bebas Neue", cuerpo: "Nunito", paleta: { fondo: "#F4EFE3", papel: "#FFFFFF", tinta: "#1D2733", tinta2: "#5F6A76", acento: "#1D5C99", acento2: "#ac821d" }, motivo: "rayas" }
   ],
   edimburgo: [
     { nombre: "Tartán", maqueta: "banda", titulo: "Playfair Display", cuerpo: "Lora", paleta: { fondo: "#EFEEE9", papel: "#FFFFFF", tinta: "#1F2620", tinta2: "#5E665F", acento: "#3A4A3A", acento2: "#8E2C2C" }, motivo: "tartan" },
@@ -1941,40 +1941,71 @@ const DISENOS = {
   ],
   dublin: [
     { nombre: "Puertas de colores", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F5F2EB", papel: "#FFFFFF", tinta: "#1E2A24", tinta2: "#5E6C65", acento: "#2A4A3A", acento2: "#D9463E" }, motivo: "puertas" },
-    { nombre: "Pub", maqueta: "vitrina", titulo: "Rye", cuerpo: "Libre Baskerville", paleta: { fondo: "#17130F", papel: "#221C16", tinta: "#F0E7D7", tinta2: "#B8AB97", acento: "#D4A24C", acento2: "#3E6B4E" }, motivo: "rombos" },
-    { nombre: "Libro de Kells", maqueta: "cuaderno", titulo: "Uncial Antiqua", cuerpo: "Crimson Pro", manuscrita: "Kalam", paleta: { fondo: "#EFE7D6", papel: "#F9F3E6", tinta: "#2A221C", tinta2: "#6C6054", acento: "#2F5D3A", acento2: "#B08A2E" }, motivo: "celta" }
+    { nombre: "Pub", maqueta: "vitrina", titulo: "Rye", cuerpo: "Libre Baskerville", paleta: { fondo: "#17130F", papel: "#221C16", tinta: "#F0E7D7", tinta2: "#B8AB97", acento: "#D4A24C", acento2: "#4d775c" }, motivo: "rombos" },
+    { nombre: "Libro de Kells", maqueta: "cuaderno", titulo: "Uncial Antiqua", cuerpo: "Crimson Pro", manuscrita: "Kalam", paleta: { fondo: "#EFE7D6", papel: "#F9F3E6", tinta: "#2A221C", tinta2: "#6C6054", acento: "#2F5D3A", acento2: "#a27f2a" }, motivo: "celta" }
   ],
   copenhague: [
-    { nombre: "Diseño danés", maqueta: "revista", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F6F5F2", papel: "#FFFFFF", tinta: "#1A1D21", tinta2: "#60666D", acento: "#2A4A5A", acento2: "#E9B44C" }, motivo: "puntos" },
+    { nombre: "Diseño danés", maqueta: "revista", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F6F5F2", papel: "#FFFFFF", tinta: "#1A1D21", tinta2: "#60666D", acento: "#2A4A5A", acento2: "#a78236" }, motivo: "puntos" },
     { nombre: "Nyhavn", maqueta: "banda", titulo: "Fraunces", cuerpo: "Nunito", paleta: { fondo: "#FFF9F0", papel: "#FFFFFF", tinta: "#2A2320", tinta2: "#6E6560", acento: "#C4552D", acento2: "#2B6C8E" }, motivo: "ladrillo" },
     { nombre: "Hygge", maqueta: "cuaderno", titulo: "Lora", cuerpo: "Nunito", manuscrita: "Caveat", paleta: { fondo: "#EEE8DF", papel: "#F8F4EC", tinta: "#2C2724", tinta2: "#6E6660", acento: "#5A4A3F", acento2: "#B85C38" }, motivo: "puntos" }
   ],
   bruselas: [
     { nombre: "Línea clara", maqueta: "cartel", titulo: "Bungee", cuerpo: "Nunito", paleta: { fondo: "#FAF3E0", papel: "#FFFFFF", tinta: "#1A1A2E", tinta2: "#5D5D74", acento: "#1855A8", acento2: "#E63946" }, motivo: "comic" },
     { nombre: "Art nouveau", maqueta: "vitrina", titulo: "Italiana", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1B1712", papel: "#26201A", tinta: "#F1E9DA", tinta2: "#B8AC98", acento: "#C9A24B", acento2: "#4A6B4A" }, motivo: "artnouveau" },
-    { nombre: "Chocolate", maqueta: "ticket", titulo: "Playfair Display", cuerpo: "Lora", paleta: { fondo: "#F4EBDF", papel: "#FCF7F0", tinta: "#2E1F16", tinta2: "#6F5D52", acento: "#4A3A2A", acento2: "#C08A3E" }, motivo: "rombos" }
+    { nombre: "Chocolate", maqueta: "ticket", titulo: "Playfair Display", cuerpo: "Lora", paleta: { fondo: "#F4EBDF", papel: "#FCF7F0", tinta: "#2E1F16", tinta2: "#6F5D52", acento: "#4A3A2A", acento2: "#a37534" }, motivo: "rombos" }
   ],
   munich: [
-    { nombre: "Biergarten", maqueta: "banda", titulo: "Alfa Slab One", cuerpo: "Cabin", paleta: { fondo: "#F5F2EA", papel: "#FFFFFF", tinta: "#1E2430", tinta2: "#5F6673", acento: "#2A3A5A", acento2: "#D9A441" }, motivo: "rombos" },
-    { nombre: "Bávaro", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Nunito", paleta: { fondo: "#EEF3F9", papel: "#FFFFFF", tinta: "#1B2A44", tinta2: "#5C6A82", acento: "#2A5DA8", acento2: "#EAE9E4" }, motivo: "rombos" },
-    { nombre: "Residenz", maqueta: "vitrina", titulo: "Cinzel", cuerpo: "EB Garamond", paleta: { fondo: "#161A24", papel: "#20263A", tinta: "#EEEBE4", tinta2: "#AFB2BC", acento: "#D5B25A", acento2: "#7C3B3B" }, motivo: "estrellas" }
+    { nombre: "Biergarten", maqueta: "banda", titulo: "Alfa Slab One", cuerpo: "Cabin", paleta: { fondo: "#F5F2EA", papel: "#FFFFFF", tinta: "#1E2430", tinta2: "#5F6673", acento: "#2A3A5A", acento2: "#a98033" }, motivo: "rombos" },
+    { nombre: "Bávaro", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Nunito", paleta: { fondo: "#EEF3F9", papel: "#FFFFFF", tinta: "#1B2A44", tinta2: "#5C6A82", acento: "#2A5DA8", acento2: "#838380" }, motivo: "rombos" },
+    { nombre: "Residenz", maqueta: "vitrina", titulo: "Cinzel", cuerpo: "EB Garamond", paleta: { fondo: "#161A24", papel: "#20263A", tinta: "#EEEBE4", tinta2: "#AFB2BC", acento: "#D5B25A", acento2: "#996666" }, motivo: "estrellas" }
   ],
   sevilla: [
     { nombre: "Azulejo trianero", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F7F0E1", papel: "#FFFFFF", tinta: "#2A2016", tinta2: "#6E6150", acento: "#8A4A1A", acento2: "#2E6B8A" }, motivo: "azulejo" },
     { nombre: "Cartel de feria", maqueta: "cartel", titulo: "Rye", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF4E0", papel: "#FFFFFF", tinta: "#2C1A12", tinta2: "#7A5F4E", acento: "#C0392B", acento2: "#2E8B57" }, motivo: "lunares" },
-    { nombre: "Azahar", maqueta: "cuaderno", titulo: "Playfair Display", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#F1EADB", papel: "#FBF7EE", tinta: "#2B2520", tinta2: "#6D655C", acento: "#6B4A1E", acento2: "#9EAE5A" }, motivo: "puntos" }
+    { nombre: "Azahar", maqueta: "cuaderno", titulo: "Playfair Display", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#F1EADB", papel: "#FBF7EE", tinta: "#2B2520", tinta2: "#6D655C", acento: "#6B4A1E", acento2: "#7a8746" }, motivo: "puntos" }
   ],
   cracovia: [
-    { nombre: "Ámbar", maqueta: "vitrina", titulo: "Cinzel Decorative", cuerpo: "Libre Baskerville", paleta: { fondo: "#17120F", papel: "#221B16", tinta: "#F1E7D4", tinta2: "#B9AB93", acento: "#D89A3B", acento2: "#5E2A3A" }, motivo: "gotico" },
+    { nombre: "Ámbar", maqueta: "vitrina", titulo: "Cinzel Decorative", cuerpo: "Libre Baskerville", paleta: { fondo: "#17120F", papel: "#221B16", tinta: "#F1E7D4", tinta2: "#B9AB93", acento: "#D89A3B", acento2: "#8c6671" }, motivo: "gotico" },
     { nombre: "Papel recortado", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Nunito", paleta: { fondo: "#F7F3EA", papel: "#FFFFFF", tinta: "#22202A", tinta2: "#62606B", acento: "#3A2A4A", acento2: "#D9403A" }, motivo: "wycinanka" },
     { nombre: "Bar de leche", maqueta: "ticket", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F2F1EC", papel: "#FBFAF7", tinta: "#1F1F22", tinta2: "#616167", acento: "#2B3A55", acento2: "#C63D3D" }, motivo: "cuadricula" }
   ],
   estocolmo: [
-    { nombre: "Nórdico", maqueta: "revista", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F6F7F7", papel: "#FFFFFF", tinta: "#161C22", tinta2: "#5D666E", acento: "#2A3A4A", acento2: "#F2C14E" }, motivo: "puntos" },
+    { nombre: "Nórdico", maqueta: "revista", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F6F7F7", papel: "#FFFFFF", tinta: "#161C22", tinta2: "#5D666E", acento: "#2A3A4A", acento2: "#a08034" }, motivo: "puntos" },
     { nombre: "Gamla Stan", maqueta: "banda", titulo: "Fraunces", cuerpo: "Lora", paleta: { fondo: "#FBF3E6", papel: "#FFFFFF", tinta: "#2B221C", tinta2: "#6E6259", acento: "#B8652E", acento2: "#2D5F73" }, motivo: "ladrillo" },
     { nombre: "Metro pintado", maqueta: "cartel", titulo: "Unbounded", cuerpo: "Manrope", paleta: { fondo: "#101418", papel: "#1A2027", tinta: "#EEF0F2", tinta2: "#A7ADB5", acento: "#4FA3C7", acento2: "#E9C46A" }, motivo: "ondas" }
   ]
 };
+
+/* Cuarto diseno por ciudad: maquetacion "fiesta" (titulos girados, confeti,
+   pegatinas, fotos con marco grueso de color). Paletas saturadas pero con
+   texto oscuro sobre claro o claro sobre oscuro, siempre legible. */
+const FIESTA = {
+  lisboa:     { nombre: "Sardinada", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFE566", papel: "#FFFFFF", tinta: "#1A1A2E", tinta2: "#4A4A5E", acento: "#1D4E89", acento2: "#E63946" }, motivo: "confeti" },
+  oporto:     { nombre: "Tripeiro pop", titulo: "Rubik Mono One", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#2B1B3D", papel: "#3A2752", tinta: "#FFF3E0", tinta2: "#E0CDB5", acento: "#FFD166", acento2: "#EF476F" }, motivo: "zigzag" },
+  paris:      { nombre: "Pop Pompidou", titulo: "Righteous", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#F1F6FF", papel: "#FFFFFF", tinta: "#101828", tinta2: "#4B5563", acento: "#1E4BD8", acento2: "#F04E23" }, motivo: "confeti" },
+  roma:       { nombre: "Vespa", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#E8F5EA", papel: "#FFFFFF", tinta: "#14261A", tinta2: "#4F5F55", acento: "#C0392B", acento2: "#2E7D5B" }, motivo: "zigzag" },
+  florencia:  { nombre: "Calcio Storico", titulo: "Chonburi", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF1D6", papel: "#FFFFFF", tinta: "#2B1E12", tinta2: "#6B5A47", acento: "#7B1E3B", acento2: "#1E6E8A" }, motivo: "burbujas" },
+  venecia:    { nombre: "Confeti de carnaval", titulo: "Lobster", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#1B1030", papel: "#2A1A45", tinta: "#FDF2FF", tinta2: "#D7C4E6", acento: "#FFD166", acento2: "#06D6A0" }, motivo: "confeti" },
+  verona:     { nombre: "Ópera pop", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFE5EC", papel: "#FFFFFF", tinta: "#2A1020", tinta2: "#6B4A5C", acento: "#B0174B", acento2: "#1F6F8B" }, motivo: "burbujas" },
+  milan:      { nombre: "Neón Navigli", titulo: "Unbounded", cuerpo: "Manrope", manuscrita: "Permanent Marker", paleta: { fondo: "#0F0F14", papel: "#1C1C24", tinta: "#F5F5F7", tinta2: "#B8B8C4", acento: "#39FF14", acento2: "#FF3CAC" }, motivo: "zigzag" },
+  napoles:    { nombre: "Scugnizzo", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF4E0", papel: "#FFFFFF", tinta: "#1F1A14", tinta2: "#5E5448", acento: "#D7263D", acento2: "#198cce" }, motivo: "confeti" },
+  amsterdam:  { nombre: "Tulipán fluor", titulo: "Righteous", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF0F6", papel: "#FFFFFF", tinta: "#1A1423", tinta2: "#5A4E66", acento: "#D81B60", acento2: "#1E88E5" }, motivo: "burbujas" },
+  praga:      { nombre: "Gólem disco", titulo: "Unbounded", cuerpo: "Manrope", manuscrita: "Permanent Marker", paleta: { fondo: "#12182B", papel: "#1E2640", tinta: "#F4F6FF", tinta2: "#BFC6E0", acento: "#F9C74F", acento2: "#4CC9F0" }, motivo: "zigzag" },
+  viena:      { nombre: "Vals eléctrico", titulo: "Chonburi", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#F3EEFF", papel: "#FFFFFF", tinta: "#1B1030", tinta2: "#5B4E73", acento: "#6A1B9A", acento2: "#b2791b" }, motivo: "confeti" },
+  budapest:   { nombre: "Ruin bar", titulo: "Rubik Mono One", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#1E1B18", papel: "#2C2723", tinta: "#FFF4E6", tinta2: "#D4C6B4", acento: "#FF9F1C", acento2: "#2EC4B6" }, motivo: "confeti" },
+  londres:    { nombre: "Punk Camden", titulo: "Rubik Mono One", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFFFFF", papel: "#F4F4F4", tinta: "#0D0D0D", tinta2: "#4D4D4D", acento: "#E4002B", acento2: "#0038A8" }, motivo: "zigzag" },
+  berlin:     { nombre: "Techno", titulo: "Unbounded", cuerpo: "Manrope", manuscrita: "Permanent Marker", paleta: { fondo: "#0A0A0A", papel: "#171717", tinta: "#F2F2F2", tinta2: "#B5B5B5", acento: "#CCFF00", acento2: "#FF2D95" }, motivo: "zigzag" },
+  atenas:     { nombre: "Mitología pop", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#E6F4FF", papel: "#FFFFFF", tinta: "#0F2233", tinta2: "#4A5E70", acento: "#0057B8", acento2: "#ae7900" }, motivo: "burbujas" },
+  edimburgo:  { nombre: "Fringe", titulo: "Righteous", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF3F0", papel: "#FFFFFF", tinta: "#1F1A1A", tinta2: "#5E5252", acento: "#7B2CBF", acento2: "#F15A29" }, motivo: "confeti" },
+  dublin:     { nombre: "Craic", titulo: "Lobster", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#EAFBF1", papel: "#FFFFFF", tinta: "#0F2A1E", tinta2: "#4E6659", acento: "#0E7C3A", acento2: "#d16c00" }, motivo: "burbujas" },
+  copenhague: { nombre: "Lego", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFFFFF", papel: "#F7F7F7", tinta: "#111111", tinta2: "#555555", acento: "#D01012", acento2: "#0055BF" }, motivo: "confeti" },
+  bruselas:   { nombre: "Pitufos", titulo: "Chonburi", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#E3F2FF", papel: "#FFFFFF", tinta: "#0E1E3A", tinta2: "#4A5B78", acento: "#1565C0", acento2: "#b2791b" }, motivo: "burbujas" },
+  munich:     { nombre: "Oktoberfest", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF9E6", papel: "#FFFFFF", tinta: "#1D1B16", tinta2: "#5E5A4E", acento: "#1E5BB5", acento2: "#b37d00" }, motivo: "zigzag" },
+  sevilla:    { nombre: "Feria de Abril", titulo: "Lobster", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF0F3", papel: "#FFFFFF", tinta: "#2A1218", tinta2: "#6E4A55", acento: "#C8102E", acento2: "#0F8B4C" }, motivo: "lunares" },
+  cracovia:   { nombre: "Dragón de Wawel", titulo: "Rubik Mono One", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#1A1024", papel: "#281A38", tinta: "#FFF5F0", tinta2: "#D8C8D6", acento: "#FF5A36", acento2: "#3DDC97" }, motivo: "confeti" },
+  estocolmo:  { nombre: "ABBA", titulo: "Righteous", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF7E0", papel: "#FFFFFF", tinta: "#161C22", tinta2: "#555E68", acento: "#005BBB", acento2: "#a88d00" }, motivo: "zigzag" }
+};
+Object.keys(FIESTA).forEach(k => { if (DISENOS[k]) DISENOS[k].push(Object.assign({ maqueta: "fiesta" }, FIESTA[k])); });
 
 
 /* ======================================================================
@@ -2510,6 +2541,9 @@ const MOTIVOS = {
   comic: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><circle cx='4' cy='4' r='2.2' fill='${a}'/><circle cx='12' cy='12' r='2.2' fill='${b}'/></svg>`,
   lunares: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><circle cx='10' cy='10' r='6' fill='${a}'/><circle cx='30' cy='30' r='6' fill='${b}'/></svg>`,
   wycinanka: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><path d='M30 6 L34 22 L50 26 L34 30 L30 46 L26 30 L10 26 L26 22 Z' fill='${a}'/><circle cx='30' cy='26' r='3' fill='${b}'/><path d='M8 52 Q30 40 52 52' fill='none' stroke='${b}' stroke-width='2'/></svg>`,
+  confeti: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'><rect x='8' y='10' width='10' height='4' fill='${a}' transform='rotate(25 13 12)'/><rect x='50' y='20' width='10' height='4' fill='${b}' transform='rotate(-40 55 22)'/><circle cx='30' cy='45' r='3.5' fill='${b}'/><rect x='70' y='55' width='10' height='4' fill='${a}' transform='rotate(60 75 57)'/><circle cx='15' cy='72' r='3' fill='${a}'/><rect x='40' y='75' width='10' height='4' fill='${b}' transform='rotate(-15 45 77)'/><circle cx='78' cy='12' r='2.5' fill='${b}'/></svg>`,
+  zigzag: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' viewBox='0 0 40 20'><path d='M0 15 L10 5 L20 15 L30 5 L40 15' fill='none' stroke='${a}' stroke-width='2.5'/><path d='M0 19 L10 9 L20 19 L30 9 L40 19' fill='none' stroke='${b}' stroke-width='1.2'/></svg>`,
+  burbujas: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><circle cx='20' cy='20' r='12' fill='none' stroke='${a}' stroke-width='2'/><circle cx='58' cy='34' r='7' fill='${b}'/><circle cx='30' cy='62' r='9' fill='none' stroke='${b}' stroke-width='1.5'/><circle cx='66' cy='66' r='4' fill='${a}'/></svg>`,
   bauhaus: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><circle cx='20' cy='20' r='14' fill='${a}'/><rect x='44' y='44' width='28' height='28' fill='${b}'/><path d='M44 36 L72 8 L72 36 Z' fill='${a}' opacity='0.6'/></svg>`
 };
 
@@ -2609,6 +2643,32 @@ img { display:block; }
 .barra button, .barra select { font: 600 12px system-ui, sans-serif; padding: 8px 12px; border-radius: 99px; border: 1.5px solid var(--fondo); background: none; color: var(--fondo); cursor: pointer; }
 .barra button.p { background: var(--fondo); color: var(--tinta); }
 .barra .estado { margin-left:auto; opacity:.75; }
+/* fiesta: titulos girados, pegatinas, confeti y fotos con marco grueso de color */
+.m-fiesta .portada { justify-content: center; align-items: center; background: var(--acento2); }
+.m-fiesta .portada::before { content:""; position:absolute; inset:0; background-image: var(--motivo); opacity: .5; }
+.m-fiesta .portada .foto-caja { position: relative; width: 78%; max-width: 620px; height: 400px; border: 12px solid var(--papel); box-shadow: 14px 14px 0 var(--acento); transform: rotate(-2.5deg); }
+.m-fiesta .portada .titulo { text-align: center; }
+.m-fiesta .portada h1 { display: inline-block; background: var(--acento); color: var(--papel); padding: 6px 28px; transform: rotate(2deg); font-size: clamp(50px, 9vw, 96px); line-height: 1.1; box-shadow: 8px 8px 0 var(--tinta); }
+.m-fiesta .portada .claim { font-family:"${d.manuscrita || d.cuerpo}", cursive; font-size: 22px; color: var(--tinta); margin-top: 22px; }
+.m-fiesta .portada .eyebrow, .m-fiesta .portada .meta, .m-fiesta .portada .diseno { color: var(--tinta); }
+.m-fiesta .portada .meta { justify-content: center; }
+.m-fiesta .seccion > h2 { display: inline-block; background: var(--acento); color: var(--papel); padding: 8px 18px; transform: rotate(-1.5deg); box-shadow: 6px 6px 0 var(--acento2); }
+.m-fiesta .seccion > h2 small { color: var(--papel); opacity: .85; }
+.m-fiesta .dia-cab { border-bottom: 5px dotted var(--acento2); }
+.m-fiesta .dia-cab .num { background: var(--acento2); color: var(--tinta); border-radius: 50%; width: 52px; height: 52px; display: inline-grid; place-items: center; font-size: 30px; transform: rotate(-8deg); }
+.m-fiesta .parada .foto-caja { border: 6px solid var(--acento2); box-shadow: 6px 6px 0 var(--acento); border-radius: 4px; transform: rotate(-1.5deg); }
+.m-fiesta .parada:nth-child(even) .foto-caja { transform: rotate(1.5deg); border-color: var(--acento); box-shadow: 6px 6px 0 var(--acento2); }
+.m-fiesta .parada .tag { border: 2px solid var(--tinta); color: var(--tinta); font-weight: 800; transform: rotate(-2deg); }
+.m-fiesta .parada .tag.res { background: var(--acento2); color: var(--tinta); border-color: var(--tinta); }
+.m-fiesta .parada .truco { background: var(--papel); border: 2px dashed var(--acento); font-family:"${d.manuscrita || d.cuerpo}", cursive; font-size: 17px; line-height: 1.45; }
+.m-fiesta .parada .salseo { background: var(--suave); border-left: 6px solid var(--acento2); border-radius: 0 12px 12px 0; }
+.m-fiesta .salseos .s { border: 2px solid var(--tinta); box-shadow: 5px 5px 0 var(--acento2); }
+.m-fiesta .salseos .s::before { color: var(--acento); }
+.m-fiesta .caja { border: 2px solid var(--tinta); box-shadow: 4px 4px 0 var(--acento); }
+.m-fiesta .frases span { border: 2px solid var(--acento); font-weight: 700; }
+.m-fiesta .plato .foto-caja { border: 5px solid var(--acento); border-radius: 50% 12px 50% 12px; }
+body.pdf.m-fiesta .portada .foto-caja { height: 430px; }
+
 /* Modo PDF: la pagina se maqueta a ancho A4 (794 px) y se fotografia por paginas */
 body.pdf { background: var(--fondo); }
 body.pdf .pagina { width: 794px; max-width: 794px; margin: 0; padding: 0 34px 34px; background: var(--fondo); }
@@ -2967,7 +3027,8 @@ const ESTILOS = {
   ticket:   { marco: "ninguno", girar: false, mayus: true,  dia: "talon", titulo: "talon", sep: "perforada", franja: "ninguna", fotoGrande: false },
   mosaico:  { marco: "baldosa", girar: false, mayus: false, dia: "bloque", titulo: "bloque", sep: "linea", franja: "ambas", fotoGrande: false },
   vitrina:  { marco: "acento", girar: false, mayus: false, dia: "regla", titulo: "regla", sep: "fina", franja: "abajo", fotoGrande: false },
-  banda:    { marco: "papel", girar: false, mayus: false, dia: "banda", titulo: "barra", sep: "linea", franja: "arriba", fotoGrande: false }
+  banda:    { marco: "papel", girar: false, mayus: false, dia: "banda", titulo: "barra", sep: "linea", franja: "arriba", fotoGrande: false },
+  fiesta:   { marco: "grueso", girar: true, mayus: true,  dia: "bloque", titulo: "bloque", sep: "punteada", franja: "ambas", fotoGrande: false }
 };
 
 async function generarPdfLigero() {
@@ -3003,6 +3064,8 @@ async function generarPdfLigero() {
       else if (/meandro/.test(m)) { for (let x = x0; x < x0 + w - h; x += h) { pdf.lines([[0, -h * 0.8], [h * 0.8, 0], [0, h * 0.5], [-h * 0.5, 0], [0, -h * 0.25]], x, y0 + h * 0.9, [1, 1], "S"); } }
       else if (/estrellas|lirio/.test(m)) { for (let x = x0 + h / 2; x < x0 + w; x += h) { pdf.circle(x, y0 + h / 2, h / 5, "F"); pdf.circle(x, y0 + h / 2, h / 2.6, "S"); } }
       else if (/ladrillo|cuadricula|mondrian|bauhaus/.test(m)) { for (let x = x0; x < x0 + w; x += h * 1.6) { pdf.rect(x, y0 + 1, h * 1.4, h / 2 - 2, "S"); pdf.rect(x + h * 0.8, y0 + h / 2 + 1, h * 1.4, h / 2 - 2, "S"); } }
+      else if (/zigzag/.test(m)) { for (let x = x0; x < x0 + w; x += h) pdf.lines([[h / 2, -h * 0.6], [h / 2, h * 0.6]], x, y0 + h * 0.8, [1, 1], "S"); }
+      else if (/confeti|burbujas/.test(m)) { for (let x = x0 + h / 2; x < x0 + w; x += h * 1.3) { pdf.setFillColor(...col.acento2); pdf.circle(x, y0 + h / 2, h / 5, "F"); pdf.setFillColor(...col.acento); pdf.rect(x + h * 0.55, y0 + h * 0.3, h * 0.35, h * 0.16, "F"); } pdf.setFillColor(...col.motivo); }
       else if (/artnouveau|secession|celta|gotico|puertas/.test(m)) { for (let x = x0; x < x0 + w; x += h * 1.2) { pdf.ellipse(x + h * 0.6, y0 + h / 2, h * 0.5, h * 0.42, "S"); pdf.circle(x + h * 0.6, y0 + h / 2, h * 0.12, "F"); } }
       else { for (let x = x0 + h / 2; x < x0 + w; x += h) pdf.circle(x, y0 + h / 2, h / 7, "F"); }
     };
@@ -3066,6 +3129,7 @@ async function generarPdfLigero() {
       const rot = E.girar && !o.sinGiro ? (o.impar ? 1.8 : -1.8) : 0;
       if (marco === "polaroid") { pdf.setFillColor(...col.papel); pdf.rect(x - 5, yy - 5, w + 10, h + 16, "F"); pdf.setDrawColor(...col.linea); pdf.setLineWidth(0.4); pdf.rect(x - 5, yy - 5, w + 10, h + 16, "S"); }
       if (marco === "papel") { pdf.setFillColor(...col.papel); pdf.rect(x - 4, yy - 4, w + 8, h + 8, "F"); }
+      if (marco === "grueso") { pdf.setFillColor(...(o.impar ? col.acento2 : col.acento)); pdf.rect(x - 5, yy - 5, w + 10, h + 10, "F"); pdf.setFillColor(...(o.impar ? col.acento : col.acento2)); pdf.rect(x + 1, yy + 1, w + 10, h + 10, "F"); pdf.setFillColor(...(o.impar ? col.acento2 : col.acento)); pdf.rect(x - 5, yy - 5, w + 10, h + 10, "F"); }
       if (marco === "baldosa") { pdf.setFillColor(...col.papel); pdf.rect(x - 4, yy - 4, w + 8, h + 8, "F"); pdf.setDrawColor(...col.linea); pdf.rect(x - 4, yy - 4, w + 8, h + 8, "S"); }
       pdf.setFillColor(...col.suave); pdf.rect(x, yy, w, h, "F");
       let ok = false;
@@ -3303,7 +3367,7 @@ async function generarPdfLigero() {
     pie();
 
     const blob = pdf.output("blob");
-    e.textContent = "PDF listo (" + Math.round(blob.size / 1024) + " KB)";
+    e.textContent = "PDF ligero listo (" + Math.round(blob.size / 1024) + " KB)";
     return new File([blob], nombrePdf(), { type: "application/pdf" });
   } catch (err) {
     console.error(err);
@@ -3349,9 +3413,13 @@ async function generarPdfExacto() {
     const pintarFondo = () => { pdf.setFillColor(fondo); pdf.rect(0, 0, ANCHO, ALTO, "F"); };
     let y = 0, primera = true, n = 0;
     pintarFondo();
+    if (typeof html2canvas !== "function") throw new Error("html2canvas no se ha cargado");
+    let fallos = 0;
     for (const b of bloques) {
-      n++; e.textContent = "Montando el PDF: bloque " + n + " de " + bloques.length;
-      const canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY });
+      n++; e.textContent = "Montando el PDF exacto: bloque " + n + " de " + bloques.length;
+      let canvas;
+      try { canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY }); }
+      catch (err) { console.error("bloque " + n, err); fallos++; if (fallos > 2) throw err; continue; }
       let w = canvas.width / escala, h = canvas.height / escala;
       if (w > ANCHO) { h = h * ANCHO / w; w = ANCHO; }
       const x = Math.max(0, (ANCHO - w) / 2);
@@ -3372,7 +3440,7 @@ async function generarPdfExacto() {
       primera = false; canvas.width = canvas.height = 0;
     }
     const blob = pdf.output("blob");
-    e.textContent = "PDF listo (" + Math.round(blob.size / 1024) + " KB)";
+    e.textContent = "PDF exacto listo (" + Math.round(blob.size / 1024) + " KB)";
     return new File([blob], nombrePdf(), { type: "application/pdf" });
   } finally {
     document.body.classList.remove("pdf");
@@ -3383,7 +3451,7 @@ async function generarPdfExacto() {
 async function generarPdf() {
   if (pdfListo) return pdfListo;
   try { pdfListo = await generarPdfExacto(); }
-  catch (err) { console.error(err); document.getElementById("estado").textContent = "El exacto no ha podido, va el ligero…"; pdfListo = await generarPdfLigero(); }
+  catch (err) { console.error(err); document.getElementById("estado").textContent = "El exacto no ha podido (" + (err && err.message ? err.message : err) + "), va el ligero…"; await new Promise(r => setTimeout(r, 1200)); pdfListo = await generarPdfLigero(); }
   if (navigator.canShare && navigator.canShare({ files: [pdfListo] })) document.getElementById("btn-share").style.display = "";
   return pdfListo;
 }
