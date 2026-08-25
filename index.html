@@ -304,7 +304,7 @@
   <div class="error" id="error"></div>
   <div id="resultado"></div>
 
-  <footer class="colofon">Hecho para pasearlo sin prisa</footer>
+  <footer class="colofon">Hecho para pasearlo sin prisa · <span id="version"></span></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -314,6 +314,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
+const VERSION_APP = "v5";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2048,6 +2049,7 @@ function mostrarError(texto) {
     sel.appendChild(o);
   });
   let paradas = 0; claves.forEach(k => CIUDADES[k].zonas.forEach(z => paradas += z.paradas.length));
+  document.getElementById("version").textContent = VERSION_APP;
   document.getElementById("contador").textContent = claves.length + " ciudades y " + paradas + " paradas en el repositorio";
   const f = new Date(); f.setMonth(f.getMonth() + 1);
   document.getElementById("fecha").value = f.toISOString().slice(0, 10);
@@ -2520,13 +2522,17 @@ function cssGuia(d) {
   const p = d.paleta;
   const fuentes = [d.titulo, d.cuerpo, d.manuscrita].filter(Boolean).map(f => "family=" + encodeURIComponent(f).replace(/%20/g, "+") + ":wght@400;700").join("&");
   const oscuro = /^#[0-3]/.test(p.fondo);
+  // Fuentes de lectura que salen pequenas: se compensa el tamano base
+  const pequena = /Cormorant|EB Garamond|Crimson|Libre Baskerville|Lora/.test(d.cuerpo);
+  const base = pequena ? 17 : 15.5;
   return `
 @import url('https://fonts.googleapis.com/css2?${fuentes}&display=swap');
 :root { --fondo:${p.fondo}; --papel:${p.papel}; --tinta:${p.tinta}; --tinta2:${p.tinta2}; --acento:${p.acento}; --acento2:${p.acento2};
   --motivo:${motivoCss(d.motivo, p.acento, p.acento2)}; --suave: color-mix(in srgb, var(--acento) ${oscuro ? 22 : 8}%, var(--papel)); --linea: color-mix(in srgb, var(--tinta) 14%, transparent); }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--fondo); color:var(--tinta); font-family:"${d.cuerpo}", Georgia, serif; font-size:15px; line-height:1.6; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-h1,h2,h3,.t { font-family:"${d.titulo}", Georgia, serif; }
+body { background:var(--fondo); color:var(--tinta); font-family:"${d.cuerpo}", Georgia, serif; font-size:${base}px; line-height:1.6; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+h1,h2,.t,.num,.talon b { font-family:"${d.titulo}", Georgia, serif; }
+h3,h4 { font-family:"${d.cuerpo}", Georgia, serif; font-weight:700; }
 .mano { font-family:"${d.manuscrita || d.titulo}", cursive; }
 .pagina { max-width: 860px; margin: 0 auto; padding: 0 28px 60px; }
 .hoja { break-after: page; }
@@ -2538,11 +2544,11 @@ img { display:block; }
 .seccion { margin-top: 44px; }
 .seccion > h2 { font-size: 30px; line-height:1.05; margin-bottom: 14px; color: var(--acento); }
 .seccion > h2 small { display:block; font-family:"${d.cuerpo}"; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--acento2); margin-bottom:6px; }
-.prosa { font-size: 15.5px; max-width: 700px; }
+.prosa { font-size: ${base + 0.5}px; max-width: 700px; }
 .prosa p + p { margin-top: 10px; }
 .dos { display:grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
 .tres { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.caja { background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; padding: 14px 16px; font-size: 13.5px; }
+.caja { background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; padding: 14px 16px; font-size: ${base - 1.5}px; }
 .caja h5 { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--acento2); margin-bottom: 6px; }
 .frases { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .frases span { font-size:12.5px; border:1px solid var(--linea); border-radius:99px; padding:6px 12px; background:var(--papel); }
@@ -2555,14 +2561,14 @@ img { display:block; }
 .parada { display:grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--linea); break-inside: avoid; }
 .parada .foto-caja { height: 150px; border-radius: 8px; }
 .parada .hora { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--acento2); }
-.parada h4 { font-family:"${d.titulo}"; font-size: 19px; line-height:1.15; margin: 2px 0 4px; }
+.parada h4 { font-size: ${base + 3.5}px; line-height:1.15; margin: 2px 0 4px; }
 .parada .tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom: 6px; }
 .parada .tag { font-size: 9.5px; letter-spacing:.12em; text-transform: uppercase; border: 1px solid var(--linea); border-radius: 99px; padding: 2px 8px; color: var(--tinta2); }
 .parada .tag.res { background: var(--acento); color: var(--papel); border-color: var(--acento); }
-.parada .d { font-size: 14px; }
-.parada .truco { margin-top: 8px; font-size: 13px; padding: 8px 12px; border-radius: 8px; background: var(--suave); }
+.parada .d { font-size: ${base - 1}px; }
+.parada .truco { margin-top: 8px; font-size: ${base - 1.5}px; padding: 8px 12px; border-radius: 8px; background: var(--suave); }
 .parada .truco b, .parada .salseo b { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; display:block; margin-bottom: 2px; color: var(--acento2); }
-.parada .salseo { margin-top: 8px; font-size: 13.5px; padding: 8px 12px; border-left: 3px solid var(--acento2); font-style: italic; }
+.parada .salseo { margin-top: 8px; font-size: ${base - 1}px; padding: 8px 12px; border-left: 3px solid var(--acento2); font-style: italic; }
 .parada .sg { margin-top: 6px; font-size: 12px; color: var(--tinta2); }
 .parada .sg::before { content: "Sin gluten: "; font-weight: 700; color: var(--acento); }
 .hueco { padding: 8px 0 8px 216px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta2); border-top: 1px dashed var(--linea); }
@@ -2575,16 +2581,16 @@ img { display:block; }
 .corta .dia { margin-top: 22px; }
 /* Salseos de ciudad */
 .salseos { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; counter-reset: s; }
-.salseos .s { background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px 16px 52px; position: relative; font-size: 14px; }
+.salseos .s { background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px 16px 52px; position: relative; font-size: ${base - 1}px; }
 .salseos .s::before { counter-increment: s; content: counter(s); position:absolute; left: 14px; top: 10px; font-family:"${d.titulo}"; font-size: 34px; color: var(--acento2); line-height:1; }
 .salseos .s.ancho { grid-column: 1 / -1; }
 /* Platos */
 .platos { display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .plato .foto-caja { height: 110px; border-radius: 8px; margin-bottom: 8px; }
-.plato h4 { font-family:"${d.titulo}"; font-size: 16px; line-height: 1.15; }
-.plato p { font-size: 12.5px; color: var(--tinta2); }
+.plato h4 { font-size: ${base + 0.5}px; line-height: 1.15; }
+.plato p { font-size: ${base - 2.5}px; color: var(--tinta2); }
 .lista { list-style: none; margin-top: 10px; }
-.lista li { padding: 6px 0 6px 18px; position: relative; font-size: 14px; border-top: 1px solid var(--linea); }
+.lista li { padding: 6px 0 6px 18px; position: relative; font-size: ${base - 1}px; border-top: 1px solid var(--linea); }
 .lista li::before { content:""; position:absolute; left:0; top:15px; width: 9px; height: 2px; background: var(--acento2); }
 .cierre { margin-top: 50px; text-align:center; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta2); padding-top: 20px; border-top: 1px solid var(--linea); }
 .cierre .t { font-size: 22px; letter-spacing: 0; text-transform: none; color: var(--acento); margin-bottom: 6px; }
@@ -2599,6 +2605,7 @@ img { display:block; }
 /* ===== Portadas por maquetacion ===== */
 .portada { position: relative; min-height: 96vh; display:flex; flex-direction:column; justify-content:flex-end; margin: 0 -28px 30px; overflow:hidden; }
 .portada .foto-caja { position:absolute; inset:0; }
+.portada > * { position: relative; }
 .portada .titulo { position: relative; padding: 40px 48px; }
 .portada h1 { font-size: clamp(54px, 10vw, 110px); line-height: .92; letter-spacing: -.01em; }
 .portada .claim { font-size: 20px; margin-top: 12px; max-width: 560px; }
@@ -2612,15 +2619,16 @@ img { display:block; }
 .m-revista .portada .diseno { color:#fff; }
 
 /* cartel: sin foto arriba, titular gigante sobre motivo, foto abajo en franja */
-.m-cartel .portada { justify-content: flex-start; background: var(--acento); background-image: var(--motivo); }
+.m-cartel .portada { justify-content: flex-start; background: var(--acento); }
+.m-cartel .portada::before { content:""; position:absolute; inset:0; background-image: var(--motivo); opacity: .45; }
 .m-cartel .portada .foto-caja { position: static; height: 38vh; order: 2; margin-top: auto; border-top: 6px solid var(--acento2); }
-.m-cartel .portada .titulo { color: var(--papel); padding-top: 70px; }
+.m-cartel .portada .titulo { color: var(--papel); padding-top: 70px; background: linear-gradient(to bottom, var(--acento) 60%, transparent); }
 .m-cartel .portada h1 { font-size: clamp(70px, 13vw, 150px); text-transform: uppercase; }
 .m-cartel .portada .eyebrow, .m-cartel .portada .diseno { color: var(--papel); }
 .m-cartel .seccion > h2 { text-transform: uppercase; letter-spacing: .02em; }
 
 /* cuaderno: papel, foto pegada con cinta, titulo a mano */
-.m-cuaderno body, .m-cuaderno { background-image: var(--motivo); }
+.m-cuaderno .portada { background-image: var(--motivo); }
 .m-cuaderno .portada { justify-content: center; align-items:center; min-height: 92vh; }
 .m-cuaderno .portada .foto-caja { position: relative; width: 70%; max-width: 560px; height: 380px; margin: 0 auto; box-shadow: 0 18px 40px rgba(0,0,0,.18); transform: rotate(-2deg); border: 10px solid #fff; }
 .m-cuaderno .portada .foto-caja::before { content:""; position:absolute; top:-14px; left:50%; width: 120px; height: 28px; background: rgba(255,240,180,.7); transform: translateX(-50%) rotate(2deg); z-index:2; }
@@ -2629,7 +2637,7 @@ img { display:block; }
 .m-cuaderno .portada .meta { justify-content:center; }
 .m-cuaderno .parada .foto-caja { border: 6px solid #fff; box-shadow: 0 6px 16px rgba(0,0,0,.12); transform: rotate(-1.2deg); border-radius: 2px; }
 .m-cuaderno .parada:nth-child(even) .foto-caja { transform: rotate(1.2deg); }
-.m-cuaderno .parada .truco { font-family:"${d.manuscrita || d.cuerpo}", cursive; font-size: 15px; background: none; border-bottom: 1px dashed var(--acento2); border-radius: 0; padding-left: 0; }
+.m-cuaderno .parada .truco { font-family:"${d.manuscrita || d.cuerpo}", cursive; font-size: 18px; line-height: 1.45; background: none; border-bottom: 1px dashed var(--acento2); border-radius: 0; padding-left: 0; }
 
 /* postal: tarjeta con sello dentado y matasellos */
 .m-postal .portada { justify-content:center; align-items:center; }
@@ -2645,7 +2653,8 @@ img { display:block; }
 .m-postal .parada .foto-caja { border: 5px solid var(--papel); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
 
 /* ticket: billete con perforado lateral y talon */
-.m-ticket .portada { justify-content:center; align-items:center; background: var(--acento); background-image: var(--motivo); }
+.m-ticket .portada { justify-content:center; align-items:center; background: var(--acento); }
+.m-ticket .portada::before { content:""; position:absolute; inset:0; background-image: var(--motivo); opacity: .4; }
 .m-ticket .portada .billete { display:grid; grid-template-columns: 1fr 200px; width: 90%; max-width: 780px; background: var(--papel); border-radius: 14px; overflow:hidden; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
 .m-ticket .portada .billete .foto-caja { position: relative; height: 260px; grid-column: 1 / -1; }
 .m-ticket .portada .titulo { padding: 26px 34px; }
@@ -2657,7 +2666,8 @@ img { display:block; }
 .m-ticket .dia-cab { background: var(--papel); border: 1px solid var(--linea); border-bottom: 2px solid var(--acento); border-radius: 10px 10px 0 0; padding: 12px 16px 10px; }
 
 /* mosaico: rejilla de motivo y fotos como baldosas */
-.m-mosaico .portada { background: var(--suave); background-image: var(--motivo); justify-content: flex-start; }
+.m-mosaico .portada { background: var(--suave); justify-content: flex-start; }
+.m-mosaico .portada::before { content:""; position:absolute; inset:0; background-image: var(--motivo); opacity: .55; }
 .m-mosaico .portada .foto-caja { position: relative; height: 46vh; margin: 24px 28px 0; border: 8px solid var(--papel); box-shadow: 0 10px 30px rgba(0,0,0,.15); }
 .m-mosaico .portada .titulo { background: var(--papel); margin: 0 28px 28px; border: 1px solid var(--linea); border-top: 0; }
 .m-mosaico .portada h1 { color: var(--acento); }
@@ -2665,7 +2675,8 @@ img { display:block; }
 .m-mosaico .parada .foto-caja { border: 5px solid var(--papel); box-shadow: 0 0 0 1px var(--linea); border-radius: 0; }
 
 /* vitrina: fondo oscuro, marcos dorados */
-.m-vitrina .portada { justify-content:center; align-items:center; background: var(--fondo); background-image: var(--motivo); }
+.m-vitrina .portada { justify-content:center; align-items:center; background: var(--fondo); }
+.m-vitrina .portada::before { content:""; position:absolute; inset:0; background-image: var(--motivo); opacity: .35; }
 .m-vitrina .portada .foto-caja { position: relative; width: 80%; max-width: 640px; height: 400px; border: 3px solid var(--acento); outline: 1px solid var(--acento); outline-offset: 8px; box-shadow: 0 30px 60px rgba(0,0,0,.5); }
 .m-vitrina .portada .titulo { text-align:center; }
 .m-vitrina .portada h1 { color: var(--acento); font-weight: 400; }
@@ -2763,16 +2774,24 @@ function htmlGuia(plan, d, corta) {
 
 /* Script que corre dentro de la guia: carga las fotos de Wikipedia y controla la barra */
 const SCRIPT_GUIA = `
-async function json(url) { const r = await fetch(url, { headers: { Accept: "application/json" } }); if (!r.ok) throw new Error(r.status); return r.json(); }
-// Pide la miniatura a un ancho razonable sin pasarse del original (si se pasa, Wikipedia da error)
-function ampliar(d) {
+async function json(url) {
+  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 8000);
+  try { const r = await fetch(url, { signal: ctrl.signal }); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  finally { clearTimeout(t); }
+}
+// Imagen principal del articulo al tamano pedido (API de Wikipedia con CORS abierto via origin=*)
+async function imagen(lang, titulo) {
+  const d = await json("https://" + lang + ".wikipedia.org/w/api.php?action=query&prop=pageimages&piprop=thumbnail&pithumbsize=900&redirects=1&format=json&origin=*&titles=" + encodeURIComponent(titulo));
+  const paginas = d.query && d.query.pages ? Object.values(d.query.pages) : [];
+  const p = paginas.find(x => x.thumbnail);
+  return p ? p.thumbnail.source : null;
+}
+// Reserva: el resumen REST, cuya miniatura se amplia sin pasarse del original
+async function resumen(lang, titulo) {
+  const d = await json("https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(titulo.replace(/ /g, "_")) + "?redirect=true");
   if (!d.thumbnail || !d.thumbnail.source) return null;
   const ancho = Math.min(900, ((d.originalimage && d.originalimage.width) || 320) - 1);
   return ancho > 320 ? d.thumbnail.source.replace(/\\/\\d+px-/, "/" + ancho + "px-") : d.thumbnail.source;
-}
-async function resumen(lang, titulo) {
-  const d = await json("https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(titulo.replace(/ /g, "_")) + "?redirect=true");
-  return ampliar(d);
 }
 async function buscar(lang, texto) {
   const d = await json("https://" + lang + ".wikipedia.org/w/api.php?action=opensearch&limit=1&namespace=0&format=json&origin=*&search=" + encodeURIComponent(texto));
@@ -2780,11 +2799,13 @@ async function buscar(lang, texto) {
 }
 async function fotoDe(ref, alt) {
   const [lang, titulo] = ref.includes(":") ? [ref.slice(0, 2), ref.slice(3)] : ["es", ref];
+  const otro = lang === "es" ? "en" : "es";
   const intentos = [
+    () => imagen(lang, titulo),
+    () => imagen(otro, titulo),
     () => resumen(lang, titulo),
-    () => resumen(lang === "es" ? "en" : "es", titulo),
-    async () => { const t = await buscar("es", alt); return t && resumen("es", t); },
-    async () => { const t = await buscar("en", alt); return t && resumen("en", t); }
+    async () => { const t = await buscar("es", alt); return t && imagen("es", t); },
+    async () => { const t = await buscar("en", alt); return t && imagen("en", t); }
   ];
   for (const f of intentos) { try { const u = await f(); if (u) return u; } catch (e) {} }
   return null;
@@ -2798,7 +2819,7 @@ async function cargarFotos() {
     const img = c.querySelector("img");
     const ref = c.dataset.wiki;
     const url = ref ? await fotoDe(ref, img.alt) : null;
-    if (url) { img.src = url; img.onload = () => { img.style.display = "block"; }; img.onerror = () => c.classList.add("sin"); }
+    if (url) { img.onload = () => { img.style.display = "block"; }; img.onerror = () => c.classList.add("sin"); img.referrerPolicy = "no-referrer"; img.src = url; }
     else c.classList.add("sin");
     hechas++; estado();
   }));
@@ -2811,7 +2832,9 @@ cargarFotos();
 
 let ventanaGuia = null;
 
-// Abre (o reescribe) la ventana de la guia con el diseno indicado
+// Abre (o renueva) la ventana de la guia con el diseno indicado. Cada guia es
+// un documento propio (blob), no se reescribe la pestana: asi el navegador
+// ejecuta siempre su script (fotos, cambio de diseno, version corta).
 function abrirGuia(indiceDiseno, corta) {
   if (!ultimoPlan) return;
   const clave = ultimoPlan.entrada.ciudad;
@@ -2823,13 +2846,16 @@ function abrirGuia(indiceDiseno, corta) {
     '<div class="barra"><button class="p" id="btn-print" type="button">Imprimir o guardar en PDF</button>' +
     '<select id="sel-diseno">' + lista.map((x, i) => '<option value="' + i + '"' + (i === idx ? ' selected' : '') + '>Diseño: ' + esc(x.nombre) + '</option>').join('') + '</select>' +
     '<button id="btn-version" type="button">' + (corta ? 'Ver versión larga' : 'Ver versión corta') + '</button>' +
-    '<span class="estado" id="estado">Cargando fotos…</span></div>' +
+    '<span class="estado" id="estado">Cargando fotos…</span><span style="opacity:.5;margin-left:12px">' + VERSION_APP + '</span></div>' +
     '<div class="pagina">' + htmlGuia(ultimoPlan, d, corta) + '</div>' +
     '<script>' + SCRIPT_GUIA + '<\/script></body></html>';
-  if (!ventanaGuia || ventanaGuia.closed) ventanaGuia = window.open("", "_blank");
-  if (!ventanaGuia) { mostrarError("El navegador ha bloqueado la ventana de la guía: permite ventanas emergentes para este sitio."); return; }
-  ventanaGuia.document.open(); ventanaGuia.document.write(html); ventanaGuia.document.close();
-  ventanaGuia.focus();
+  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  if (ventanaGuia && !ventanaGuia.closed) { ventanaGuia.location.href = url; ventanaGuia.focus(); }
+  else {
+    ventanaGuia = window.open(url, "_blank");
+    if (!ventanaGuia) { mostrarError("El navegador ha bloqueado la ventana de la guía: permite ventanas emergentes para este sitio."); return; }
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 // La guia pide regenerarse (cambio de diseno o de version) por mensaje
