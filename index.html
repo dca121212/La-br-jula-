@@ -314,7 +314,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v6";
+const VERSION_APP = "v7";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2615,8 +2615,46 @@ body.pdf .plato .foto-caja { height: 150px; }
 body.pdf .m-cuaderno .portada .foto-caja, body.pdf .m-vitrina .portada .foto-caja { height: 420px; }
 body.pdf .cierre { page-break-inside: avoid; }
 body.pdf .barra { display: none; }
+body.pdf .portada h1 { font-size: 92px; }
+body.pdf .m-cartel .portada h1 { font-size: 120px; }
+body.pdf .m-postal .portada h1, body.pdf .m-ticket .portada h1 { font-size: 70px; }
+body.pdf .m-cuaderno .portada h1 { font-size: 84px; }
+body.pdf .portada .claim { font-size: 20px; }
+body.pdf .seccion > h2 { font-size: 30px; }
+body.pdf .dos, body.pdf .tres, body.pdf .salseos { grid-template-columns: 1fr 1fr; }
+body.pdf .tres { grid-template-columns: repeat(3, 1fr); }
+body.pdf .bloque { page-break-inside: avoid; }
 @media print { .barra { display:none !important; } .pagina { max-width:none; padding: 0; } body { font-size: 12.5px; } .parada .foto-caja { height: 120px; } .parada { grid-template-columns: 160px 1fr; } .hueco { padding-left: 176px; } @page { margin: 14mm 12mm; } }
-@media (max-width: 640px) { .parada, .corta .parada { grid-template-columns: 1fr; } .parada .foto-caja { height: 180px; } .dos, .tres, .salseos { grid-template-columns: 1fr; } .platos { grid-template-columns: 1fr 1fr; } .hueco { padding-left: 0; } }
+@media (max-width: 640px) {
+  body:not(.pdf) { font-size: ${base - 1.5}px; }
+  body:not(.pdf) .pagina { padding: 0 16px 40px; }
+  body:not(.pdf) .portada { min-height: 78vh; margin: 0 -16px 20px; }
+  body:not(.pdf) .portada h1 { font-size: 46px; }
+  body:not(.pdf) .m-cartel .portada h1 { font-size: 56px; }
+  body:not(.pdf) .portada .claim { font-size: 16px; }
+  body:not(.pdf) .portada .titulo { padding: 24px 20px; }
+  body:not(.pdf) .portada .meta { gap: 10px 14px; font-size: 10.5px; }
+  body:not(.pdf) .seccion > h2 { font-size: 24px; }
+  body:not(.pdf) .dia-cab .num { font-size: 32px; }
+  body:not(.pdf) .dia-cab h3 { font-size: 18px; }
+  body:not(.pdf) .dia-cab .zona { width: 100%; margin-left: 0; text-align: left; }
+  body:not(.pdf) .parada, body:not(.pdf) .corta .parada { grid-template-columns: 1fr; }
+  body:not(.pdf) .parada .foto-caja { height: 170px; }
+  body:not(.pdf) .parada h4 { font-size: ${base + 1}px; }
+  body:not(.pdf) .dos, body:not(.pdf) .tres, body:not(.pdf) .salseos { grid-template-columns: 1fr; }
+  body:not(.pdf) .platos { grid-template-columns: 1fr 1fr; }
+  body:not(.pdf) .hueco { padding-left: 0; }
+  body:not(.pdf) .m-cuaderno .portada .foto-caja, body:not(.pdf) .m-vitrina .portada .foto-caja { width: 90%; height: 240px; }
+  body:not(.pdf) .m-postal .portada .tarjeta .foto-caja { height: 220px; }
+  body:not(.pdf) .m-postal .portada .matasellos { display: none; }
+  body:not(.pdf) .m-ticket .portada .billete { grid-template-columns: 1fr; }
+  body:not(.pdf) .m-ticket .portada .talon { border-left: 0; border-top: 2px dashed var(--linea); flex-direction: row; flex-wrap: wrap; }
+  body:not(.pdf) .m-banda .portada .foto-caja { margin: 30px 16px 0; height: 36vh; }
+  body:not(.pdf) .m-banda .portada .titulo { margin: -20px 16px 30px; padding: 20px; }
+  .barra { padding: 8px 12px; gap: 6px; }
+  .barra button, .barra select { padding: 7px 10px; font-size: 11px; }
+  .barra .estado { width: 100%; margin-left: 0; font-size: 11px; }
+}
 
 /* ===== Portadas por maquetacion ===== */
 .portada { position: relative; min-height: 96vh; display:flex; flex-direction:column; justify-content:flex-end; margin: 0 -28px 30px; overflow:hidden; }
@@ -2745,7 +2783,7 @@ function htmlGuia(plan, d, corta) {
   // Itinerario
   h += '<div class="seccion' + (corta ? ' corta' : '') + '"><h2><small>Día a día</small>El itinerario</h2>';
   dias.forEach((dia, i) => {
-    h += '<div class="dia"><div class="dia-cab"><span class="num">' + (i + 1) + '</span><h3>' + esc(dia.etiqueta) + '</h3><span class="zona">' + esc(dia.zona) + '<br>atardecer ' + hhmm(dia.ocaso) + '</span></div>';
+    h += '<div class="dia bloque"><div class="dia-cab"><span class="num">' + (i + 1) + '</span><h3>' + esc(dia.etiqueta) + '</h3><span class="zona">' + esc(dia.zona) + '<br>atardecer ' + hhmm(dia.ocaso) + '</span></div>';
     if (dia.libre) { h += '<p class="prosa">Día libre: repetir lo que más gustó, cambiar los filtros o hacer una excursión.</p></div>'; return; }
     dia.filas.forEach(f => {
       if (f.hueco) { h += '<div class="hueco">' + f.h + ' · ' + esc(f.texto) + '</div>'; return; }
@@ -2784,7 +2822,7 @@ function htmlGuia(plan, d, corta) {
     h += '<div class="seccion"><div class="dos"><div><h5 class="eyebrow">Dónde comer</h5><ul class="lista">' + ciudad.comer.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div><div><h5 class="eyebrow">Sin gluten y bueno saber</h5><ul class="lista">' + ciudad.singluten.map(c => '<li>' + esc(c) + '</li>').join('') + '<li>' + esc(ciudad.consejo) + '</li></ul></div></div></div>';
   }
 
-  h += '<div class="cierre"><div class="t">Hecho para pasearlo sin prisa</div>Horas, precios y aperturas son orientativos. Lo marcado como Reservar se agota. Fotos: Wikimedia Commons, licencia libre.</div>';
+  h += '<div class="cierre bloque"><div class="t">Hecho para pasearlo sin prisa</div>Horas, precios y aperturas son orientativos. Lo marcado como Reservar se agota. Fotos: Wikimedia Commons, licencia libre.</div>';
   return h;
 }
 
@@ -2851,22 +2889,67 @@ async function generarPdf() {
   const e = document.getElementById("estado"); e.textContent = "Montando el PDF, unos segundos…";
   await esperarFotos();
   document.body.classList.add("pdf"); window.scrollTo(0, 0);
-  await document.fonts.ready;
+  await document.fonts.ready; await new Promise(r => setTimeout(r, 300));
   const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
+  const escala = movil ? 1.25 : 1.8;
+  const ANCHO = 794, ALTO = 1123;
   try {
-    const blob = await html2pdf().set({
-      margin: 0, filename: nombrePdf(),
-      image: { type: "jpeg", quality: 0.88 },
-      html2canvas: { scale: movil ? 1.5 : 2, useCORS: true, allowTaint: false, backgroundColor: null, logging: false, windowWidth: 794 },
-      jsPDF: { unit: "px", format: [794, 1123], orientation: "portrait", hotfixes: ["px_scaling"] },
-      pagebreak: { mode: ["css", "legacy"], avoid: [".parada", ".plato", ".s", ".caja", ".dia-cab"] }
-    }).from(document.querySelector(".pagina")).outputPdf("blob");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: "px", format: [ANCHO, ALTO], orientation: "portrait", hotfixes: ["px_scaling"] });
+    const pagina = document.querySelector(".pagina");
+    const fondo = getComputedStyle(document.body).getPropertyValue("--fondo").trim() || "#ffffff";
+    // Lista de bloques en orden: la portada, y dentro de cada seccion sus bloques (dias) o la seccion entera
+    const bloques = [];
+    [...pagina.children].forEach(el => {
+      if (el.classList.contains("portada")) bloques.push({ el, nueva: true });
+      else if (el.classList.contains("cierre")) bloques.push({ el, nueva: false });
+      else {
+        const hijos = [...el.children];
+        const dias = hijos.filter(x => x.classList.contains("dia"));
+        if (dias.length) {
+          // La cabecera de la seccion (h2) va con el primer dia
+          hijos.filter(x => !x.classList.contains("dia")).forEach((x, i) => bloques.push({ el: x, nueva: i === 0 && el.classList.contains("hoja") }));
+          dias.forEach(dd => bloques.push({ el: dd, nueva: false }));
+        } else bloques.push({ el, nueva: el.classList.contains("hoja") });
+      }
+    });
+    let y = 0, primera = true, n = 0;
+    const pintarFondo = () => { pdf.setFillColor(fondo); pdf.rect(0, 0, ANCHO, ALTO, "F"); };
+    pintarFondo();
+    for (const b of bloques) {
+      n++; e.textContent = "Montando el PDF: bloque " + n + " de " + bloques.length;
+      const canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: null, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY });
+      const h = canvas.height / escala, w = canvas.width / escala;
+      const x = Math.max(0, (ANCHO - w) / 2);
+      // Bloque en pagina nueva si lo pide, o si no cabe y cabe entero en una pagina
+      if (!primera && (b.nueva || (y + h > ALTO && h <= ALTO))) { pdf.addPage(); pintarFondo(); y = 0; }
+      if (h <= ALTO) {
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, h);
+        y += h;
+      } else {
+        // Bloque mas alto que una pagina: se trocea por franjas
+        let offset = 0;
+        while (offset < h) {
+          const franja = Math.min(ALTO - y, h - offset);
+          const trozo = document.createElement("canvas"); trozo.width = canvas.width; trozo.height = Math.round(franja * escala);
+          trozo.getContext("2d").drawImage(canvas, 0, Math.round(offset * escala), canvas.width, trozo.height, 0, 0, canvas.width, trozo.height);
+          pdf.addImage(trozo.toDataURL("image/jpeg", 0.86), "JPEG", x, y, w, franja);
+          offset += franja; y += franja;
+          if (offset < h) { pdf.addPage(); pintarFondo(); y = 0; }
+        }
+      }
+      if (y >= ALTO - 4) { pdf.addPage(); pintarFondo(); y = 0; }
+      primera = false;
+      canvas.width = canvas.height = 0; // liberar memoria
+    }
+    const blob = pdf.output("blob");
     pdfListo = new File([blob], nombrePdf(), { type: "application/pdf" });
     e.textContent = "PDF listo";
     if (navigator.canShare && navigator.canShare({ files: [pdfListo] })) document.getElementById("btn-share").style.display = "";
     return pdfListo;
   } catch (err) {
-    e.textContent = "No se pudo montar el PDF; prueba Imprimir";
+    console.error(err);
+    e.textContent = "No se pudo montar el PDF (" + (err && err.message ? err.message : err) + "); prueba Imprimir";
     throw err;
   } finally { document.body.classList.remove("pdf"); }
 }
@@ -2901,7 +2984,8 @@ function abrirGuia(indiceDiseno, corta) {
     '<button id="btn-version" type="button">' + (corta ? 'Ver versión larga' : 'Ver versión corta') + '</button>' +
     '<span class="estado" id="estado">Cargando fotos…</span><span style="opacity:.5;margin-left:12px">' + VERSION_APP + '</span></div>' +
     '<div class="pagina">' + htmlGuia(ultimoPlan, d, corta) + '</div>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>' +
     '<script>' + SCRIPT_GUIA + '<\/script></body></html>';
   const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
   if (ventanaGuia && !ventanaGuia.closed) { ventanaGuia.location.href = url; ventanaGuia.focus(); }
