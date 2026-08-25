@@ -1,7 +1,7 @@
 /* Service worker de La Brujula
    Guarda en cache la app y los mapas que ya se hayan visto para que
    funcione sin conexion. Al cambiar la version se limpia la cache vieja. */
-const VERSION = "brujula-v10";
+const VERSION = "brujula-v11";
 const BASE = ["./", "./index.html", "./manifest.json", "./icono-192.png", "./icono-512.png"];
 
 self.addEventListener("install", e => {
