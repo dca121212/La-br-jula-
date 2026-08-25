@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v17";
+const VERSION_APP = "v18";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -3395,10 +3395,16 @@ async function generarPdfExacto() {
   const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
   const escala = movil ? 1.6 : 2.2;
   document.body.classList.add("pdf"); window.scrollTo(0, 0);
+  // Safari no deja fotografiar SVG incrustados ni fotos de otro dominio: se convierten a PNG/JPEG locales
+  const motivoPng = await rasterizarMotivo();
+  document.documentElement.style.setProperty("--motivo", motivoPng ? "url(" + motivoPng + ")" : "none");
   document.querySelectorAll(".foto-caja").forEach(c => {
     const img = c.querySelector("img");
     if (img && img.src && img.style.display !== "none" && img.complete && img.naturalWidth) {
-      c.style.backgroundImage = "url(" + img.src + ")"; c.style.backgroundSize = "cover"; c.style.backgroundPosition = "center"; c.style.backgroundRepeat = "no-repeat"; img.style.visibility = "hidden";
+      const r = c.getBoundingClientRect();
+      const local = recortar(img, Math.max(40, r.width), Math.max(40, r.height));
+      if (local) { c.style.backgroundImage = "url(" + local + ")"; c.style.backgroundSize = "cover"; c.style.backgroundPosition = "center"; c.style.backgroundRepeat = "no-repeat"; }
+      img.style.visibility = "hidden";
     }
   });
   await new Promise(r => setTimeout(r, 250));
@@ -3463,8 +3469,24 @@ async function generarPdfExacto() {
     return new File([blob], nombrePdf(), { type: "application/pdf" });
   } finally {
     document.body.classList.remove("pdf");
+    document.documentElement.style.removeProperty("--motivo");
     document.querySelectorAll(".foto-caja").forEach(c => { c.style.backgroundImage = ""; c.style.backgroundSize = ""; c.style.backgroundPosition = ""; const img = c.querySelector("img"); if (img) img.style.visibility = ""; });
   }
+}
+// Convierte el motivo SVG del diseno en un PNG local (Safari no deja fotografiar SVG incrustados)
+async function rasterizarMotivo() {
+  try {
+    const css = getComputedStyle(document.documentElement).getPropertyValue("--motivo").trim();
+    const m = css.match(/url\\(["']?(data:image\\/svg\\+xml[^"')]+)["']?\\)/);
+    if (!m) return null;
+    const src = m[1];
+    const img = new Image();
+    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = src; });
+    const w = img.naturalWidth || 60, h = img.naturalHeight || 60;
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").drawImage(img, 0, 0, w, h);
+    return c.toDataURL("image/png");
+  } catch (e) { console.warn("motivo", e); return null; }
 }
 // Primero el exacto; si el navegador no puede (memoria en moviles viejos), el ligero
 async function generarPdf() {
