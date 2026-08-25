@@ -314,7 +314,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v7";
+const VERSION_APP = "v8";
 const CIUDADES = {};
 const GUIA = {};
 /* ======================================================================
@@ -2512,6 +2512,15 @@ const MOTIVOS = {
   bauhaus: (a, b) => `<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><circle cx='20' cy='20' r='14' fill='${a}'/><rect x='44' y='44' width='28' height='28' fill='${b}'/><path d='M44 36 L72 8 L72 36 Z' fill='${a}' opacity='0.6'/></svg>`
 };
 
+// Mezcla dos colores hex (proporcion del primero); sustituye a color-mix, que
+// el generador de PDF no entiende
+function mezclar(a, b, t) {
+  const h = c => c.replace("#", "").match(/.{2}/g).map(x => parseInt(x, 16));
+  const [r1, g1, b1] = h(a), [r2, g2, b2] = h(b);
+  const m = (x, y) => Math.round(x * t + y * (1 - t)).toString(16).padStart(2, "0");
+  return "#" + m(r1, r2) + m(g1, g2) + m(b1, b2);
+}
+
 function motivoCss(nombre, a, b) {
   const svg = (MOTIVOS[nombre] || MOTIVOS.puntos)(a, b);
   return "url(\"data:image/svg+xml;utf8," + encodeURIComponent(svg) + "\")";
@@ -2528,7 +2537,7 @@ function cssGuia(d) {
   return `
 @import url('https://fonts.googleapis.com/css2?${fuentes}&display=swap');
 :root { --fondo:${p.fondo}; --papel:${p.papel}; --tinta:${p.tinta}; --tinta2:${p.tinta2}; --acento:${p.acento}; --acento2:${p.acento2};
-  --motivo:${motivoCss(d.motivo, p.acento, p.acento2)}; --suave: color-mix(in srgb, var(--acento) ${oscuro ? 22 : 8}%, var(--papel)); --linea: color-mix(in srgb, var(--tinta) 14%, transparent); }
+  --motivo:${motivoCss(d.motivo, p.acento, p.acento2)}; --suave:${mezclar(p.acento, p.papel, oscuro ? 0.22 : 0.08)}; --linea:${mezclar(p.tinta, p.papel, 0.14)}; }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--fondo); color:var(--tinta); font-family:"${d.cuerpo}", Georgia, serif; font-size:${base}px; line-height:1.6; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 h1,h2,.t,.num,.talon b { font-family:"${d.titulo}", Georgia, serif; }
