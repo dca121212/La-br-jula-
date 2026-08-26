@@ -315,7 +315,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v25";
+const VERSION_APP = "v26";
 const CIUDADES = {};
 const GUIA = {};
 const EXTRA = {};
@@ -2636,6 +2636,50 @@ Object.keys(ILUSTRADO).forEach(k => {
     paleta: { fondo: "#FBF4E4", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#6B5E4D", acento: x.acento, acento2: x.acento2 }, motivo: "acuarela" });
 });
 
+/* ======================================================================
+   CIERRES SEMANALES
+   Dias de la semana en que una parada esta cerrada (0 domingo ... 6
+   sabado). "abre" indica los unicos dias que abre (mercadillos). Solo se
+   listan las paradas con cierre fijo; el resto abre a diario. El
+   planificador no programa una parada en su dia cerrado y, si todas las
+   zonas chocan, reordena los dias para que cuadre.
+   ====================================================================== */
+const CIERRES = {
+  lisboa: { "Mosteiro dos Jerónimos": { cierra: [1] }, "Torre de Belém": { cierra: [1] }, "MAAT": { cierra: [2] }, "Convento do Carmo": { cierra: [0] }, "Feira da Ladra": { abre: [2, 6] }, "Embaixada": { cierra: [] }, "Elevador de Santa Justa": { cierra: [] } },
+  oporto: { "Mercado do Bolhão": { cierra: [0] }, "Livraria Lello": { cierra: [] }, "Casa da Música": { cierra: [] }, "WOW - World of Wine": { cierra: [] } },
+  paris: { "Museo del Louvre": { cierra: [2] }, "Museo Rodin": { cierra: [1] }, "Sainte-Chapelle": { cierra: [] }, "Palais Garnier": { cierra: [] }, "Pasajes cubiertos: Vivienne y Panoramas": { cierra: [0] }, "Campo de Marte y Rue Cler": { cierra: [1] } },
+  roma: { "Museos Vaticanos y Capilla Sixtina": { cierra: [0] }, "Campidoglio y Museos Capitolinos": { cierra: [] }, "Campo de' Fiori": { cierra: [0] }, "Castel Sant'Angelo": { cierra: [1] }, "Cerradura de los Caballeros de Malta": { cierra: [] } },
+  florencia: { "Galería de los Uffizi": { cierra: [1] }, "Galería de la Academia": { cierra: [1] }, "Palazzo Pitti y Jardines de Boboli": { cierra: [1] }, "Capillas Mediceas": { cierra: [2] }, "San Marco": { cierra: [1] }, "Mercado Central": { cierra: [0] }, "Scuola del Cuoio": { cierra: [0] }, "Palazzo Vecchio": { cierra: [] } },
+  venecia: { "Gallerie dell'Accademia": { cierra: [1] }, "Mercado de Rialto": { cierra: [0, 1] }, "Scuola Grande di San Rocco": { cierra: [] }, "Palacio Ducal": { cierra: [] }, "Ghetto de Venecia": { cierra: [6] } },
+  verona: { "Castelvecchio": { cierra: [1] }, "Casa de Julieta": { cierra: [1] }, "Torre dei Lamberti": { cierra: [] }, "Giardino Giusti": { cierra: [] }, "Arena de Verona": { cierra: [1] } },
+  milan: { "La Última Cena": { cierra: [1] }, "Pinacoteca di Brera": { cierra: [1] }, "Castello Sforzesco": { cierra: [1] }, "Museo del Novecento": { cierra: [1] }, "Museo de la Ciencia Leonardo da Vinci": { cierra: [1] }, "Cimitero Monumentale": { cierra: [1] }, "Teatro alla Scala": { cierra: [] } },
+  napoles: { "Museo Arqueológico Nacional": { cierra: [2] }, "Certosa e Museo di San Martino": { cierra: [3] }, "Capilla Sansevero": { cierra: [2] }, "Cementerio de las Fontanelle": { cierra: [1] }, "Castel Sant'Elmo": { cierra: [] } },
+  amsterdam: { "Casa de Ana Frank": { cierra: [] }, "Rijksmuseum": { cierra: [] }, "Museo Van Gogh": { cierra: [] }, "De Pijp y Albert Cuypmarkt": { cierra: [0] }, "Museo Marítimo": { cierra: [1] }, "Begijnhof": { cierra: [] } },
+  praga: { "Barrio judío: sinagogas y cementerio": { cierra: [6] }, "Monasterio de Strahov": { cierra: [] }, "Klementinum": { cierra: [] }, "Plaza de Wenceslao y Museo Nacional": { cierra: [] } },
+  viena: { "Kunsthistorisches Museum": { cierra: [1] }, "Naschmarkt": { cierra: [0] }, "Belvedere Superior": { cierra: [] }, "Secession": { cierra: [1] }, "MuseumsQuartier": { cierra: [] }, "Grinzing y los Heuriger": { cierra: [] } },
+  budapest: { "Casa del Terror": { cierra: [1] }, "Mercado Central": { cierra: [0] }, "Gran Sinagoga de la calle Dohány": { cierra: [6] }, "Castillo de Buda y Galería Nacional": { cierra: [1] }, "Parlamento húngaro": { cierra: [] } },
+  londres: { "Borough Market": { cierra: [1] }, "Portobello Road": { cierra: [0] }, "Torre de Londres": { cierra: [] }, "Abadía de Westminster": { cierra: [0] }, "Sky Garden": { cierra: [] }, "Catedral de San Pablo": { cierra: [0] } },
+  berlin: { "Neues Museum y Nefertiti": { cierra: [1] }, "Reichstag": { cierra: [] }, "Markthalle Neun y Kreuzberg 36": { cierra: [0] }, "Mauerpark": { cierra: [] }, "Kollwitzplatz y Kastanienallee": { cierra: [] }, "Checkpoint Charlie y Topografía del Terror": { cierra: [] } },
+  atenas: { "Museo de la Acrópolis": { cierra: [] }, "Museo Benaki": { cierra: [2] }, "Museo Arqueológico Nacional": { cierra: [] }, "Mercado central de Varvakios": { cierra: [0] }, "Monastiraki y su mercadillo": { cierra: [] }, "Cementerio de Kerameikos": { cierra: [] } },
+  edimburgo: { "Palacio de Holyrood": { cierra: [] }, "Royal Yacht Britannia": { cierra: [] }, "Stockbridge": { cierra: [] }, "National Museum of Scotland": { cierra: [] }, "Greyfriars Kirkyard": { cierra: [] } },
+  dublin: { "Trinity College y Libro de Kells": { cierra: [] }, "Museo Nacional de Arqueología": { cierra: [1] }, "Kilmainham Gaol": { cierra: [] }, "Museo de los Escritores y Parnell Square": { cierra: [1] }, "Castillo de Dublín y Chester Beatty": { cierra: [1] } },
+  copenhague: { "Ny Carlsberg Glyptotek": { cierra: [1] }, "Christiansborg y su torre": { cierra: [1] }, "Kødbyen": { cierra: [] }, "Reffen y el puerto": { cierra: [] }, "Carlsberg y el barrio": { cierra: [1] }, "Torre Redonda (Rundetårn)": { cierra: [] } },
+  bruselas: { "Museos Reales de Bellas Artes": { cierra: [1] }, "Centro Belga del Cómic": { cierra: [1] }, "Place du Grand Sablon": { cierra: [] }, "Marolles y Place du Jeu de Balle": { cierra: [] }, "Casa Horta y Art Nouveau de Saint-Gilles": { cierra: [1] }, "Barrio Europeo y Parlamentarium": { cierra: [] } },
+  munich: { "Residenz y Cuvilliés-Theater": { cierra: [] }, "Pinakotheken": { cierra: [1] }, "Deutsches Museum": { cierra: [] }, "BMW Welt y Museo": { cierra: [1] }, "Viktualienmarkt": { cierra: [0] }, "Palacio de Nymphenburg": { cierra: [] } },
+  sevilla: { "Real Alcázar": { cierra: [] }, "Archivo de Indias y Hospital de los Venerables": { cierra: [1] }, "Centro Cerámica Triana y calle Alfarería": { cierra: [1] }, "Mercado de Triana y Castillo de San Jorge": { cierra: [0] }, "Iglesia de San Luis de los Franceses": { cierra: [1] }, "Catedral y Giralda": { cierra: [] } },
+  cracovia: { "Rynek Główny y Lonja de los Paños": { cierra: [] }, "Fábrica de Schindler": { cierra: [] }, "Collegium Maius": { cierra: [0] }, "Sinagoga Vieja y ulica Szeroka": { cierra: [] }, "Castillo de Wawel": { cierra: [1] }, "Minas de sal de Wieliczka": { cierra: [] } },
+  estocolmo: { "Museo Vasa": { cierra: [] }, "Östermalms Saluhall": { cierra: [0] }, "Fotografiska": { cierra: [] }, "Ayuntamiento (Stadshuset)": { cierra: [] }, "ABBA The Museum": { cierra: [] }, "Rosendals Trädgård": { cierra: [] } }
+};
+// Aplica los cierres al repositorio: cada parada recibe cierra (array de dias)
+Object.keys(CIERRES).forEach(k => {
+  const c = CIUDADES[k]; if (!c) return;
+  c.zonas.forEach(z => z.paradas.forEach(p => {
+    const r = CIERRES[k][p.n]; if (!r) return;
+    if (r.abre) p.cierra = [0, 1, 2, 3, 4, 5, 6].filter(d => !r.abre.includes(d));
+    else p.cierra = r.cierra;
+  }));
+});
+
 
 /* ======================================================================
    UTILIDADES
@@ -2873,15 +2917,33 @@ function cuadrar(entrada) {
 
   const dias = [];
   const usadas = new Set();
-  zonasPuntuadas.filter(zp => zp.paradas.length >= 2).slice(0, numDias).forEach(zp => {
-    zp.paradas.forEach(p => usadas.add(p));
-    dias.push({ zona: zp.zona.nombre, paradas: zp.paradas.map(p => ({ ...p })) });
+  // Dia de la semana de cada jornada, para respetar los cierres semanales
+  const semanaDe = i => { const f = new Date(fecha); f.setDate(f.getDate() + i); return f.getDay(); };
+  const abiertaEl = (p, w) => !(p.cierra && p.cierra.includes(w));
+  const zonasElegidas = zonasPuntuadas.filter(zp => zp.paradas.length >= 2).slice(0, numDias);
+  // Mejores paradas de una zona para un dia concreto (excluye lo cerrado ese dia)
+  const mejoresZonaDia = (z, w) => [...z.paradas].filter(p => elegible(p) && abiertaEl(p, w)).sort((a, b) => b._s - a._s).slice(0, porDia);
+  const valor = (z, w) => mejoresZonaDia(z, w).reduce((s, p) => s + p._s, 0);
+  // Orden de zonas en los dias: se prueba el que mas puntos suma con los cierres en cuenta
+  let orden = zonasElegidas.map((_, i) => i);
+  if (zonasElegidas.length <= 6) {
+    const permutar = arr => arr.length <= 1 ? [arr] : arr.flatMap((x, i) => permutar([...arr.slice(0, i), ...arr.slice(i + 1)]).map(r => [x, ...r]));
+    let mejor = -Infinity;
+    permutar(orden).forEach(perm => { const v = perm.reduce((s, zi, d) => s + valor(zonasElegidas[zi].zona, semanaDe(d)), 0); if (v > mejor) { mejor = v; orden = perm; } });
+  }
+  orden.forEach((zi, d) => {
+    const z = zonasElegidas[zi].zona;
+    const elegidas = mejoresZonaDia(z, semanaDe(d));
+    elegidas.forEach(p => usadas.add(p));
+    dias.push({ zona: z.nombre, paradas: elegidas.map(p => ({ ...p })) });
   });
 
   // Si hay mas dias que zonas: dias extra con lo mejor que quedo, agrupado por cercania
   while (dias.length < numDias) {
-    let restantes = todas.filter(p => !usadas.has(p) && elegible(p)).sort((a, b) => b._s - a._s);
-    if (!restantes.length) { dias.push({ zona: "Día libre", paradas: [], libre: true }); continue; }
+    const wExtra = semanaDe(dias.length);
+    let restantes = todas.filter(p => !usadas.has(p) && elegible(p) && abiertaEl(p, wExtra)).sort((a, b) => b._s - a._s);
+    // Con menos de dos paradas que merezcan la pena, mejor un dia libre o de excursion que un dia flojo
+    if (restantes.length < 2) { dias.push({ zona: "Día libre o excursión", paradas: [], libre: true }); continue; }
     const grupo = [restantes[0]]; usadas.add(restantes[0]);
     restantes = restantes.slice(1);
     while (grupo.length < porDia && restantes.length) {
@@ -2894,11 +2956,11 @@ function cuadrar(entrada) {
   }
 
   // Si un dia se queda corto, se completa con lo mas cercano que quede sin usar
-  dias.forEach(d => {
+  dias.forEach((d, di) => {
     if (d.libre) return;
     while (d.paradas.length < porDia) {
       const centro = { lat: d.paradas.reduce((s, p) => s + p.lat, 0) / d.paradas.length, lng: d.paradas.reduce((s, p) => s + p.lng, 0) / d.paradas.length };
-      const cand = todas.filter(p => !usadas.has(p) && elegible(p) && distKm(centro, p) < 1.8).sort((a, b) => (b._s - distKm(centro, b)) - (a._s - distKm(centro, a)))[0];
+      const cand = todas.filter(p => !usadas.has(p) && elegible(p) && abiertaEl(p, semanaDe(di)) && distKm(centro, p) < 1.8).sort((a, b) => (b._s - distKm(centro, b)) - (a._s - distKm(centro, a)))[0];
       if (!cand) break;
       usadas.add(cand); d.paradas.push({ ...cand });
     }
@@ -2985,6 +3047,7 @@ function renderResultado(plan) {
       html += '<span class="tag precio">' + esc(precioTexto(p.precio, ciudad.moneda)) + '</span>';
       if (p.reservar) html += '<span class="tag reserva">Reservar</span>';
       if (p._esComida) html += '<span class="tag">Comida aquí</span>';
+      if (p.cierra && p.cierra.length) html += '<span class="tag precio">Cierra ' + p.cierra.map(d => DIAS_SEMANA[d]).join(", ") + '</span>';
       html += '<span class="dur">≈ ' + (p._esComida ? Math.max(p.dur, 80) : p.dur) + ' min</span>';
       html += '</span>';
       html += '<span class="traslado">' + esc(p._t) + '</span>';
@@ -3531,7 +3594,7 @@ function htmlGuia(plan, d, corta) {
       const p = f.parada;
       h += '<div class="parada">' + fotoBox((g.wiki || {})[p.n], p.n);
       h += '<div><div class="hora">' + p._h + ' · ' + esc(p._t) + '</div><h4>' + (EMOJI_GUIA[p.tags[0]] || '📍') + ' ' + esc(p.n) + '</h4>';
-      h += '<div class="tags"><span class="tag">' + esc(p.tags[0]) + '</span><span class="tag">' + esc(precioTexto(p.precio, ciudad.moneda)) + '</span><span class="tag">≈ ' + (p._esComida ? Math.max(p.dur, 80) : p.dur) + ' min</span>' + (p.reservar ? '<span class="tag res">Reservar</span>' : '') + (p._esComida ? '<span class="tag">Comida aquí</span>' : '') + '</div>';
+      h += '<div class="tags"><span class="tag">' + esc(p.tags[0]) + '</span><span class="tag">' + esc(precioTexto(p.precio, ciudad.moneda)) + '</span><span class="tag">≈ ' + (p._esComida ? Math.max(p.dur, 80) : p.dur) + ' min</span>' + (p.reservar ? '<span class="tag res">Reservar</span>' : '') + (p._esComida ? '<span class="tag">Comida aquí</span>' : '') + (p.cierra && p.cierra.length ? '<span class="tag">Cierra ' + p.cierra.map(d => DIAS_SEMANA[d]).join(", ") + '</span>' : '') + '</div>';
       h += '<p class="d">' + esc(p.d) + '</p>';
       h += '<div class="truco"><b>💡 Truco</b>' + esc(p.truco) + '</div>';
       h += '<div class="salseo"><b>🤫 Salseo</b>' + esc(p.salseo) + '</div>';
