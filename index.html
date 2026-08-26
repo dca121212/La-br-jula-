@@ -315,9 +315,601 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v23";
+const VERSION_APP = "v25";
 const CIUDADES = {};
 const GUIA = {};
+const EXTRA = {};
+/* ======================================================================
+   CONTENIDO EXTRA · TANDA 1
+   Por ciudad: cinco salseos mas (se suman a los cinco de la guia), cinco
+   errores de guiri (lo que delata al turista y como evitarlo) y cinco
+   datos para soltar en la cena (curiosidades cortas que impresionan).
+   ====================================================================== */
+EXTRA.lisboa = {
+  salseos: [
+    "El Elevador de Santa Justa tiene cola de una hora para subir 45 metros. Los lisboetas suben andando por el Chiado en cuatro minutos y llegan al mismo mirador por la puerta de atrás. Sonríen al pasar.",
+    "En 1755 Lisboa desapareció una mañana de Todos los Santos: terremoto, tsunami e incendio en tres horas. Voltaire escribió un poema, Kant una teoría y el marqués de Pombal, harto de filósofos, preguntó: '¿Y ahora qué? Enterrar a los muertos y dar de comer a los vivos'.",
+    "El fado nació en las tabernas de Alfama con una prostituta llamada Maria Severa que cantaba a un conde. Murió a los 26 y le pusieron calle. Si un fadista pide silencio, no es postureo: es la ley.",
+    "Las calçadas, esas aceras de piedra blanca y negra, las hacían presos del castillo en el XIX. Son preciosas, resbalan como jabón cuando llueve y las mujeres de Lisboa han desarrollado un sexto sentido para bajar cuestas con tacón.",
+    "Los tranvías amarillos son de 1930 y los frenos son originales; el conductor lleva un saco de arena que echa a los raíles en las cuestas cuando patinan. Te has subido a un museo con frenos de arena."
+  ],
+  guiri: [
+    "Pedir 'un café con leche' y recibir un galão en vaso: aquí se pide 'uma meia de leite' en taza, y el café solo es 'uma bica'.",
+    "Comer el pastel de nata frío del súper. Se come tibio, con canela, en la pastelería, y nunca antes del segundo.",
+    "Hacer la cola del tranvía 28 a las 12 del mediodía con maleta. Cógelo a las 8 o coge el 12, que hace lo mismo.",
+    "Confundir el 'couvert' con una cortesía: el pan, la mantequilla y las aceitunas que traen sin pedir se pagan. Si no los quieres, di 'não, obrigado' y los retiran sin drama.",
+    "Ir a Belém a las tres de la tarde de un sábado. Ve a las 9: Jerónimos vacío, pasteles recién hechos y foto de la Torre sin cabezas."
+  ],
+  datos: [
+    "Lisboa es más antigua que Roma: unos 400 años, según los fenicios que la fundaron como Olisipo.",
+    "El puente Vasco da Gama mide 17 km y es tan largo que tuvieron que calcular la curvatura de la Tierra para construirlo.",
+    "Hay 365 recetas de bacalao, una por día, y cero bacalaos en el mar portugués: viene de Noruega e Islandia desde el siglo XV.",
+    "El Oceanário es el mayor acuario cubierto de Europa y tiene un pez luna que pesa lo que un piano.",
+    "Lisboa tiene siete colinas oficiales, pero cualquiera que suba a Graça con la compra dirá que son doce."
+  ]
+};
+
+EXTRA.oporto = {
+  salseos: [
+    "El Palacio de la Bolsa tiene un Salón Árabe que tardó 18 años en hacerse y se usa para recibir a presidentes; los comerciantes de Oporto lo construyeron para decir a los ingleses 'nosotros también tenemos gusto'.",
+    "La estación de São Bento se construyó sobre un convento de benedictinas que se negaron a irse. Esperaron a que muriera la última monja en 1892, y aun así el arquitecto tuvo que hacer la fachada mirando hacia otro lado.",
+    "Harry Potter tiene aquí más de lo que parece: las capas negras de los estudiantes, la Livraria Lello y el café Majestic donde Rowling corregía. Ella dice que no copió nada. Oporto ha decidido no creerla.",
+    "El Duero tuvo un puente colgante antes del de hierro; el día que se rompió, 1809, huían de Napoleón y cayeron al río cientos de personas. Hay una placa en la Ribeira con velas que nunca se apagan del todo.",
+    "En Oporto se dice 'fino' para la caña y 'imperial' es de Lisboa. Pide un imperial en un bar de la Ribeira y te lo pondrán, pero te mirarán como a un traidor."
+  ],
+  guiri: [
+    "Comerte una francesinha a la una del mediodía y pretender visitar algo después. Es un plato de cena con siesta incluida.",
+    "Cruzar el puente por abajo con 40 grados: el piso alto tiene brisa, vistas y cero coches.",
+    "Beber oporto tinto con el postre y creer que ya está: el tónico de oporto blanco es lo que toman aquí a las siete de la tarde.",
+    "Reservar bodega en Gaia sin mirar la hora: las últimas visitas salen a las 17:00 y en agosto se agotan a las 12.",
+    "Decir que Oporto es 'la Lisboa pequeña'. Los porteños llevan 900 años respondiendo a eso y no les hace ninguna gracia."
+  ],
+  datos: [
+    "El vino de Oporto se inventó por accidente: le echaron aguardiente al vino para que aguantara el viaje a Londres y a los ingleses les gustó más así.",
+    "La Livraria Lello vende 1.000 entradas al día y la escalera roja no es de madera: es de hormigón pintado.",
+    "El nombre 'Portugal' viene de 'Portus Cale', que es Oporto y Gaia. O sea, el país lleva el nombre de la ciudad, no al revés.",
+    "El puente Luís I lo diseñó un socio de Eiffel después de que Eiffel perdiera el concurso. Eiffel no lo superó.",
+    "Los estudiantes con capa negra que ves por la calle celebran la 'Queima das Fitas' en mayo con una semana de conciertos que paraliza la ciudad."
+  ]
+};
+
+EXTRA.paris = {
+  salseos: [
+    "Los parisinos no suben nunca a la torre Eiffel. Maupassant comía en su restaurante cada día 'porque es el único sitio de París desde donde no se ve'. La odió con dedicación.",
+    "El Louvre tiene 35.000 obras expuestas; verlas a un minuto cada una son 24 días sin dormir. Los guías dicen que la visita media dura tres horas y que la mitad se pasa buscando la salida.",
+    "En 1961 un hombre entró en el Louvre con una piedra en el bolsillo y se la tiró a la Gioconda; desde entonces tiene cristal antibalas. En 2022 le lanzaron una tarta. El cuadro sonríe igual.",
+    "El Sacré-Cœur está en la colina donde en 1871 los parisinos de la Comuna se sublevaron; la Iglesia lo construyó como castigo y penitencia. Los del barrio aún lo llaman 'el merengue'.",
+    "El metro huele a lo que huele por un motivo: los raíles se limpian con un producto llamado Madeleine, creado en 1998 con notas de 'jardín después de la lluvia'. No funcionó."
+  ],
+  guiri: [
+    "Entrar en una tienda o un café sin decir 'bonjour'. Es la única regla de París y la única que importa: sin bonjour no hay servicio.",
+    "Pedir un 'latte' y recibir un vaso de leche caliente. Aquí es 'un café crème' o 'un café au lait'.",
+    "Cenar a las siete: las cocinas abren a las 19:30 y el ambiente llega a las 21:00. A las siete estás solo con los turistas.",
+    "Ir a Versalles un martes: cierra los lunes, y el martes va todo el que no pudo el lunes. Miércoles o jueves.",
+    "Sentarte en la escalinata del Sacré-Cœur con la mochila abierta. Los de las pulseras 'gratis' te la habrán atado antes de que digas non."
+  ],
+  datos: [
+    "La torre Eiffel crece 15 cm en verano por la dilatación del hierro y se inclina unos 18 cm hacia la sombra.",
+    "París tiene más perros que niños, y el Ayuntamiento gasta millones al año en el 'motocrotte', la moto aspiradora de cacas.",
+    "Hay un solo semáforo de stop en toda la ciudad. Los parisinos consideran el resto negociables.",
+    "El Sena ha tenido prohibido el baño desde 1923; en 2024 lo reabrieron para los Juegos y en 2025 para todos, con zonas vigiladas.",
+    "Bajo la Ópera Garnier hay un lago de verdad de 55 metros de largo donde los bomberos entrenan buceo en la oscuridad."
+  ]
+};
+
+EXTRA.roma = {
+  salseos: [
+    "La ley romana prohíbe comer sentado en la escalinata de la Piazza di Spagna desde 2019: multa de 250 euros. Los policías locales tienen un silbato y una paciencia infinita.",
+    "En el Vaticano hay un cajero automático en latín. Sí: 'inserito scidulam quaeso ut faciundam cognoscas rationem'. La única cola sin turistas de Roma.",
+    "El Panteón lleva 1.900 años sin que le caiga la cúpula porque los romanos usaron piedra pómez arriba y la fueron aligerando; nadie ha logrado hacer una igual sin armadura. Ni con ordenadores.",
+    "Nerón no tocó la lira mientras Roma ardía, estaba a 50 km, en Anzio. Volvió corriendo, abrió sus jardines a los sin techo y bajó el precio del grano. Luego culpó a los cristianos, eso sí.",
+    "El Coliseo tenía 80 entradas numeradas y un sistema de billetes de cerámica con asiento y sector; desalojaban a 50.000 personas en 15 minutos. Cualquier estadio moderno tarda más."
+  ],
+  guiri: [
+    "Pedir un cappuccino después de comer. Los romanos lo consideran un crimen digestivo; después de las 11, espresso.",
+    "Sentarte en una terraza de Piazza Navona a comer: pagas la vista y comes de congelador. Dos calles atrás, la mitad de precio y el doble de sabor.",
+    "Llevar tirantes o bermudas a San Pedro: no entras, y la cola la has hecho igual.",
+    "Comprar la entrada del Coliseo a un señor con chaleco que dice 'skip the line': el skip es al revés.",
+    "Cruzar la calle esperando a que paren: en Roma se cruza mirando al conductor a los ojos y andando con decisión. Funciona."
+  ],
+  datos: [
+    "En la Fontana di Trevi caen unos 3.000 euros al día; Cáritas los recoge cada lunes con un aspirador especial.",
+    "Roma tiene más de 2.000 fuentes públicas (nasoni) de agua fría gratis: tapa el chorro con el dedo y sale por arriba para beber.",
+    "El Vaticano es el país más pequeño del mundo: 0,44 km², 800 habitantes y una tasa de delitos altísima porque los carteristas se cuentan por habitante.",
+    "Hay un teléfono de emergencias solo para gatos: la colonia del Largo Argentina tiene veterinario, voluntarias y web propia.",
+    "El SPQR de las alcantarillas tiene 2.000 años y sigue siendo el logo oficial del Ayuntamiento."
+  ]
+};
+
+EXTRA.florencia = {
+  salseos: [
+    "Miguel Ángel tenía 26 años cuando le dieron un bloque de mármol que otros dos escultores habían descartado por 'defectuoso'. Lo talló en tres años. Hoy le llaman David.",
+    "Los Uffizi tienen un cuadro robado que nadie devuelve: la Adoración de los Magos de Leonardo estuvo 'en restauración' seis años porque los restauradores no se atrevían a tocarlo. Lo terminaron en 2017 y cerraron el bar del miedo.",
+    "Dante se enamoró de Beatriz a los nueve años, la vio dos veces en su vida, se casó con otra y escribió la Divina Comedia para ella. Beatriz murió sin saberlo. El romanticismo florentino es así.",
+    "La cúpula de Brunelleschi tiene 4 millones de ladrillos colocados en espina de pez para que se sostuvieran solos mientras se construía. Brunelleschi no dejó planos: se los llevó a la tumba por si acaso.",
+    "El Corridoio Vasariano cruza el Ponte Vecchio por encima de las joyerías; Hitler pasó por él en 1938 y le hicieron ventanas nuevas para que viera el río. Las ventanas siguen. Hitler no."
+  ],
+  guiri: [
+    "Pedir la bistecca 'bien hecha'. Te la traerán sangrando igual y el camarero lo contará en la cocina.",
+    "Comprar 'cuero florentino' en el mercado de San Lorenzo: la mitad es vinilo chino. La Scuola del Cuoio, en Santa Croce, es la de verdad.",
+    "Hacer cola en los Uffizi sin reserva: dos horas al sol. La web oficial vende hora y te ahorras la vida.",
+    "Llamar 'pizza' a la comida florentina. Aquí es pan sin sal, ribollita y lampredotto; la pizza es de Nápoles y lo saben.",
+    "Subir al Piazzale Michelangelo en autobús: son 15 minutos andando por las Rampe con vistas y el atardecer empieza en el camino."
+  ],
+  datos: [
+    "Florencia inventó el helado moderno (Bernardo Buontalenti, siglo XVI), la ópera (1598) y el piano (Cristofori, 1700). No está mal para una ciudad de 370.000 habitantes.",
+    "El David mide 5,17 metros y tiene la mano derecha desproporcionada a propósito: era el símbolo de 'manu fortis', mano fuerte.",
+    "El Ponte Vecchio tiene joyeros desde 1593 por orden de un Medici que no soportaba el olor a carnicería bajo su pasillo.",
+    "Se llama 'síndrome de Stendhal' porque el escritor casi se desmaya en Santa Croce en 1817. Los hospitales de Florencia lo ven cada semana.",
+    "El Calcio Storico se juega con 27 por equipo, sin árbitro que valga nada y con la única regla de no golpear por la espalda. Se sigue jugando desde 1530."
+  ]
+};
+
+EXTRA.venecia = {
+  salseos: [
+    "Venecia tiene 118 islas, 177 canales, 435 puentes y cero coches, pero tiene un aparcamiento de siete plantas en la entrada, el Tronchetto, que es el edificio más feo de Italia. Se paga como si fuera bonito.",
+    "El acqua alta sube cuando sopla siroco y hay luna llena; en 1966 llegó a 1,94 metros y los venecianos remaban por San Marcos. Hoy suenan sirenas con notas musicales: cuantas más notas, más agua.",
+    "El Palacio Ducal tiene 'bocas de león' por las paredes: buzones para denunciar anónimamente al vecino. Las denuncias sin firma se quemaban; las firmadas se investigaban. Venecia inventó el buzón del cotilla.",
+    "Peggy Guggenheim vivió en un palacio sin terminar del Gran Canal con 14 perros y una colección de Pollocks que compró a 200 dólares. Está enterrada en el jardín, junto a los perros. Por ese orden.",
+    "Las góndolas se pintan de negro por una ley de 1562 contra el lujo: los nobles competían por la góndola más dorada y el Senado dijo basta. Hoy cuestan 40.000 euros y siguen siendo negras por obediencia."
+  ],
+  guiri: [
+    "Comer en una terraza con foto del plato en la entrada y un señor invitándote a pasar. El número de camareros en la puerta es inversamente proporcional a la calidad.",
+    "Pagar 80 euros por 25 minutos de góndola de día con 400 turistas mirando. Compártela con otra pareja al atardecer por un canal pequeño, o coge el traghetto (2 euros) para cruzar el Gran Canal de pie como los venecianos.",
+    "Sentarte en los escalones de San Marcos a comer un bocadillo: multa. Sentarte en las escaleras de la Salute con un spritz: vida.",
+    "Ir a Murano a comprar 'cristal de Murano' en la primera tienda del embarcadero: mira que lleve el sello Vetro Artistico Murano o es de China.",
+    "Arrastrar una maleta con ruedas por los puentes a las siete de la mañana. Los venecianos han pedido prohibirlas por el ruido. Cárgala."
+  ],
+  datos: [
+    "Venecia se hunde 1-2 mm al año y el mar sube 3; el MOSE, con 78 compuertas de acero, la salva desde 2020 y costó 6.000 millones.",
+    "Marco Polo salió de aquí a los 17 años, estuvo 24 fuera y al volver nadie le creyó; le llamaban 'il Milione' por las exageraciones.",
+    "Hay 433 gondoleros con licencia y 1 mujer; el examen incluye historia de Venecia e inglés.",
+    "El carnaval de Venecia dura diez días y las máscaras tienen nombre: bauta, moretta, volto. La moretta se sujetaba mordiendo un botón: mujer muda por elección.",
+    "Vivaldi enseñó violín en un orfanato de niñas de Venecia durante 30 años y compuso Las cuatro estaciones para ellas."
+  ]
+};
+
+/* ======================================================================
+   CONTENIDO EXTRA · TANDA 2
+   ====================================================================== */
+EXTRA.verona = {
+  salseos: [
+    "La 'tumba de Julieta' es un sarcófago de mármol rojo vacío en un convento; en el siglo XIX las inglesas se llevaban trozos de recuerdo y Maria Luisa de Austria se hizo un collar con ellos. Hoy hay cristal.",
+    "En la Arena se rodó en 1913 la primera Aida con elefantes vivos; uno se escapó y se metió en la Piazza Bra. La ópera terminó, el elefante volvió y Verona tiene desde entonces la mejor anécdota de Italia.",
+    "Los Montecchi existieron: eran una familia de Verona citada por Dante en el Purgatorio, en guerra con los Cappelletti (de Cremona). Shakespeare leyó una novela italiana, cambió nombres y les inventó un amor. Verona le construyó el resto.",
+    "La Torre dei Lamberti tiene una campana que se toca a mano en las bodas de la Piazza dei Signori; el campanero cobra por tirar de la cuerda y no acepta reservas online. Es del siglo XV, la campana y el sistema.",
+    "Bajo Piazza delle Erbe hay un foro romano intacto que se ve desde el sótano de una tienda de ropa. Cuando la abrieron en 2005 tuvieron que rediseñar el probador para no tapar el mosaico."
+  ],
+  guiri: [
+    "Meterte en la cola del patio de Julieta a mediodía para tocar la estatua: media hora para una foto con 200 desconocidos. A las 8:30 está vacío y el balcón es el mismo.",
+    "Pedir 'un amarone' pensando que es un tinto normal: son 16 grados y 40 euros la botella. Con la comida, un Valpolicella Classico; el amarone, con el queso y sentado.",
+    "Ir a Verona en fin de semana de ópera sin entrada y esperar comprarla en la puerta: las de grada de piedra salen a las 18:00 del mismo día, pero si es Aida o Carmen, vuelan.",
+    "Comer en Piazza Bra frente a la Arena: pagas el decorado. Via Sottoriva, a cinco minutos, es donde se come de verdad.",
+    "Dar por hecho que Verona es 'un pueblo' y hacer medio día: entre castillo, colina y ópera necesitas dos noches, y la tercera para el lago de Garda."
+  ],
+  datos: [
+    "La Arena tiene 2.000 años, 30.000 asientos y la única ópera del mundo donde el público enciende velas al empezar.",
+    "Verona recibe 6.000 cartas al año dirigidas simplemente a 'Julieta, Verona'. Correos las entrega. Once voluntarias las contestan.",
+    "El pandoro es de Verona: lo patentó Domenico Melegatti en 1894 y aún se pelea con el panettone milanés cada Navidad.",
+    "El Adige es el segundo río de Italia y Verona lo cruza con diez puentes; siete se reconstruyeron después de 1945 con las piedras originales sacadas del agua.",
+    "La Verona Card cuesta 27 euros y entra en 15 monumentos; solo la Arena y la torre ya suman 18. Es la única tarjeta turística de Italia que sale a cuenta."
+  ]
+};
+
+EXTRA.milan = {
+  salseos: [
+    "Milán es la única ciudad del mundo donde el aperitivo es una comida con nombre y hora: a las 19:00 los bares ponen bufé y con una copa cenas. Nació en el bar Basso, donde también inventaron el Negroni Sbagliato al confundir botellas.",
+    "La Madonnina del Duomo tiene 4 metros y 6.750 hojas de oro; en la guerra la taparon con un trapo gris para que los bombarderos no la usaran de referencia. Los milaneses dicen que no funcionó y que ella sí.",
+    "El Cimitero Monumentale tiene la tumba de la familia Campari con una Última Cena en bronce a tamaño real; los Campari querían que se supiera quién había invitado. Toscanini está tres calles más allá, mucho más discreto.",
+    "El primer McDonald's de Italia abrió en la Galleria en 1986; los milaneses se manifestaron con platos de pasta. Duró hasta 2012, cuando el Ayuntamiento no le renovó y puso una tienda de Prada. Milán ganó a su manera.",
+    "San Siro se llama Giuseppe Meazza para los del Inter y San Siro para los del Milan; los taxistas saben de qué equipo eres por cómo lo llamas y ajustan la conversación."
+  ],
+  guiri: [
+    "Ir a ver la Última Cena sin reserva: la tienen desde hace tres meses. Si no hay, un tour con guía cuesta 60 euros y es la única puerta trasera.",
+    "Subir al Duomo con ascensor a mediodía en agosto: cola y horno. Escaleras a las 9 de la mañana o a las 18:30.",
+    "Pedir un 'risotto alla milanese' con parmesano encima: lleva azafrán y tuétano, y el cocinero decide el queso, no tú.",
+    "Vestir chanclas y pantalón corto en el centro: nadie te dirá nada, pero en Brera te sentirás desnudo.",
+    "Confundir la Estación Central con una parada más: es un monumento fascista de 1931 con águilas y mármol, y la estación de Cadorna es la que te lleva a Malpensa."
+  ],
+  datos: [
+    "El Duomo es la tercera catedral más grande de Europa y tiene 3.400 estatuas; la última se colocó en 1965. Sigue habiendo un taller de canteros que la repara cada día.",
+    "Leonardo vivió en Milán 17 años y dejó la Última Cena, un viñedo, el diseño de los canales y un cuaderno de chistes. Los chistes son malos.",
+    "Milán tiene el segundo metro más largo de Italia y la línea M4, abierta en 2024, va del centro a Linate en 12 minutos.",
+    "La palabra 'milanesa' para el filete empanado es de aquí: la cotoletta de 1134 aparece en un menú de canónigos de Sant'Ambrogio.",
+    "El Bosco Verticale tiene 800 árboles, 20.000 plantas y jardineros que se descuelgan en cuerda tres veces al año."
+  ]
+};
+
+EXTRA.napoles = {
+  salseos: [
+    "El 'motorino' napolitano lleva tres personas, un perro y una bombona sin casco y se salta el rojo con naturalidad. En Nápoles el semáforo rojo es 'una sugerencia', el ámbar 'una invitación' y el verde 'una ocasión'.",
+    "San Genaro tiene un tesoro más valioso que el de la reina de Inglaterra: 21.000 piezas donadas en siete siglos, nunca robadas ni vendidas. Los napolitanos dicen que ni la Camorra se atreve con él.",
+    "En 1943 Nápoles echó a los alemanes sola, en cuatro días, con chavales de doce años tirando adoquines: las Cuatro Jornadas. Es la primera ciudad europea que se liberó sin esperar a nadie.",
+    "La Pizzería Brandi conserva la carta de 1889 de la reina Margarita agradeciendo la pizza. Es casi seguro que es falsa y casi seguro que la reina nunca la probó. Nápoles la enmarcó igual.",
+    "El Cristo velado tiene una leyenda: el príncipe de Sansevero lo hizo cubrir con un velo real que un líquido secreto petrificó. Los rayos X dicen que es mármol tallado. Los napolitanos dicen que los rayos X mienten."
+  ],
+  guiri: [
+    "Pedir una pizza con piña, con pollo o partida en ocho. Se sirve entera, se come con cuchillo y tenedor o doblada, y se pide margherita o marinara la primera vez.",
+    "Llevar el móvil en la mano en Forcella o el reloj en la Sanità de noche. No es peligrosa, pero no hace falta invitar.",
+    "Coger un taxi sin pedir la tarifa fija al aeropuerto: existe, son unos 25 euros y el conductor la conoce mejor que tú.",
+    "Ir a Pompeya a las 13:00 de julio sin gorra ni agua: se muere uno. A las 8:30 abren y a las 12 ya has visto lo importante.",
+    "Pretender que la Circumvesuviana es un tren. Es una experiencia. Lleva paciencia y nada de valor en los bolsillos."
+  ],
+  datos: [
+    "Nápoles tiene 2.800 años y es la ciudad con más iglesias de Europa: unas 500, muchas cerradas y todas llenas de algo.",
+    "El café napolitano se toma en 30 segundos en la barra con un vaso de agua antes; nunca después, que lo 'quita'.",
+    "La pizza napolitana es patrimonio de la UNESCO desde 2017 y el 'pizzaiuolo' tiene categoría oficial de arte.",
+    "Bajo la ciudad hay 700.000 metros cúbicos de cuevas griegas y romanas, más que sobre ella en algunos barrios.",
+    "Maradona tiene más murales en Nápoles que ningún santo, un museo en un bar y el estadio con su nombre; el 25 de noviembre la ciudad cierra sin decreto."
+  ]
+};
+
+EXTRA.amsterdam = {
+  salseos: [
+    "Las casas más estrechas de Ámsterdam miden lo que un colchón porque el impuesto se pagaba por metro de fachada; las escaleras son tan verticales que los muebles suben por fuera con la polea del gancho que ves en cada tejado.",
+    "El tulipán no es holandés, es turco; en 1637 un bulbo valía una casa en el canal y en un mes no valía nada. Fue la primera burbuja financiera de la historia y los holandeses la recuerdan con jardines.",
+    "En el Rijksmuseum, la Ronda de Noche fue recortada por los lados en 1715 para que cupiera en una pared del Ayuntamiento. Faltan dos personajes que nadie volverá a ver. En 2021 los reconstruyeron con inteligencia artificial y luego los quitaron.",
+    "El barrio rojo tiene una estatua de bronce a las trabajadoras, 'Belle', puesta por una ex, y un sindicato desde 1985. Las ventanas se alquilan por turnos de ocho horas y hay lista de espera.",
+    "Cada año sacan 15.000 bicis de los canales con una grúa que tiene nombre y perfil en redes; los holandeses las tiran cuando se rompen y los turistas cuando se caen con ellas. La bici sigue teniendo dueño y nadie la reclama."
+  ],
+  guiri: [
+    "Andar por el carril bici para hacer una foto. Los ciclistas no frenan y tienen prioridad moral, legal y física.",
+    "Comprar entradas de la Casa de Ana Frank en la puerta: no existe la puerta. Se venden online seis semanas antes y se agotan en minutos.",
+    "Pedir un 'coffee' en un coffeeshop esperando café. Es un café donde se vende otra cosa; para café, 'koffiehuis' o cualquier bar con bicis fuera.",
+    "Pagar en efectivo: muchos sitios solo aceptan tarjeta y varios solo la holandesa (PIN). Lleva tarjeta y paciencia.",
+    "Alquilar bici el primer día y salir al centro: primero al Vondelpark, y luego, si sobrevives, a los canales."
+  ],
+  datos: [
+    "Ámsterdam tiene 165 canales, 1.500 puentes y unas 2.500 casas flotantes con buzón, número y parking de bicis.",
+    "Hay más bicis (900.000) que habitantes (870.000), y un aparcamiento subterráneo de bicis con 7.000 plazas bajo la estación central.",
+    "Toda la ciudad está clavada sobre 11 millones de pilotes de madera; el Palacio Real, sobre 13.659, número que todos los niños holandeses saben.",
+    "El Rijksmuseum guarda la Ronda de Noche tras un cristal sin reflejo que cuesta más que algunos cuadros de la sala.",
+    "La ciudad tiene un 'alcalde de noche' oficial desde 2014 para gestionar la fiesta; otras 40 ciudades le copiaron."
+  ]
+};
+
+EXTRA.praga = {
+  salseos: [
+    "Praga tiene un museo del comunismo encima de un casino y al lado de un McDonald's; el cartel dice 'estamos encima del casino, al lado del McDonald's'. Los checos lo consideran perfecto.",
+    "La estatua de Franz Kafka de Jaroslav Róna es un hombre sin cabeza que lleva a otro a hombros. En 2003 la pusieron sin explicar nada y ahora hay otra de 39 toneladas que gira: la cabeza de Kafka de Černý. Kafka lo habría odiado.",
+    "El reloj astronómico se paró en 1945 cuando los nazis incendiaron el Ayuntamiento el último día de la guerra; los praguenses lo reconstruyeron con piezas originales que un relojero había guardado en casa sin decirlo a nadie.",
+    "Los checos tienen un pueblo dentro de Praga que es Alemania: el barrio de Malá Strana fue alemán hasta 1945 y Kafka, Rilke y Werfel escribieron en alemán mirando el castillo. Luego se acabó de golpe.",
+    "Bajo el Puente de Carlos se escondió en 1621 la cabeza de 27 nobles ejecutados en la plaza; estuvieron diez años colgadas de la torre. Una cruz blanca en el suelo de la plaza marca el sitio; los checos evitan pisarla."
+  ],
+  guiri: [
+    "Cambiar dinero en un 'kantor' de la plaza con '0 % comisión': el truco está en el tipo de cambio. Paga con tarjeta o usa cajeros de banco (no los Euronet amarillos).",
+    "Pedir 'un vodka': eso es Polonia. Aquí es Becherovka (hierbas), Slivovice (ciruela) o cerveza, que es lo que pediría un checo a cualquier hora.",
+    "Ir al castillo por la mañana y a Petřín por la tarde: es la misma colina y son 800 escalones cada vez. Un solo día para todo lo alto.",
+    "Comer trdelník como 'dulce típico checo': es eslovaco y para turistas. Lo típico es el kolache o un buchta en un café.",
+    "Cruzar el Puente de Carlos a mediodía: a las 7 de la mañana está vacío, con niebla y los músicos afinando. Es otra ciudad."
+  ],
+  datos: [
+    "Los checos beben 140 litros de cerveza por persona y año, el récord mundial desde hace 30 años. La segunda es Austria, muy lejos.",
+    "El Castillo de Praga es el complejo de castillo más grande del mundo: 70.000 m², y lleva 1.100 años habitado.",
+    "La palabra 'robot' es checa: la inventó Karel Čapek en una obra de 1920 a partir de 'robota', trabajo forzado.",
+    "El Puente de Carlos tiene 30 estatuas y se puso la primera piedra en 1357 a las 5:31 del 9 de julio, para que la fecha fuera un palíndromo (135797531).",
+    "La Revolución de Terciopelo de 1989 duró diez días y no rompió ni un cristal; los estudiantes agitaban llaves para decir 'adiós' al régimen."
+  ]
+};
+
+EXTRA.viena = {
+  salseos: [
+    "Viena tiene una oficina para objetos perdidos en el cementerio Central, porque la gente se deja las flores, los paraguas y a veces las dentaduras. También tiene un tranvía con parada dentro del cementerio. Llega puntual.",
+    "En 1913, en un radio de dos kilómetros del Ring vivían Hitler, Stalin, Trotsky, Tito y Freud. Ninguno se conoció. El café Central los tenía a todos como clientes, menos a Hitler, que no entraba.",
+    "Sisi tenía un tatuaje de un ancla en el hombro, hacía gimnasia con anillas en su habitación de palacio, comía zumo de naranja y clara de huevo y odiaba Viena. Viena la ha convertido en imán de nevera.",
+    "El vals estuvo prohibido en Viena por indecente: los cuerpos se tocaban. Cuando lo permitieron, en 1814, los diplomáticos del Congreso de Viena se pasaron un año bailándolo y Napoleón se escapó de Elba mientras tanto.",
+    "El Hotel Sacher y la pastelería Demel se pelearon siete años en los tribunales por el nombre 'Original Sachertorte'. Ganó el hotel. La receta es la misma salvo una capa de mermelada, y las dos están buenísimas."
+  ],
+  guiri: [
+    "Pedir 'un café' a secas. El camarero te mirará con lástima: Melange, Verlängerter, Einspänner, Brauner... La carta de cafés tiene 20 opciones y ninguna se llama café.",
+    "Pensar que el schnitzel es de cerdo: el vienés original es de ternera y cuesta el doble. El de cerdo es 'Wiener Art', a la manera vienesa, y es lo que comen en casa.",
+    "Ir a la Ópera de traje y a la Filarmónica en vaqueros. Es al revés: a la Ópera va todo el mundo como quiere y al Musikverein de la Filarmónica se va arreglado.",
+    "Buscar la 'casa de Mozart' en un solo sitio: hay tres. La buena es la Mozarthaus de Domgasse, donde compuso Las bodas de Fígaro.",
+    "Ir a Schönbrunn en domingo a mediodía: es el Disneyland de Viena. Martes o jueves a las 8:30, el Grand Tour vacío y la Gloriette para ti."
+  ],
+  datos: [
+    "Viena es la ciudad con mejor calidad de vida del mundo según Mercer diez veces seguidas; el alquiler medio es la mitad que en Madrid gracias a la vivienda pública (60 % de los vieneses).",
+    "El agua del grifo viene de los Alpes por dos acueductos de 1873 y es la única capital de Europa con agua de manantial en cada fuente.",
+    "Los vieneses comen 40 millones de salchichas al año en los Würstelstand, puestos que abren hasta las 4 de la mañana y que la ONU quiso declarar patrimonio.",
+    "El cementerio Central tiene 330.000 tumbas y más 'habitantes' que la ciudad: 3 millones de enterrados frente a 1,9 millones de vivos.",
+    "La noria del Prater es de 1897 y tiene 15 cabinas; una se alquila para cenas y bodas y la visita dura lo que el sol tarda en dar la vuelta: 20 minutos."
+  ]
+};
+
+/* ======================================================================
+   CONTENIDO EXTRA · TANDA 3
+   ====================================================================== */
+EXTRA.budapest = {
+  salseos: [
+    "El Parlamento se construyó con 40 millones de ladrillos, medio millón de piedras preciosas y una piedra caliza tan porosa que se está deshaciendo: llevan restaurándolo desde el día que lo terminaron. Como Sísifo, pero neogótico.",
+    "El metro 1 de Budapest es de 1896, el primero del continente; Francisco José lo inauguró y le pusieron su nombre. Al año, los budapestinos le llamaban 'el pequeño subterráneo' y así sigue: földalatti.",
+    "En los baños Széchenyi hay partidas de ajedrez en el agua desde 1913 con tableros flotantes; se juega en silencio y el que pierde paga la siguiente entrada. Hay señores que llevan 40 años de liga.",
+    "Los bares en ruinas nacieron porque un grupo de amigos quería un sitio barato en 2002 y el único edificio libre era una fábrica de estufas a medio derribar. Pusieron sofás de la basura. Hoy Szimpla recibe un millón de visitas al año y los sofás siguen siendo de la basura.",
+    "El puente de las Cadenas fue el primero entre Buda y Pest (1849); los leones de piedra 'no tienen lengua', decía la gente, y el escultor se tiró al río de vergüenza. Es mentira: la tienen, no se ve desde abajo, y el escultor murió viejo."
+  ],
+  guiri: [
+    "Pagar en euros 'porque los aceptan': te cobrarán un cambio de 1 a 300 cuando es 1 a 400. Forintos o tarjeta, siempre.",
+    "Ir al balneario sin chanclas ni gorro: la piscina de nadar de Széchenyi los exige y las chanclas se venden en la entrada a precio de museo.",
+    "Confundir el goulash con un guiso: aquí es una sopa, y lo que en España llamamos goulash es 'pörkölt'. Pide bien y te tratan mejor.",
+    "Coger un taxi por la calle: hay taxis 'pirata' con taxímetro creativo. Bolt o Főtaxi, o pide la tarifa antes de subir.",
+    "Ir al Parlamento sin reserva: se agota una semana antes. Web oficial (jegymester.hu) y visita en español."
+  ],
+  datos: [
+    "Budapest tiene 123 manantiales termales y 15 balnearios públicos: es la única capital del mundo que es también ciudad balneario.",
+    "El cubo de Rubik, el bolígrafo, el holograma y la vitamina C son inventos húngaros. El cubo lo inventó Ernő Rubik en 1974 para explicar geometría y tardó un mes en resolverlo él mismo.",
+    "Hungría tiene el idioma más difícil de Europa para un español: 18 casos, sin género y sin ningún pariente cerca salvo el finés, lejano.",
+    "El pálinka debe tener 37,5 grados por ley y hacerse solo con fruta de Hungría; en 2010 legalizaron hacerlo en casa y hubo un boom de destilerías de cocina.",
+    "El Danubio no es azul: es marrón claro, y Strauss compuso el vals sin verlo en Budapest. Aquí se le perdona porque suena bien al atardecer."
+  ]
+};
+
+EXTRA.londres = {
+  salseos: [
+    "Los cuervos de la Torre tienen un contrato: si se van, cae la monarquía. Carlos II lo decretó y hay un cuidador que les corta las alas y les da ratón. Uno, Raven George, fue despedido por comerse antenas de televisión y otro, Grog, se fugó a un pub.",
+    "Big Ben suena en mi y tiene una grieta desde 1859 que le da su timbre; el nombre viene de Benjamin Hall, un político gordo que supervisó la obra. Le pusieron el mote a la campana antes que a él.",
+    "En el Támesis hay una colonia de focas, delfines a veces y un cachalote que en 2006 subió hasta Westminster y murió delante de los diputados. Hay un cementerio de barcos hundidos con 200 años que emerge con la marea baja.",
+    "El pub Ye Olde Cheshire Cheese lleva abierto desde 1667 y tenía un loro que juraba en 1926; cuando murió, el Times le hizo obituario y 200 periódicos del mundo lo reprodujeron. Dickens bebía en la mesa de la derecha.",
+    "El 'Knowledge' de los taxistas: 25.000 calles de memoria, tres años estudiando en moto y un examen oral donde te dicen 'de Battersea a Hackney' y recitas cada giro. Les crece el hipocampo. Científicamente."
+  ],
+  guiri: [
+    "Ponerte a la izquierda en la escalera mecánica del metro. Es la única ocasión en que un londinense te hablará, y no será para saludar.",
+    "Pedir 'a beer'. Pide una pinta de algo: 'a pint of lager' o 'of ale'. Y se paga en la barra, sin propina, sin cuenta.",
+    "Creer que Tower Bridge es London Bridge: London Bridge es el aburrido de al lado. El que se levanta es Tower Bridge y el horario de apertura está en su web.",
+    "Comprar entradas para el cambio de guardia: es gratis, a las 11:00, y desde el Victoria Memorial se ve mejor que pegado a la verja.",
+    "Hablar en el metro de la Northern Line a las 8:30. Nadie te contestará; están leyendo, callados, en su religión."
+  ],
+  datos: [
+    "Londres tiene 8,9 millones de habitantes, 300 idiomas y 3.500 pubs; en 1870 tenía 20.000 pubs, uno cada 100 metros.",
+    "El metro (Tube) es de 1863 y sus vagones son tan pequeños porque los túneles se cavaron con la medida del carruaje victoriano.",
+    "Los museos nacionales son gratis desde 2001 y el British Museum recibe 6 millones al año; el 1 % de su colección está expuesto.",
+    "El 'sunday roast' se come en pub y es sagrado: el 80 % de los británicos lo toma cada semana y el 40 % con Yorkshire pudding aunque sea de pollo.",
+    "En Londres hay 1.500 zorros urbanos por barrio; se comen la basura de los pubs y aparecen en jardines a las 4 de la mañana como si fueran gatos."
+  ]
+};
+
+EXTRA.berlin = {
+  salseos: [
+    "El aeropuerto de Berlín-Brandeburgo tardó 14 años en abrir (2006-2020), nueve más de lo previsto, por 66.500 fallos incluyendo escaleras mecánicas cortas y 4.000 puertas con número equivocado. Los berlineses hacían fiestas de 'no inauguración'.",
+    "El Berghain tiene un portero, Sven Marquardt, con la cara tatuada, que rechaza al 70 % de la cola con un gesto. Nadie sabe el criterio. Hay páginas web con consejos: ir en negro, solo, sin hablar, sin sonreír. No funcionan.",
+    "El semáforo del Ampelmännchen del Este iba a desaparecer con la reunificación en 1990; los berlineses del Este protestaron por primera vez desde el Muro. Hoy manda en toda la ciudad y tiene tiendas de camisetas.",
+    "Bajo el parque de Tiergarten pasaba el túnel de escape 29: 12 estudiantes cavaron 145 metros en 1962 y sacaron a 29 personas. La NBC pagó el túnel a cambio de grabar. La tele americana financió la primera fuga del Muro.",
+    "En Berlín hay 1.700 puentes, más que en Venecia, y nadie lo cree. También hay un 'ministerio' de la Stasi con 111 km de expedientes que se pueden pedir: los alemanes leen lo que sus vecinos decían de ellos. Muchos no vuelven a hablarles."
+  ],
+  guiri: [
+    "Llevar solo tarjeta: la mitad de los bares, kebabs y mercadillos son 'nur Bargeld'. Saca efectivo antes de tener hambre.",
+    "Ir al Berghain con ropa de colores y en grupo de cinco: ya has perdido. Ve a Sisyphos o a Kater Blau, que son igual de buenos y te dejan entrar.",
+    "Hacer la foto del Checkpoint Charlie con los 'soldados' disfrazados: cobran 5 euros y el Ayuntamiento los echó en 2019. El museo de al lado es privado y carísimo; la Topografía del Terror, a 300 metros, es gratis y seria.",
+    "Cruzar en rojo un paso de peatones vacío: multa de 5 euros y una bronca de una señora mayor, que duele más.",
+    "Comer currywurst en Alexanderplatz: Konnopke's o Curry 36, y con 'Darm' (con piel) si quieres que te tomen en serio."
+  ],
+  datos: [
+    "Berlín es nueve veces más grande que París y tiene menos densidad que Madrid; el 30 % es parque, bosque o agua.",
+    "El Muro medía 155 km, 43 dentro de la ciudad, y cayó porque un portavoz leyó mal una nota en una rueda de prensa un jueves a las 19:00.",
+    "El döner en pan lo inventó Kadir Nurman en Kreuzberg en 1972; Berlín tiene 1.600 puestos y consume más que Estambul.",
+    "La torre de televisión mide 368 m y cuando le da el sol forma una cruz de luz: el Papa la bendijo a distancia en 1990, según los berlineses.",
+    "Berlín es la única capital de Europa con tres óperas activas, 175 museos y un club (Tresor) en la cámara acorazada de unos grandes almacenes."
+  ]
+};
+
+EXTRA.atenas = {
+  salseos: [
+    "El Partenón fue templo, iglesia, mezquita, polvorín, harén y cantera. En 1687 un cañonazo veneciano lo voló; el general Morosini se llevó de recuerdo un caballo de mármol que se le cayó al bajarlo. Se rompió. Venecia tiene los pedazos.",
+    "Los griegos rompen platos en las bodas porque en los 60 los turistas de Zorba querían verlo y los restaurantes lo cobraron; en 1969 el gobierno lo prohibió por peligroso y ahora se tiran claveles. Un clavel de plástico cuesta un euro y no corta.",
+    "El evzone de la guardia tiene una regla: no puede parpadear más de lo normal durante su hora de guardia, y un compañero le seca el sudor con un pañuelo. Los 400 pliegues de la falda los plancha él mismo y tardan tres horas.",
+    "En Atenas hay más terrazas en azoteas que en cualquier capital: a los griegos no les dejaron construir alto por la Acrópolis y tiraron para arriba con bares. Desde cualquier azotea del centro se ve el Partenón iluminado gratis.",
+    "El café frappé se inventó en 1957 en una feria de Salónica: un vendedor de Nestlé no tenía agua caliente y batió el Nescafé con agua fría. Grecia lleva 70 años bebiendo un error de feria y lo defiende como identidad."
+  ],
+  guiri: [
+    "Ir a la Acrópolis a las dos de la tarde en julio: 40 grados, mármol que quema y cero sombra. Las 8:00 o las 18:00, con la luz naranja.",
+    "Pedir 'café griego' con leche. Se toma solo, en taza pequeña, con el poso abajo, y se pide 'skéto' (sin azúcar), 'métrio' (medio) o 'glykó' (dulce).",
+    "Dejar la ensalada griega con lechuga sin protestar: la horiatiki no lleva lechuga. Si la lleva, no es griega y estás en un sitio para turistas.",
+    "Pagar 15 euros por un souvlaki en Plaka: en Kostas o en Monastiraki cuesta 3 y es mejor. Si el restaurante tiene fotos de la comida, huye.",
+    "Coger el ascensor de Monastiraki en hora punta: el metro es limpio y rápido pero las escaleras mecánicas son un embudo. Sube por Ermou andando, son cinco minutos."
+  ],
+  datos: [
+    "Atenas ha estado habitada 5.000 años seguidos y la Acrópolis se conserva porque los turcos la usaron de barrio y los griegos, de cantera.",
+    "El Maratón nació aquí: Filípides corrió 42 km desde Maratón a Atenas, dijo 'hemos vencido' y murió. Los atenienses lo celebran cada noviembre con 50.000 corredores que sobreviven.",
+    "La palabra 'idiota' es griega y significaba 'el que no participa en política'. En la Atenas clásica era el peor insulto.",
+    "El metro de Atenas expone en cada estación céntrica lo que se encontró al excavarla: ánforas, tumbas y un acueducto. Se tardó 12 años en hacer 3 líneas.",
+    "Los evzones son los únicos soldados del mundo que llevan pompones en los zapatos; cada zapato pesa 3 kilos y tiene 60 clavos."
+  ]
+};
+
+EXTRA.edimburgo = {
+  salseos: [
+    "Edimburgo tiene una ciudad enterrada de verdad: Mary King's Close era una calle de ocho plantas que taparon en 1753 para construir el Ayuntamiento encima. Se visita con guía y una niña fantasma, Annie, a la que los turistas dejan muñecas. Hay 4.000 muñecas.",
+    "El castillo dispara un cañón cada día a las 13:00 desde 1861 para que los barcos del Forth ajustaran el reloj; los edimburgueses saben la hora por el cañonazo y los turistas dan un salto. Los domingos no dispara y todo el mundo lo nota.",
+    "Burke y Hare asesinaron a 16 personas en 1828 para vender los cuerpos a la Facultad de Medicina; a Burke lo ahorcaron, lo diseccionaron en público y con su piel encuadernaron un libro. Está en el museo de los cirujanos. Se puede tocar.",
+    "El Festival de Edimburgo tiene 3.000 espectáculos en agosto, más que el Mundial de fútbol; nació en 1947 y el 'Fringe' (los que no fueron invitados y actuaron igual) es hoy más grande que el oficial. Gana siempre el descarte.",
+    "En la Royal Mile hay un corazón en el suelo, el Heart of Midlothian, donde estaba la cárcel; los edimburgueses escupen en él al pasar 'por tradición'. El equipo de fútbol del mismo nombre no escupe, pero lo considera."
+  ],
+  guiri: [
+    "Llamar 'Reino Unido' o 'Inglaterra' a Escocia en un pub. Escocia tiene bandera, parlamento, whisky y ganas de independizarse. Se dice 'Scotland', y el whisky sin 'e'.",
+    "Ir a Arthur's Seat con zapatillas de lona a las cinco de la tarde en invierno: se hace de noche a las 15:45 y la subida tiene barro. Botas, luz y a las 11.",
+    "Beber el whisky con Coca-Cola o con hielo delante de un escocés. Solo, o con 'una lágrima de agua', y mirando a los ojos al brindar.",
+    "Ir en agosto sin reservar alojamiento: el Festival triplica los precios y llena hasta los sofás. O vas en mayo, o pagas.",
+    "Preguntar dónde 'nació' Harry Potter: en un café hay una placa, en otro un váter con firma de Rowling, y ella dice que en un tren. Todos cobran."
+  ],
+  datos: [
+    "Edimburgo tiene más árboles que habitantes y más edificios protegidos que ninguna ciudad del mundo: 4.500.",
+    "Los rascacielos de la Old Town del siglo XVII tenían 14 plantas; los ricos vivían en el medio y los pobres arriba y abajo, todos por la misma escalera.",
+    "Escocia tiene 140 destilerías y exporta 40 botellas de whisky por segundo; el 'angel's share' que se evapora en los barriles equivale a 40 millones de botellas al año.",
+    "El unicornio es el animal nacional de Escocia y aparece en el escudo con una cadena, porque los medievales creían que era peligroso.",
+    "El Fringe de 2023 vendió 2,4 millones de entradas en 25 días; el show más largo de la historia, 'Six', pasó de un aula del Fringe a Broadway."
+  ]
+};
+
+EXTRA.dublin = {
+  salseos: [
+    "Dublín tiene el pub más antiguo de Irlanda, el Brazen Head (1198), y dice que en él Robert Emmet planeó una revolución y James Joyce puso una escena. La cerveza que sirven es de 2024. La humedad, de 1198.",
+    "La Guinness se sirve en dos tiempos por una razón física: el nitrógeno tarda 119,5 segundos en asentarse. Un camarero que la sirva de golpe en Dublín no dura una semana. Y la 'Guinness sabe distinto en Irlanda' es cierto: viaja peor que un dublinés.",
+    "Molly Malone, la del pescado y la canción, nunca existió; la estatua la pusieron en 1988 con escote generoso y los dublineses la llaman 'the tart with the cart' (la fresca del carro), 'the dish with the fish' y cosas peores. Le frotan el pecho por suerte.",
+    "Oscar Wilde está en Merrion Square tumbado en una roca con una cara que sonríe y otra que llora según el lado: el escultor la hizo así a propósito. Enfrente, en la casa donde nació, hay un colegio americano que paga el alquiler.",
+    "El Book of Kells sobrevivió a los vikingos porque los monjes lo enterraron; en 1007 lo robaron por la cubierta de oro y lo tiraron a una zanja sin ella. Es el libro más visitado del mundo y nadie ha leído una línea: está en latín."
+  ],
+  guiri: [
+    "Pedir 'a Guinness' y beberla mientras baja: espera a que esté negra del todo con la espuma blanca perfecta. El camarero te avisa. Si la tocas antes, se nota.",
+    "Ir a Temple Bar a cenar: es Disneyland para despedidas. Cruza el río a Capel Street o baja a Portobello y come lo mismo por la mitad.",
+    "Comprar el Trinity + Book of Kells en la puerta: online y hora, o dos horas de cola bajo la lluvia.",
+    "Hablar de 'las islas británicas' o del 'Reino Unido' refiriéndote a Irlanda. Irlanda es república desde 1949 y tiene memoria larga.",
+    "Salir sin chubasquero porque 'hace sol': en Dublín llueve cuatro veces al día en cuatro direcciones. Los paraguas se dan la vuelta; el chubasquero, no."
+  ],
+  datos: [
+    "Irlanda tiene cuatro premios Nobel de Literatura (Yeats, Shaw, Beckett, Heaney) y ninguno de ellos se quedó a vivir en Dublín mucho tiempo.",
+    "El día de San Patricio empezó como fiesta en Nueva York, no en Dublín; aquí los pubs cerraban ese día por ley hasta 1970.",
+    "La Guinness produce 3 millones de pintas al día en St. James's Gate; el contrato de alquiler de 9.000 años sigue vigente y les quedan 8.700.",
+    "El Ha'penny Bridge lo cruzan 30.000 personas al día; el peaje de medio penique duró 100 años y lo pagaban los que iban a la ópera.",
+    "Dublín tiene 1.000 pubs y una ley que prohíbe vender alcohol antes de las 10:30; el primer cliente de cada pub a esa hora es alguien que ha madrugado para eso."
+  ]
+};
+
+/* ======================================================================
+   CONTENIDO EXTRA · TANDA 4
+   ====================================================================== */
+EXTRA.copenhague = {
+  salseos: [
+    "La Sirenita ha perdido la cabeza dos veces (1964 y 1998), un brazo (1984), la han pintado de rosa, de rojo, le han puesto burka y un consolador, y la han tirado al mar con explosivos (2003). En 2010 se fue de viaje a Shanghái y Copenhague puso una pantalla con su imagen. La gente hizo cola para ver la pantalla.",
+    "Christiania tiene su propia moneda, su bandera y una regla escrita a la entrada: 'Prohibido correr'. Correr crea pánico y el pánico lo estropea todo. Ha sobrevivido a diez gobiernos que querían cerrarla; el último la compró por 10 millones y se la vendió a sus vecinos por lo mismo.",
+    "Los daneses son los más felices del mundo en todas las encuestas y tienen la palabra 'hygge' para explicarlo; también tienen la tasa de antidepresivos más alta de Europa y un invierno de 17 horas de noche. Lo de las velas tiene sentido.",
+    "Tivoli inspiró a Walt Disney, que vino en 1951 con su mujer, tomó notas y dijo 'quiero que Disneyland sea así'; luego eliminó la parte de la cerveza. La montaña rusa de madera de 1914 tiene un empleado sentado dentro que frena a mano en cada vuelta.",
+    "Las bicis de Copenhague tienen carriles con 'ola verde': a 20 km/h no pillas ningún semáforo en rojo. El 62 % va en bici al trabajo, incluidos ministros, y con lluvia el porcentaje baja al 60. Hay un carril bici con calefacción bajo el asfalto para que no hiele."
+  ],
+  guiri: [
+    "Andar por el carril bici para mirar un canal. En Copenhague te lo dicen con el timbre una vez y con la rueda la segunda.",
+    "Buscar 'la comida danesa' en un restaurante de Nyhavn: el smørrebrød de verdad está en Aamanns o en Schønnemann, a cinco minutos, y el de Nyhavn cuesta el doble.",
+    "Llegar a cenar a las 21:00: las cocinas cierran a las 21:30 y a las 22:00 recogen. Aquí se cena a las 18:30, y el sol a las 22:00 en verano confunde.",
+    "Comprar la Copenhagen Card 'por si acaso': solo compensa si vas a tres museos de pago al día. Con el Museo Nacional gratis, el Glyptotek gratis los martes y Tívoli aparte, casi nunca.",
+    "Pedir 'un danish' esperando la pasta danesa: aquí se llama 'wienerbrød', pan vienés, porque la trajeron panaderos austriacos. Un danés no sabe qué es un danish."
+  ],
+  datos: [
+    "Copenhague quiere ser la primera capital neutra en carbono en 2025 y el 40 % de su energía ya viene del viento; la incineradora de basura tiene una pista de esquí en el tejado.",
+    "Lego viene de 'leg godt' (juega bien) y la empresa hace 36.000 piezas por minuto; hay 80 piezas de Lego por cada habitante del planeta.",
+    "Los daneses tienen una palabra para el placer de una cerveza a las 4 de la tarde del viernes: 'fredagsøl'. Es una institución con hora.",
+    "La escalera exterior de la Iglesia de Nuestro Salvador tiene 400 escalones y los últimos 150 dan vueltas por fuera hasta que no cabe ni un pie: el último escalón mide 8 cm.",
+    "Noma fue el mejor restaurante del mundo cinco veces y cerró en 2024 para hacer laboratorio; su plato más famoso era una hormiga viva sobre una hoja."
+  ]
+};
+
+EXTRA.bruselas = {
+  salseos: [
+    "El Manneken Pis tiene 1.100 trajes con vestidor propio, un mayordomo que lo viste y un calendario oficial; en Navidad sale con traje de Papá Noel y mea cerveza los días de fiesta. Es de 1619, lo han robado siete veces y en 1965 lo partieron en dos. El de la calle es copia; el original está en el museo, mucho más tranquilo.",
+    "El Atomium tenía que durar seis meses en 1958 y sigue; en 2004 le cambiaron la piel de aluminio y las esferas viejas se vendieron a trozos: hay uno en cada cocina belga que se precie. La bola de arriba tiene restaurante y la de en medio, literas para niños.",
+    "Bruselas es oficialmente bilingüe y las calles tienen dos nombres; los taxistas hablan los dos y el ciudadano medio, ninguno bien. Hergé usó palabras del dialecto de las Marolles para inventar Syldavia: 'Kûr' es cerveza y 'Ottokar' es 'ah, qué burro'.",
+    "El Palacio de Justicia es el edificio más grande del XIX, con 26.000 m², y lleva en andamios desde 1984; los andamios están tan oxidados que hay que restaurarlos antes de quitar el edificio de debajo. Los bruselenses ya no lo ven.",
+    "Los belgas fríen las patatas dos veces en grasa de vaca y hay una guerra fría con Francia por el nombre 'french fries': la explicación belga es que los soldados americanos en 1918 estaban en la Bélgica francófona y confundieron el idioma con el país. Hay una petición a la UNESCO abierta."
+  ],
+  guiri: [
+    "Pedir un gofre con nata, chocolate, fresas y M&M's en la Grand-Place: el gofre de Lieja se come solo, caliente, en la mano, en un puesto de la calle. Con nata es para turistas y cuesta 8 euros.",
+    "Pedir 'una cerveza' sin más. Hay 1.500 y cada una tiene su copa; pregunta 'algo de trapense' o 'una gueuze' y verás cómo cambia la cara del camarero.",
+    "Hacer la foto del Manneken Pis y decir 'qué pequeño': lo dicen todos, es el chiste oficial de Bruselas y el niño mide 55 cm. La Jeanneke Pis y el perro Zinneke Pis completan la trilogía y nadie los encuentra.",
+    "Comer en la Rue des Bouchers, la calle de los restaurantes con camareros a la puerta: mejillones de congelador a precio de plaza. Sainte-Catherine, a cinco minutos, es otra vida.",
+    "Ir a Brujas 'en el día' desde Bruselas y perderse Bruselas. Bruselas tiene la Grand-Place, el mejor art nouveau del mundo, el cómic y Magritte. Brujas tiene canales y 10.000 japoneses."
+  ],
+  datos: [
+    "Bélgica tiene 1.500 cervezas, 11 trapenses y un tipo de cerveza (lambic) que fermenta con levaduras salvajes del aire del valle del Senne. Solo se puede hacer en Bruselas.",
+    "El praliné lo inventó Jean Neuhaus en 1912 en las Galerías Saint-Hubert y su mujer inventó la caja 'ballotin' para que no se aplastaran. La caja sigue igual.",
+    "Bruselas tiene más de 50 murales de cómic por las calles, uno cada 300 metros; el de Tintín de la Rue de l'Étuve es el más fotografiado.",
+    "El barrio europeo trabaja para 450 millones de personas y tiene 30.000 funcionarios; la Place Luxembourg los jueves es el mayor afterwork de Europa.",
+    "Audrey Hepburn nació en Bruselas (Ixelles, 1929); tiene una placa que nadie encuentra y un bar con su nombre que no tiene nada que ver con ella."
+  ]
+};
+
+EXTRA.munich = {
+  salseos: [
+    "El Oktoberfest empezó en 1810 como boda de Luis I y Teresa; el prado se llama Theresienwiese (el prado de Teresa) y los muniqueses van 'a la Wiesn', nunca 'al Oktoberfest'. Se sirven 7 millones de litros y se pierden 4.000 pasaportes al año en la oficina de objetos perdidos, que tiene una sección para dentaduras postizas.",
+    "La ley de pureza de la cerveza (1516) es la ley alimentaria más antigua del mundo vigente: agua, cebada, lúpulo y nada más. Se firmó en Ingolstadt pero Múnich se la ha apropiado. Los cerveceros belgas se ríen de ella; los bávaros no oyen.",
+    "Luis II, el rey loco, construyó Neuschwanstein, el castillo de Disney, con dinero que no tenía, se dejó crecer la barba, dormía de día y murió en un lago con su psiquiatra en 1886. Nadie sabe cómo. Baviera lo adora y lo vende en imanes.",
+    "El Hofbräuhaus tiene 3.000 plazas y una sala de jarras con candado donde 400 clientes habituales guardan la suya desde hace generaciones; la lista de espera para una taquilla es de diez años. Hitler dio su primer gran discurso aquí en 1920; la cervecería lo cuenta en una placa pequeñísima.",
+    "El Englischer Garten tiene un prado nudista desde 1972 en pleno centro, con oficinistas comiendo el bocadillo desnudos a 200 metros de la torre china; los japoneses hacen fotos desde lejos y los muniqueses pasan en bici sin mirar. La ola del Eisbach la 'construyeron' surfistas ilegales con tablones y el Ayuntamiento tardó 40 años en legalizarla."
+  ],
+  guiri: [
+    "Pedir una weisswurst después de las 12: no debe 'oír las campanas del mediodía'. Se toma de desayuno tardío, pelada, con mostaza dulce, pretzel y cerveza de trigo.",
+    "Pedir 'una cerveza' y recibir un litro: aquí la medida es la 'Maß'. Si quieres medio, 'eine Halbe'; si dices 'ein Bier', el camarero decide, y decide litro.",
+    "Sentarte en una mesa de biergarten con mantel con tu comida de casa: las de mantel son de servicio. Las desnudas, tuyas.",
+    "Ir a Neuschwanstein sin entrada horaria: son dos horas en tren y las entradas del día se agotan a las 9:00. Web oficial y horas antes.",
+    "Decir que Múnich es 'la capital de Alemania del sur' en Baviera: aquí es la capital de Baviera, que es otra cosa, con su bandera azul y blanca en cada balcón."
+  ],
+  datos: [
+    "Múnich tiene seis cervecerías con derecho a servir en el Oktoberfest y ninguna otra puede: Augustiner, Paulaner, Hacker-Pschorr, Hofbräu, Löwenbräu y Spaten.",
+    "El Deutsches Museum es el museo de ciencia más grande del mundo, con 28.000 objetos y una mina de carbón de verdad en el sótano de 400 metros.",
+    "El Bayern ha ganado 33 Bundesligas y el Allianz Arena se ilumina de rojo (Bayern), azul (1860, cuando jugaba) o blanco (selección). Los vecinos protestaron por la luz y ahora se apaga a medianoche.",
+    "BMW significa Bayerische Motoren Werke y el logo no es una hélice: son los colores de Baviera; la publicidad de 1929 con el avión les gustó y la dejaron.",
+    "En Múnich se dice 'Servus' para hola y adiós, 'Grüß Gott' a los mayores y 'Pfiat di' al irse; decir 'Tschüss' es cosa de prusianos, o sea, de Berlín."
+  ]
+};
+
+EXTRA.sevilla = {
+  salseos: [
+    "La Giralda tiene 35 rampas en lugar de escaleras para que el almuédano subiera a caballo; hoy la sube un guardia en bici para cambiar la bombilla. Se nota. El Giraldillo pesa una tonelada y lleva girando con el viento desde 1568; en 1999 lo bajaron y la ciudad se quedó sin veleta un año: el Betis no ganó nada y lo culparon.",
+    "El NO8DO de las farolas es un acertijo de Alfonso X: 'no-madeja-do' = 'no me ha dejado', porque Sevilla le fue fiel contra su hijo. Los sevillanos lo ponen en la firma del correo. Los de fuera creen que es un número de teléfono.",
+    "El Alcázar es el palacio real en uso más antiguo de Europa: el rey duerme arriba cuando viene; en Juego de Tronos fue Dorne y el Ayuntamiento cobra por eso. Pedro I mató aquí a su hermano y una mancha del suelo 'es su sangre'; la restauran cada diez años para que siga siéndolo.",
+    "La Feria de Abril tiene 1.000 casetas y el 90 % son privadas: entrar sin socio es imposible, excepto en las siete públicas. Se bebe rebujito (manzanilla con 7-Up) desde las 12 y se baila sevillanas, que no es flamenco, y cuidado con decirlo.",
+    "Carmen, la de Bizet, trabajaba en la Fábrica de Tabacos, que hoy es la universidad y tiene foso, garitas y muralla: la construyeron así para que las cigarreras no robaran tabaco. Bizet nunca pisó Sevilla; escribió Carmen desde París leyendo a Mérimée y los sevillanos le dedicaron una plaza igual."
+  ],
+  guiri: [
+    "Comer a las 12:30 y cenar a las 19:00: en Sevilla la cocina abre a las 13:30 y se cena a las 21:30. A las 19:00 solo hay turistas y camareros mirándote.",
+    "Ir de tapas 'sentado y pidiendo raciones': la tapa se come de pie en la barra, una o dos por bar, y al siguiente. Dos horas, cinco bares, cuatro euros cada uno.",
+    "Pedir sangría: eso es para guiris. Aquí se pide una cruzcampo, un tinto de verano o una manzanilla, y el vino dulce es para Semana Santa.",
+    "Visitar la Plaza de España a las 14:00 en julio: son 45 grados sobre ladrillo. A las 9:00 o a las 20:30, cuando el sol da naranja y las barcas cuestan lo mismo.",
+    "Llamar 'flamenco' a las sevillanas de la Feria o pedir 'un tablao' en Triana con palmas turísticas: el flamenco de verdad se ve en peñas y en la Casa de la Memoria, y a Casa Anselma se va después de la una."
+  ],
+  datos: [
+    "Sevilla tiene el segundo casco antiguo más grande de Europa (4 km²), después de Venecia, y el más caluroso: 45,2 grados de récord en 2021.",
+    "La Catedral es la gótica más grande del mundo y Colón lleva dentro cuatro reyes cargándolo desde 1902; su ADN se confirmó en 2021.",
+    "Las Setas son la estructura de madera más grande del mundo (150 x 70 m) y costaron 100 millones, el triple de lo previsto. Ahora nadie las quitaría.",
+    "El azahar florece en marzo y hay 40.000 naranjos en las calles; las naranjas son amargas y van a Inglaterra para mermelada: Sevilla exporta 15.000 toneladas al año de fruta que nadie come.",
+    "Sevilla fue el puerto de las Indias 200 años con monopolio del oro americano; el Archivo de Indias guarda 80 millones de páginas de esa aduana."
+  ]
+};
+
+EXTRA.cracovia = {
+  salseos: [
+    "El trompetista de Santa María toca el hejnał cada hora 24 horas al día hacia los cuatro puntos cardinales y corta la melodía a mitad desde hace 600 años, porque a su antecesor una flecha tártara lo mató a mitad de nota en 1241. La radio pública lo emite a las 12 desde 1927. Cuando en 2000 se retrasó un minuto por una avería, salió en los telediarios.",
+    "Bajo la plaza mayor había un cementerio de vampiros: en las excavaciones de 2010 encontraron cuerpos del siglo XI decapitados con la cabeza entre las piernas y atados, para que no volvieran. El museo subterráneo los enseña en vitrina y los niños polacos lo visitan en excursión escolar. Ningún trauma.",
+    "El dragón de Wawel escupe fuego de verdad cada cinco minutos o cuando alguien le manda un SMS al número que hay en el cartel; los cracovianos lo usan para impresionar a las citas. Los 'huesos de dragón' colgados en la puerta de la catedral son de mamut y ballena, y el día que caigan se acaba el mundo. Llevan 500 años sin caer.",
+    "Juan Pablo II era de aquí (bueno, de Wadowice, a 50 km) y fue obispo de Cracovia 20 años; hay una 'ventana papal' en la calle Franciszkańska desde la que hablaba a los estudiantes por la noche y donde velaron 100.000 personas cuando murió. El helado de crema que comía de niño ('kremówka') es hoy el postre nacional.",
+    "La Nowa Huta se construyó en 1949 como ciudad socialista perfecta sin iglesia; los obreros pusieron una cruz de madera en un solar y la defendieron a golpes 20 años hasta que Wojtyła consiguió el permiso. Se llama Arka Pana y tiene una piedra de la tumba de San Pedro en el altar y 2 millones de piedras de río puestas a mano."
+  ],
+  guiri: [
+    "Ir a Auschwitz 'de paso' entre dos museos: son tres horas de visita y un día entero de cabeza. Ve con guía, temprano y sin plan después.",
+    "Cambiar euros en los 'kantor' de la plaza o sacar en los cajeros Euronet: cambio malo y comisión escondida. Cajero de banco (PKO, ING) y tarjeta.",
+    "Pedir 'pierogi' como si fuera un plato: hay 20 tipos. 'Ruskie' (queso y patata) es el clásico, 'z mięsem' de carne, 'z jagodami' dulces de arándanos. Y con cebolla frita encima, siempre.",
+    "Ir en coche de caballos por la plaza: 300 zł por 20 minutos y los cracovianos miran raro. El paseo a pie por el Planty es gratis y mejor.",
+    "Decir 'Polonia es barata' en voz alta en un bar de Kazimierz: es barata para ti, no para el camarero, y lo sabe."
+  ],
+  datos: [
+    "Cracovia fue capital de Polonia 550 años, tiene la plaza medieval más grande de Europa (40.000 m²) y la universidad más antigua del país (1364), donde estudió Copérnico.",
+    "Las minas de sal de Wieliczka tienen 300 km de galerías, una catedral tallada en sal a 100 metros bajo tierra y un sanatorio para asmáticos que duermen ahí abajo.",
+    "El obwarzanek (la rosquilla de los carritos azules) tiene denominación de origen de la UE y se venden 150.000 al día. Solo del día.",
+    "La fábrica de Schindler hacía cazuelas esmaltadas; Schindler salvó a 1.200 personas y murió arruinado en 1974. Está enterrado en Jerusalén con piedras en la tumba.",
+    "En Cracovia hay más de 100 iglesias, un bar por cada 100 habitantes en el centro, y el vodka Żubrówka lleva una brizna de hierba de bisonte del bosque de Białowieża que da nombre y sabor."
+  ]
+};
+
+EXTRA.estocolmo = {
+  salseos: [
+    "El Vasa se hundió en 1628 a 1.300 metros del muelle porque el rey lo quiso más alto y con dos filas de cañones; el juicio no condenó a nadie porque el culpable era el rey y estaba en Polonia. Lo sacaron en 1961 con el 98 % original y tiene un museo solo para él. Sigue sin haber culpable.",
+    "El síndrome de Estocolmo nació en un banco de Norrmalmstorg en 1973: seis días de secuestro, y al salir los rehenes defendieron a los atracadores, uno se hizo amigo del secuestrador y otra dijo que 'el Estado la había puesto en peligro'. El banco es hoy una tienda de ropa cara.",
+    "El Nobel se cena en el Ayuntamiento el 10 de diciembre: 1.300 invitados, 65 metros de mesa, 6.000 piezas de vajilla y un postre helado que las cocineras practican durante semanas para que llegue sin derretirse. El menú es secreto hasta que se sienta el rey. Los estudiantes universitarios sirven de camareros.",
+    "El metro de Estocolmo es la galería de arte más larga del mundo, 110 km y 90 estaciones pintadas sobre roca viva; en Kungsträdgården, en la roca, vive una araña que no existe en ningún otro sitio de Escandinavia: llegó en el musgo importado de un jardín italiano. La estación tiene su propio ecosistema.",
+    "Suecia era tan pobre en 1860 que un cuarto del país se fue a América; hoy exporta más música per cápita que nadie (ABBA, Roxette, Avicii, Max Martin, que ha escrito 25 números uno de Britney a Taylor Swift). Y Spotify. Los suecos cantan en coro: 600.000 personas en coros para 10 millones de habitantes."
+  ],
+  guiri: [
+    "Sacar efectivo: Suecia casi no lo acepta. Ni el metro, ni los museos, ni muchos bares. Tarjeta o Swish (que no tendrás). Los mendigos aceptan Swish.",
+    "Pedir 'un café' y esperar que llegue: en Suecia se sirve uno mismo del termo y se rellena gratis ('påtår'). Y la fika no es un café: es un ritual con bollo, silla y 20 minutos.",
+    "Ir al Vasa a mediodía: mil personas y un barco a oscuras. A las 8:30 (verano) o a las 16:00, y el museo se ve de verdad.",
+    "Confundir Södermalm con la Ciudad Vieja: Gamla Stan es la isla con el palacio; Söder es el barrio de la gente, con los miradores y la comida. Necesitas los dos.",
+    "Brindar sin mirar a los ojos: en Suecia 'skål' se dice mirando a cada uno de la mesa, se bebe, y se vuelve a mirar antes de dejar la copa. Hay canciones para cada chupito de aquavit."
+  ],
+  datos: [
+    "Estocolmo son 14 islas unidas por 57 puentes y el agua del centro se puede beber; los suecos pescan salmón delante del Parlamento.",
+    "El 'fredagsmys' (acurrucarse el viernes) es una institución con tacos y patatas fritas; los suecos comen tacos el viernes por una campaña de marketing de 1990 que funcionó demasiado.",
+    "IKEA nació en Suecia y las albóndigas que sirve son la versión 'de aeropuerto': las suecas llevan nata, arándano rojo y pepinillo, y se sirven con puré, no con patatas fritas.",
+    "Suecia tiene 'allemansrätten', el derecho de todos: puedes acampar, coger bayas y pasear por cualquier terreno privado siempre que no molestes. Los suecos lo consideran un derecho humano.",
+    "El surströmming (arenque fermentado) está prohibido abrirlo en aviones y en algunos edificios; un casero alemán echó a un inquilino por abrir una lata en la escalera y ganó el juicio."
+  ]
+};
+
 /* ======================================================================
    REPOSITORIO DE CIUDADES · TANDA 1
    Cada ciudad: ficha general, zonas y paradas. Cada parada lleva:
@@ -2627,25 +3219,25 @@ img { display:block; }
 .foto-caja { overflow:hidden; background: var(--suave); background-image: var(--motivo); }
 .foto-caja.sin { background-image: var(--motivo); }
 .eyebrow { font-size:11px; letter-spacing:.24em; text-transform:uppercase; font-weight:700; color:var(--acento2); }
-.seccion { margin-top: 44px; }
-.seccion > h2 { font-size: 30px; line-height:1.05; margin-bottom: 14px; color: var(--acento); }
+.seccion { margin-top: 56px; }
+.seccion > h2 { font-size: 34px; line-height:1.05; margin-bottom: 18px; color: var(--acento); letter-spacing: -.01em; }
 .seccion > h2 small { display:block; font-family:"${d.cuerpo}"; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--acento2); margin-bottom:6px; }
 .prosa { font-size: ${base + 0.5}px; max-width: 700px; }
 .prosa p + p { margin-top: 10px; }
 .dos { display:grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
 .tres { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.caja { background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; padding: 14px 16px; font-size: ${base - 1.5}px; }
+.caja { background: var(--papel); border: 1px solid var(--linea); border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(0,0,0,.04); font-size: ${base - 1.5}px; }
 .caja h5 { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--acento2); margin-bottom: 6px; }
 .frases { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .frases span { font-size:12.5px; border:1px solid var(--linea); border-radius:99px; padding:6px 12px; background:var(--papel); }
 /* Dia */
 .dia { margin-top: 36px; break-inside: avoid-page; }
-.dia-cab { display:flex; align-items:baseline; gap:14px; border-bottom: 2px solid var(--acento); padding-bottom: 8px; margin-bottom: 14px; }
+.dia-cab { display:flex; align-items:baseline; gap:14px; border-bottom: 2px solid var(--acento); padding-bottom: 10px; margin-bottom: 16px; }
 .dia-cab .num { font-size: 44px; line-height: 1; color: var(--acento); }
 .dia-cab h3 { font-size: 22px; }
 .dia-cab .zona { margin-left:auto; font-size: 11px; letter-spacing:.18em; text-transform: uppercase; color: var(--tinta2); text-align:right; }
-.parada { display:grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--linea); break-inside: avoid; }
-.parada .foto-caja { height: 150px; border-radius: 8px; }
+.parada { display:grid; grid-template-columns: 200px 1fr; gap: 18px; padding: 18px 0; border-top: 1px solid var(--linea); break-inside: avoid; }
+.parada .foto-caja { height: 150px; border-radius: 12px; }
 .parada .hora { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--acento2); }
 .parada h4 { font-size: ${base + 3.5}px; line-height:1.15; margin: 2px 0 4px; }
 .parada .tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom: 6px; }
@@ -2667,7 +3259,7 @@ img { display:block; }
 .corta .dia { margin-top: 22px; }
 /* Salseos de ciudad */
 .salseos { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; counter-reset: s; }
-.salseos .s { background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 18px 16px 52px; position: relative; font-size: ${base - 1}px; }
+.salseos .s { background: var(--papel); border: 1px solid var(--linea); border-radius: 16px; padding: 18px 20px 18px 56px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,.04); font-size: ${base - 1}px; }
 .salseos .s::before { counter-increment: s; content: counter(s); position:absolute; left: 14px; top: 10px; font-family:"${d.titulo}"; font-size: 34px; color: var(--acento2); line-height:1; }
 .salseos .s.ancho { grid-column: 1 / -1; }
 /* Platos */
@@ -2676,8 +3268,10 @@ img { display:block; }
 .plato h4 { font-size: ${base + 0.5}px; line-height: 1.15; }
 .plato p { font-size: ${base - 2.5}px; color: var(--tinta2); }
 .lista { list-style: none; margin-top: 10px; }
-.lista li { padding: 6px 0 6px 18px; position: relative; font-size: ${base - 1}px; border-top: 1px solid var(--linea); }
+.lista li { padding: 8px 0 8px 20px; position: relative; font-size: ${base - 1}px; border-top: 1px solid var(--linea); }
 .lista li::before { content:""; position:absolute; left:0; top:15px; width: 9px; height: 2px; background: var(--acento2); }
+.lista.guiri li::before { background: #C0392B; }
+.lista.datos li::before { background: var(--acento); }
 .cierre { margin-top: 50px; text-align:center; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta2); padding-top: 20px; border-top: 1px solid var(--linea); }
 .cierre .t { font-size: 22px; letter-spacing: 0; text-transform: none; color: var(--acento); margin-bottom: 6px; }
 /* Barra de control (no se imprime) */
@@ -2755,7 +3349,17 @@ body.pdf .barra { display: none; }
 body.pdf .seccion > h2, body.pdf .parada .foto-caja, body.pdf .parada .tag, body.pdf .dia-cab .num, body.pdf .plato .foto-caja { transform: none !important; }
 body.pdf .seccion > h2 { display: block; box-shadow: none; }
 body.pdf .m-fiesta .seccion > h2, body.pdf .m-mosaico .seccion > h2, body.pdf .m-cartel .seccion > h2 { display: block; }
-body.pdf .dia-cab, body.pdf .parada, body.pdf .hueco, body.pdf .seccion > h2, body.pdf .prosa, body.pdf .frases, body.pdf .tres, body.pdf .dos, body.pdf .salseos, body.pdf .platos, body.pdf .lista, body.pdf .cierre { width: 584px; box-sizing: border-box; }
+/* Paginas compuestas para el PDF exacto */
+.pdf-paginas { position: absolute; left: 0; top: 0; width: 640px; max-width: 640px; padding: 0 !important; margin: 0 !important; z-index: -1; opacity: 1; }
+.pag { width: 640px; height: 905px; overflow: hidden; position: relative; box-sizing: border-box; padding: 26px 28px 0; }
+.pag.portada-pag { padding: 0; }
+.pag .pag-cuerpo > .pieza { margin-top: 0 !important; margin-bottom: 10px; }
+.pag .pag-cuerpo > .seccion.pieza { padding-top: 0; }
+.pag .pag-cuerpo > .portada.pieza { margin: 0; height: 905px; }
+.pag .pag-pie { position: absolute; left: 28px; right: 28px; bottom: 12px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--tinta2); display: flex; justify-content: space-between; }
+.pag .pag-pie::after { content: ""; }
+.pag .pag-cuerpo > .dia-cab.pieza { margin-bottom: 6px; }
+.pag .pag-cuerpo > .parada.pieza, .pag .pag-cuerpo > .hueco.pieza { margin-bottom: 0; }
 @media print { .barra { display:none !important; } .pagina { max-width:none; padding: 0; } body { font-size: 12.5px; } .parada .foto-caja { height: 120px; } .parada { grid-template-columns: 160px 1fr; } .hueco { padding-left: 176px; } @page { margin: 14mm 12mm; } }
 @media (max-width: 640px) {
   body:not(.pdf) { font-size: ${base - 1.5}px; }
@@ -2943,9 +3547,15 @@ function htmlGuia(plan, d, corta) {
   // Salseos: de la ciudad y de las paradas del itinerario (version larga)
   if (!corta) {
     const deParadas = dias.flatMap(dd => dd.paradas.map(p => p.salseo));
+    const ex = EXTRA[plan.entrada.ciudad] || {};
+    const todosSalseos = (g.salseos || []).concat(ex.salseos || []);
     h += '<div class="seccion hoja"><h2><small>Lo que no sale en las guías</small>🤫 Salseos de ' + esc(ciudad.nombre) + '</h2><div class="salseos">';
-    (g.salseos || []).forEach((s, i) => { h += '<div class="s' + (i === 0 ? ' ancho' : '') + '">' + esc(s) + '</div>'; });
+    todosSalseos.forEach((s, i) => { h += '<div class="s' + (i === 0 ? ' ancho' : '') + '">' + esc(s) + '</div>'; });
     h += '</div>';
+    if (ex.guiri) {
+      h += '<h2 style="margin-top:34px"><small>Manual de supervivencia</small>🙈 Errores de guiri (y cómo no cometerlos)</h2><ul class="lista guiri">' + ex.guiri.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>';
+      h += '<h2 style="margin-top:34px"><small>Para soltar en la cena</small>🎓 Datos que impresionan</h2><ul class="lista datos">' + ex.datos.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>';
+    }
     h += '<h2 style="margin-top:34px"><small>De los sitios que vas a pisar</small>📍 Salseos del itinerario</h2><ul class="lista">';
     dias.forEach(dd => dd.paradas.forEach(p => { h += '<li><b>' + esc(p.n) + '.</b> ' + esc(p.salseo) + '</li>'; }));
     h += '</ul></div>';
@@ -3002,7 +3612,7 @@ async function fotoDe(ref, alt) {
   return null;
 }
 let pendientes = 0, hechas = 0;
-function estado() { const e = document.getElementById("estado"); if (e) e.textContent = pendientes ? "Cargando fotos " + hechas + "/" + pendientes : "Fotos listas · Imprimir guarda en PDF"; }
+function estado() { const e = document.getElementById("estado"); if (e) e.textContent = (pendientes && hechas < pendientes) ? "Cargando fotos " + hechas + "/" + pendientes : "Fotos listas"; }
 async function cargarFotos() {
   const cajas = [...document.querySelectorAll(".foto-caja")];
   pendientes = cajas.length; estado();
@@ -3031,7 +3641,13 @@ const EMOJI_HUECO = t => /comida/i.test(t) ? "🍴" : /descanso/i.test(t) ? "�
 function nombrePdf() { return (DATOS.ciudad.nombre + " - La Brujula" + (DATOS.corta === "poster" ? " (poster)" : DATOS.corta ? " (corta)" : "")).replace(/[^\\w\\u00C0-\\u017F ()-]+/g, "") + ".pdf"; }
 function hex(c) { const h = c.replace("#", ""); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
 function limpiar(t) { return String(t || "").replace(/≈/g, "aprox.").replace(/\\u00A0/g, " "); }
-async function esperarFotos() { while (pendientes && hechas < pendientes) await new Promise(r => setTimeout(r, 200)); }
+// Espera a que se hayan resuelto las fotos Y a que las imagenes esten descargadas del todo (hasta 25 s)
+async function esperarFotos() {
+  while (pendientes && hechas < pendientes) await new Promise(r => setTimeout(r, 200));
+  const inicio = Date.now();
+  const faltan = () => [...document.querySelectorAll(".foto-caja img")].filter(i => i.getAttribute("src") && !i.complete);
+  while (faltan().length && Date.now() - inicio < 25000) { const e = document.getElementById("estado"); if (e) e.textContent = "Descargando fotos, faltan " + faltan().length + "…"; await new Promise(r => setTimeout(r, 250)); }
+}
 
 // Emoticonos: se dibujan con la fuente de emojis del sistema en un canvas y van al PDF como imagen
 const cacheEmoji = {};
@@ -3371,6 +3987,12 @@ async function generarPdfLigero() {
         filaAlto = Math.max(filaAlto, sh);
         if (!izquierda || i === 0 || i === g.salseos.length - 1) y = filaY + filaAlto + 10;
       });
+      if (g.guiri && g.guiri.length) {
+        y += 14; titulo2("Manual de supervivencia", "Errores de guiri", "🙈");
+        g.guiri.forEach(t => { const ls = lineas(t, CW - 14); espacio(ls.length * 13 + 8); pdf.setFillColor(...col.acento2); pdf.rect(M, y + 5, 6, 1.5, "F"); fuente(FC, "normal", 9.2, col.tinta); pdf.text(ls, M + 12, y + 9, { lineHeightFactor: 1.45 }); y += ls.length * 13.3 + 6; });
+        y += 10; titulo2("Para soltar en la cena", "Datos que impresionan", "🎓");
+        (g.datos || []).forEach(t => { const ls = lineas(t, CW - 14); espacio(ls.length * 13 + 8); pdf.setFillColor(...col.acento2); pdf.rect(M, y + 5, 6, 1.5, "F"); fuente(FC, "normal", 9.2, col.tinta); pdf.text(ls, M + 12, y + 9, { lineHeightFactor: 1.45 }); y += ls.length * 13.3 + 6; });
+      }
       y += 14; titulo2("De los sitios que vas a pisar", "Salseos del itinerario", "📍");
       D.dias.forEach(dia => (dia.paradas || []).forEach(p => {
         const ancho = CW - 12, h = alto(p.n + ". " + p.salseo, ancho, 9, 1.45) + 8;
@@ -3441,86 +4063,85 @@ async function generarPdfExacto() {
   await document.fonts.ready;
   const { jsPDF } = window.jspdf;
   if (DATOS.corta === "poster") return generarPdfPoster(jsPDF);
-  const ANCHO = 640, ALTO = 905, SEP = 10;   // proporcion A4, maquetado para leerse bien en movil
+  const ANCHO = 640, ALTO = 905, MARGEN = 28, MARGEN_V = 26;
   const movil = /iPhone|iPad|Android/i.test(navigator.userAgent);
   const escala = movil ? 2 : 2.5;
+  if (typeof html2canvas !== "function") throw new Error("html2canvas no se ha cargado");
+
+  /* 1. Modo PDF y recursos "locales" (Safari no fotografia SVG incrustados ni fotos de otro dominio) */
   document.body.classList.add("pdf"); window.scrollTo(0, 0);
-  // Safari no deja fotografiar SVG incrustados ni fotos de otro dominio: se convierten a PNG/JPEG locales
   const motivoPng = await rasterizarMotivo();
   document.documentElement.style.setProperty("--motivo", motivoPng ? "url(" + motivoPng + ")" : "none");
   document.querySelectorAll(".foto-caja").forEach(c => {
     const img = c.querySelector("img");
     if (img && img.src && img.style.display !== "none" && img.complete && img.naturalWidth) {
-      const r = c.getBoundingClientRect();
-      const local = recortar(img, Math.max(40, r.width), Math.max(40, r.height));
+      const r = c.getBoundingClientRect(); const local = recortar(img, Math.max(40, r.width), Math.max(40, r.height));
       if (local) { c.style.backgroundImage = "url(" + local + ")"; c.style.backgroundSize = "cover"; c.style.backgroundPosition = "center"; c.style.backgroundRepeat = "no-repeat"; }
       img.style.visibility = "hidden";
     }
   });
   await new Promise(r => setTimeout(r, 250));
+
+  /* 2. Piezas: se baja al nivel de hijo mientras un elemento no quepa en una pagina */
+  const origen = document.querySelector(".pagina");
+  const limite = ALTO - 2 * MARGEN_V;
+  const piezas = [];
+  const meter = el => {
+    const h = el.getBoundingClientRect().height;
+    const indivisible = el.classList.contains("parada") || el.classList.contains("portada") || el.classList.contains("plato") || el.classList.contains("s") || el.classList.contains("caja") || el.tagName === "LI" || el.tagName === "H2" || el.tagName === "P";
+    if (h <= limite || indivisible || !el.children.length) { piezas.push(el); return; }
+    [...el.children].forEach(c => { if (c.getBoundingClientRect().height > 0) meter(c); });
+  };
+  [...origen.children].forEach(el => {
+    if (el.classList.contains("portada")) { piezas.push(el); return; }
+    const hijos = [...el.children], dias = hijos.filter(x => x.classList.contains("dia"));
+    if (dias.length) { hijos.filter(x => !x.classList.contains("dia")).forEach(meter); dias.forEach(dd => [...dd.children].forEach(meter)); }
+    else meter(el);
+  });
+
+  /* 3. Paginacion en el documento: cada pagina es un div a tamano real con fondo, margen y numero */
+  const fondoBody = getComputedStyle(document.body);
+  const paginador = document.createElement("div"); paginador.className = "pagina pdf-paginas";
+  document.body.appendChild(paginador);
+  const nuevaPagina = () => {
+    const pag = document.createElement("div"); pag.className = "pag";
+    pag.style.background = fondoBody.backgroundColor; pag.style.backgroundImage = fondoBody.backgroundImage; pag.style.backgroundSize = fondoBody.backgroundSize;
+    const cuerpo = document.createElement("div"); cuerpo.className = "pag-cuerpo"; pag.appendChild(cuerpo);
+    const pie = document.createElement("div"); pie.className = "pag-pie"; pag.appendChild(pie);
+    paginador.appendChild(pag); return pag;
+  };
+  const paginas = [];
+  let pag = null;
+  piezas.forEach((el, i) => {
+    const esPortada = el.classList.contains("portada");
+    const clon = el.cloneNode(true); clon.classList.add("pieza");
+    if (esPortada) { pag = nuevaPagina(); pag.classList.add("portada-pag"); pag.querySelector(".pag-cuerpo").appendChild(clon); paginas.push(pag); pag = null; return; }
+    if (!pag) { pag = nuevaPagina(); paginas.push(pag); }
+    const cuerpo = pag.querySelector(".pag-cuerpo");
+    cuerpo.appendChild(clon);
+    const cabecera = el.classList.contains("dia-cab") || el.tagName === "H2" || el.tagName === "H5";
+    const sobra = cuerpo.scrollHeight > limite || (cabecera && cuerpo.scrollHeight > limite - 120);
+    if (sobra && cuerpo.children.length > 1) { cuerpo.removeChild(clon); pag = nuevaPagina(); paginas.push(pag); pag.querySelector(".pag-cuerpo").appendChild(clon); }
+  });
+  paginas.forEach((p, i) => { const pie = p.querySelector(".pag-pie"); pie.textContent = i === 0 ? "" : DATOS.ciudad.nombre + " · La Brújula · " + (i + 1); });
+  origen.style.display = "none";
+  await new Promise(r => setTimeout(r, 150));
+
+  /* 4. Fotografia de cada pagina entera */
   try {
-    if (typeof html2canvas !== "function") throw new Error("html2canvas no se ha cargado");
-    const fondo = getComputedStyle(document.body).getPropertyValue("--fondo").trim() || "#ffffff";
     const pdf = new jsPDF({ unit: "px", format: [ANCHO, ALTO], orientation: "portrait", hotfixes: ["px_scaling"] });
-    const pagina = document.querySelector(".pagina");
-    const limite = ALTO - 40;
-    // Piezas: se baja al nivel de hijo mientras un elemento no quepa en una pagina
-    const piezas = [];
-    const meter = (el, nueva) => {
-      const h = el.getBoundingClientRect().height;
-      const indivisible = el.classList.contains("parada") || el.classList.contains("portada") || el.classList.contains("plato") || el.classList.contains("s") || el.classList.contains("caja") || el.tagName === "LI" || el.tagName === "H2" || el.tagName === "P";
-      if (h <= limite || indivisible || !el.children.length) { piezas.push({ el, nueva }); return; }
-      [...el.children].forEach((c, i) => { if (c.getBoundingClientRect().height > 0) meter(c, nueva && i === 0); });
-    };
-    [...pagina.children].forEach(el => {
-      if (el.classList.contains("portada")) { piezas.push({ el, nueva: true }); return; }
-      // Flujo continuo: nada pide pagina nueva salvo la portada; solo se salta cuando una pieza no cabe
-      const hijos = [...el.children];
-      const dias = hijos.filter(x => x.classList.contains("dia"));
-      if (dias.length) {
-        hijos.filter(x => !x.classList.contains("dia")).forEach(x => meter(x, false));
-        dias.forEach(dd => [...dd.children].forEach(x => meter(x, false)));
-      } else meter(el, false);
-    });
-    const pintarFondo = () => { pdf.setFillColor(fondo); pdf.rect(0, 0, ANCHO, ALTO, "F"); };
-    let y = 0, primera = true, n = 0, fallos = 0;
-    pintarFondo();
-    for (const b of piezas) {
-      n++; e.textContent = "Montando el PDF exacto: pieza " + n + " de " + piezas.length;
-      let canvas;
-      const giroPrevio = b.el.style.transform; b.el.style.transform = "none";
-      try { canvas = await html2canvas(b.el, { scale: escala, useCORS: true, backgroundColor: fondo, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY }); }
-      catch (err) { console.error("pieza " + n, err); fallos++; if (fallos > 3) throw err; continue; }
-      finally { b.el.style.transform = giroPrevio; }
-      let w = canvas.width / escala, h = canvas.height / escala;
-      if (w > ANCHO) { h = h * ANCHO / w; w = ANCHO; }
-      const esPortada = b.el.classList.contains("portada");
-      // Alineacion: todo al margen izquierdo (28 px); solo lo que desborda el ancho util se centra
-      const x = esPortada ? 0 : (w > ANCHO - 56 ? Math.max(0, (ANCHO - w) / 2) : 28);
-      // Salto de pagina: si lo pide la pieza, o si no cabe en lo que queda
-      const cabecera = b.el.classList.contains("dia-cab") || b.el.tagName === "H2" || b.el.tagName === "H5";
-      const necesario = h + (cabecera ? 120 : 0);
-      if (!primera && y > 0 && (b.nueva || y + necesario > ALTO - 24)) { pdf.addPage(); pintarFondo(); y = 0; }
-      if (!esPortada && y === 0) y = 24;
-      if (h <= ALTO) { pdf.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG", x, y, w, h); y += h + (esPortada ? 0 : SEP); }
-      else {
-        let offset = 0;
-        while (offset < h) {
-          const franja = Math.min(ALTO - y, h - offset);
-          const trozo = document.createElement("canvas"); trozo.width = canvas.width; trozo.height = Math.round(franja * escala);
-          trozo.getContext("2d").drawImage(canvas, 0, Math.round(offset * escala), canvas.width, trozo.height, 0, 0, canvas.width, trozo.height);
-          pdf.addImage(trozo.toDataURL("image/jpeg", 0.92), "JPEG", x, y, w, franja);
-          offset += franja; y += franja;
-          if (offset < h) { pdf.addPage(); pintarFondo(); y = 0; }
-        }
-      }
-      if (y >= ALTO - 24) { pdf.addPage(); pintarFondo(); y = 0; }
-      primera = false; canvas.width = canvas.height = 0;
+    for (let i = 0; i < paginas.length; i++) {
+      e.textContent = "Montando el PDF exacto: página " + (i + 1) + " de " + paginas.length;
+      const canvas = await html2canvas(paginas[i], { scale: escala, useCORS: true, backgroundColor: fondoBody.backgroundColor, logging: false, windowWidth: ANCHO, scrollX: 0, scrollY: -window.scrollY, width: ANCHO, height: ALTO });
+      if (i > 0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, ANCHO, ALTO);
+      canvas.width = canvas.height = 0;
     }
     const blob = pdf.output("blob");
-    e.textContent = "PDF exacto listo (" + Math.round(blob.size / 1024) + " KB)";
+    e.textContent = "PDF exacto listo (" + paginas.length + " páginas, " + Math.round(blob.size / 1024) + " KB)";
     return new File([blob], nombrePdf(), { type: "application/pdf" });
   } finally {
+    paginador.remove(); origen.style.display = "";
     document.body.classList.remove("pdf");
     document.documentElement.style.removeProperty("--motivo");
     document.querySelectorAll(".foto-caja").forEach(c => { c.style.backgroundImage = ""; c.style.backgroundSize = ""; c.style.backgroundPosition = ""; const img = c.querySelector("img"); if (img) img.style.visibility = ""; });
@@ -3532,9 +4153,8 @@ async function rasterizarMotivo() {
     const css = getComputedStyle(document.documentElement).getPropertyValue("--motivo").trim();
     const m = css.match(/url\\(["']?(data:image\\/svg\\+xml[^"')]+)["']?\\)/);
     if (!m) return null;
-    const src = m[1];
     const img = new Image();
-    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = src; });
+    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = m[1]; });
     const w = img.naturalWidth || 60, h = img.naturalHeight || 60;
     const c = document.createElement("canvas"); c.width = w; c.height = h;
     c.getContext("2d").drawImage(img, 0, 0, w, h);
@@ -3731,7 +4351,8 @@ function htmlPoster(plan, d) {
   const miradores = paradas.filter(p => p.atardecer || p.tags.includes("Mirador")).slice(0, 4);
   const fin = new Date(fecha); fin.setDate(fin.getDate() + dias.length - 1);
   const rango = fecha.getDate() + " " + MESES[fecha.getMonth()].slice(0, 3) + " – " + fin.getDate() + " " + MESES[fin.getMonth()].slice(0, 3) + " " + fin.getFullYear();
-  const salseos = g.salseos || [];
+  const ex = EXTRA[plan.entrada.ciudad] || {};
+  const salseos = (g.salseos || []).concat(ex.salseos || []);
   let h = '<div class="hoja-poster">';
   // Cabecera con foto pintada y bocadillos
   h += '<div class="p-cab">' + fotoBox(g.portada, ciudad.nombre, "p-cab-foto");
@@ -3764,9 +4385,9 @@ function htmlPoster(plan, d) {
   h += '</div></div>';
   // El ambiente + 5 momentos
   h += '<div class="p-fila">';
-  h += '<div class="p-ambiente"><h2>💬 El ambiente</h2><ul>' + (g.frases || []).map(f => '<li>' + esc(f) + '</li>').join('') + '<li>' + esc(ciudad.consejo) + '</li></ul><div class="p-bocadillo chico">' + esc(corto(salseos[2] || "")) + '</div></div>';
+  h += '<div class="p-ambiente"><h2>💬 El ambiente</h2><ul>' + (g.frases || []).map(f => '<li>' + esc(f) + '</li>').join('') + '<li>' + esc(ciudad.consejo) + '</li></ul>' + (ex.datos ? '<h3 style="margin-top:8px">🎓 Para la cena</h3><ul class="p-datos">' + ex.datos.slice(0, 3).map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>' : '') + '</div>';
   h += '<div class="p-momentos"><h2>😂 5 momentos (reales) en ' + esc(ciudad.nombre) + '</h2><div class="p-momentos-grid">';
-  const momentos = [salseos[3], salseos[4], ...paradas.map(p => p.salseo)].filter(Boolean).slice(0, 5);
+  const momentos = [salseos[3], salseos[4], salseos[5], salseos[6], salseos[7], ...paradas.map(p => p.salseo)].filter(Boolean).slice(0, 5);
   const carasM = ["😅", "🤯", "🙈", "🤌", "😎"];
   momentos.forEach((m, i) => { h += '<div class="p-momento"><div class="p-momento-cab"><b>' + (i + 1) + '</b><span class="p-cara">' + carasM[i] + '</span></div><span>' + esc(m) + '</span></div>'; });
   h += '</div></div></div>';
@@ -3775,7 +4396,7 @@ function htmlPoster(plan, d) {
   h += '<div class="p-mapa"><h2>🗺️ ' + esc(ciudad.nombre) + ' de un vistazo</h2>' + mapaPoster(plan, d, 620, 400) + '</div>';
   h += '<div class="p-lado"><div class="p-caja-mano vistas"><h3>🌅 Mejores vistas</h3><ul>' + miradores.map(p => '<li>' + esc(p.n) + '</li>').join('') + '</ul></div>';
   h += '<div class="p-caja-mano"><h3>💡 Consejos rápidos</h3><ul><li><b>💶 Presupuesto:</b> ' + esc(ciudad.presupuesto) + '</li><li><b>🌧️ Si llueve:</b> ' + esc(ciudad.lluvia) + '</li><li><b>🌾 Sin gluten:</b> ' + esc((ciudad.singluten[0] || "")) + '</li></ul></div>';
-  h += '<div class="p-caja-mano rojo"><h3>❌ No hagas esto</h3><ul><li>Madrugar. Los días empiezan a las 11:00.</li><li>Comer donde hay fotos del menú y alguien en la puerta.</li><li>Ir con prisa: ' + esc(ciudad.nombre) + ' se pasea, no se corre.</li></ul></div></div>';
+  h += '<div class="p-caja-mano rojo"><h3>❌ Errores de guiri</h3><ul>' + (ex.guiri || ["Madrugar. Los días empiezan a las 11:00."]).slice(0, 4).map(t => '<li>' + esc(t.length > 120 ? t.slice(0, 118) + "…" : t) + '</li>').join('') + '</ul></div></div>';
   h += '</div>';
   // Cierre
   h += '<div class="p-pie"><span class="p-pie-txt">' + esc(ciudad.claim) + '</span><span class="p-pie-sub">Hecho para pasearlo sin prisa 🩴</span><div class="p-bocadillo pie">¡Nos vemos en ' + esc(ciudad.nombre) + '!</div></div>';
@@ -3849,6 +4470,7 @@ function cssPoster(d) {
 .p-ambiente, .p-momentos, .p-mapa { background: #FFFDF7; border: 2px solid #2B2418; border-radius: 10px; padding: 12px 14px; box-shadow: 4px 4px 0 var(--acento2); }
 .p-ambiente ul { padding-left: 18px; margin: 0; font-size: 12.5px; }
 .p-ambiente li { margin: 3px 0; }
+.p-ambiente .p-datos { font-family: "Caveat", cursive; font-size: 15px; line-height: 1.25; }
 .p-momentos-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-items: stretch; }
 .p-momento { background: #FBF4E4; border: 1.5px solid #2B2418; border-radius: 8px; padding: 8px; font-size: 10.5px; line-height: 1.3; display: flex; flex-direction: column; gap: 6px; }
 .p-momento-cab { display: flex; align-items: center; justify-content: space-between; }
@@ -3888,7 +4510,7 @@ function datosGuia(plan, d, corta) {
     corta: corta === "poster" ? "poster" : !!corta, diseno: d,
     rango: "Del " + fecha.getDate() + " de " + MESES[fecha.getMonth()] + " al " + fin.getDate() + " de " + MESES[fin.getMonth()] + " de " + fin.getFullYear(),
     ciudad: { nombre: ciudad.nombre, pais: ciudad.pais, claim: ciudad.claim, consejo: ciudad.consejo, presupuesto: ciudad.presupuesto, lluvia: ciudad.lluvia, comer: ciudad.comer, singluten: ciudad.singluten },
-    guia: { portada: g.portada, historia: g.historia, frases: g.frases, salseos: g.salseos, platos: g.platos },
+    guia: { portada: g.portada, historia: g.historia, frases: g.frases, salseos: (g.salseos || []).concat(((EXTRA[plan.entrada.ciudad] || {}).salseos) || []), platos: g.platos, guiri: (EXTRA[plan.entrada.ciudad] || {}).guiri || [], datos: (EXTRA[plan.entrada.ciudad] || {}).datos || [] },
     dias: dias.map(dia => ({
       etiqueta: dia.etiqueta, zona: dia.zona, ocaso: hhmm(dia.ocaso), libre: !!dia.libre,
       paradas: dia.paradas.map(p => ({ n: p.n, salseo: p.salseo })),
