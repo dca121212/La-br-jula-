@@ -288,6 +288,11 @@
       </div>
     </div>
     <div class="campo ancho">
+      <div class="chips">
+        <label><input type="checkbox" id="escapada"><span>Una escapada de un día fuera de la ciudad (con 3 días o más)</span></label>
+      </div>
+    </div>
+    <div class="campo ancho">
       <label for="evitar">A evitar (opcional, separado por comas)</label>
       <input type="text" id="evitar" placeholder="Ej. museos, colas, iglesias, cuestas...">
     </div>
@@ -315,7 +320,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v26";
+const VERSION_APP = "v27";
 const CIUDADES = {};
 const GUIA = {};
 const EXTRA = {};
@@ -921,7 +926,7 @@ EXTRA.estocolmo = {
    calcula aparte). moneda: simbolo para los precios.
    ====================================================================== */
 CIUDADES.lisboa = {
-  nombre: "Lisboa", pais: "Portugal", acento: "#1D4E89", moneda: "€", tz: 0,
+  nombre: "Lisboa", pais: "Portugal", revisado: "agosto 2026", acento: "#1D4E89", moneda: "€", tz: 0,
   centro: [38.7140, -9.1500], zoom: 13,
   claim: "Siete colinas, un tranvía y la luz más bonita de Europa",
   consejo: "Tarjeta Viva Viagem para metro y tranvía; el 28 va hasta arriba, cógelo en Martim Moniz a primera hora de la tarde.",
@@ -937,7 +942,7 @@ CIUDADES.lisboa = {
       { n: "A Brasileira y Rua Garrett", lat: 38.7107, lng: -9.1420, tags: ["Comida","Paseo","Bar"], precio: 0, dur: 50, d: "El café histórico del Chiado, con Pessoa en bronce sentado en la terraza.", truco: "La bica en la barra cuesta la mitad que en terraza; la foto con Pessoa es gratis.", salseo: "Pessoa escribía aquí sus heterónimos y debía cafés a la casa. La estatua la pusieron en 1988; los turistas le han dejado la rodilla dorada de tanto sentarse.", comida: true, sg: "Café y zumo seguros; la bollería no." }
     ]},
     { nombre: "Alfama y el castillo", paradas: [
-      { n: "Castelo de São Jorge", lat: 38.7139, lng: -9.1334, tags: ["Imprescindible","Historia","Mirador"], precio: 15, dur: 90, d: "Murallas moras sobre la colina más alta, con pavos reales y vistas de toda la ciudad.", truco: "Entrada online para saltar cola; el mejor rincón es la torre del noroeste, mirando al Tajo.", salseo: "Los cruzados que ayudaron a Afonso Henriques en 1147 iban camino de Tierra Santa y se quedaron por el botín. La leyenda del caballero Martim Moniz dice que murió atravesado en la puerta para dejarla abierta.", ninos: true },
+      { n: "Castelo de São Jorge", lat: 38.7139, lng: -9.1334, tags: ["Imprescindible","Historia","Mirador"], precio: 15, dur: 90, d: "Murallas moras sobre la colina más alta, con pavos reales y vistas de toda la ciudad.", truco: "Entrada online para saltar cola; el mejor rincón es la torre del noroeste, mirando al Tajo.", salseo: "Los cruzados que ayudaron a Afonso Henriques en 1147 iban camino de Tierra Santa y se quedaron por el botín. La leyenda del caballero Martim Moniz dice que murió atravesado en la puerta para dejarla abierta.", ninos: true , reservar: true},
       { n: "Miradouro de Santa Luzia", lat: 38.7118, lng: -9.1300, tags: ["Mirador","Paseo"], precio: 0, dur: 30, d: "Terraza con buganvillas y azulejos sobre los tejados de Alfama y el río.", truco: "Los paneles de azulejos de la pared muestran Lisboa antes del terremoto; búscalos.", salseo: "Justo al lado, el Miradouro das Portas do Sol tiene el mismo panorama y la mitad de gente; los fotógrafos de bodas se pelean por la hora dorada aquí.", atardecer: true },
       { n: "Sé de Lisboa", lat: 38.7098, lng: -9.1327, tags: ["Historia"], precio: 5, dur: 40, d: "Catedral fortaleza del siglo XII, con rosetón románico y claustro con excavaciones.", truco: "Entra por la mañana: el rosetón ilumina la nave y el claustro está tranquilo.", salseo: "Se levantó sobre la mezquita mayor nada más conquistar la ciudad. Dicen que aquí bautizaron a San Antonio de Padua, que era lisboeta de nacimiento y de Padua solo de muerte." },
       { n: "Miradouro da Graça", lat: 38.7163, lng: -9.1310, tags: ["Mirador","Bar","Fuera de ruta"], precio: 0, dur: 45, d: "Mirador con quiosco y terraza bajo los pinos, mirando al castillo y al puente 25 de Abril.", truco: "Pide una cerveza en el quiosco y espera el atardecer; se llena de locales, no de guías.", salseo: "Sophia de Mello Breyner, la gran poeta portuguesa, tiene aquí su banco con verso; el barrio de Graça fue de obreros y aún tiene tabernas de 4 euros.", atardecer: true, comida: true, sg: "Cerveza sin gluten a veces; mejor vino o tinto de verano." }
@@ -958,7 +963,7 @@ CIUDADES.lisboa = {
 };
 
 CIUDADES.oporto = {
-  nombre: "Oporto", pais: "Portugal", acento: "#6B1F2A", moneda: "€", tz: 0,
+  nombre: "Oporto", pais: "Portugal", revisado: "agosto 2026", acento: "#6B1F2A", moneda: "€", tz: 0,
   centro: [41.1450, -8.6150], zoom: 14,
   claim: "Granito, vino y un río que se cruza seis veces",
   consejo: "Todo se hace a pie salvo las cuestas: el teleférico de Gaia y el funicular dos Guindais ahorran piernas.",
@@ -995,7 +1000,7 @@ CIUDADES.oporto = {
 };
 
 CIUDADES.paris = {
-  nombre: "París", pais: "Francia", acento: "#2E2A4A", moneda: "€", tz: 1,
+  nombre: "París", pais: "Francia", revisado: "agosto 2026", acento: "#2E2A4A", moneda: "€", tz: 1,
   centro: [48.8566, 2.3522], zoom: 12,
   claim: "Cada esquina ya la has visto en una película y aun así sorprende",
   consejo: "Pase Navigo semanal si son más de tres días; los museos nacionales son gratis el primer domingo del mes y siempre para menores de 26 de la UE.",
@@ -1032,7 +1037,7 @@ CIUDADES.paris = {
 };
 
 CIUDADES.roma = {
-  nombre: "Roma", pais: "Italia", acento: "#7A2E1F", moneda: "€", tz: 1,
+  nombre: "Roma", pais: "Italia", revisado: "agosto 2026", acento: "#7A2E1F", moneda: "€", tz: 1,
   centro: [41.8950, 12.4800], zoom: 13,
   claim: "Tres mil años apilados y todavía se aparca encima",
   consejo: "Casi todo se hace andando; las fuentes públicas (nasoni) dan agua fría gratis, lleva botella. Lunes cierran muchos museos.",
@@ -1069,7 +1074,7 @@ CIUDADES.roma = {
 };
 
 CIUDADES.florencia = {
-  nombre: "Florencia", pais: "Italia", acento: "#5B3A1E", moneda: "€", tz: 1,
+  nombre: "Florencia", pais: "Italia", revisado: "agosto 2026", acento: "#5B3A1E", moneda: "€", tz: 1,
   centro: [43.7715, 11.2540], zoom: 14,
   claim: "El Renacimiento cabe en una hora andando, y aun así no acabas nunca",
   consejo: "Todo a pie; reserva los Uffizi y la Academia con semanas de antelación. Las fuentes con cabeza de león dan agua potable.",
@@ -1106,7 +1111,7 @@ CIUDADES.florencia = {
 };
 
 CIUDADES.venecia = {
-  nombre: "Venecia", pais: "Italia", acento: "#1F4A5A", moneda: "€", tz: 1,
+  nombre: "Venecia", pais: "Italia", revisado: "agosto 2026", acento: "#1F4A5A", moneda: "€", tz: 1,
   centro: [45.4370, 12.3330], zoom: 14,
   claim: "Perderse es el plan; el mapa es solo por si acaso",
   consejo: "Pase de vaporetto de 24 o 48 h si vas a las islas; si no, todo a pie. Hay tasa de entrada ciertos días pico: consúltalo antes.",
@@ -1146,7 +1151,7 @@ CIUDADES.venecia = {
    REPOSITORIO DE CIUDADES · TANDA 2
    ====================================================================== */
 CIUDADES.verona = {
-  nombre: "Verona", pais: "Italia", acento: "#8A2F3B", moneda: "€", tz: 1,
+  nombre: "Verona", pais: "Italia", revisado: "agosto 2026", acento: "#8A2F3B", moneda: "€", tz: 1,
   centro: [45.4430, 10.9960], zoom: 15,
   claim: "Mármol rosa, un río que abraza la ciudad y demasiados balcones",
   consejo: "Todo a pie: el centro cabe en un meandro del Adige. La Verona Card (24 o 48 h) incluye Arena, torre y casi todos los monumentos y compensa desde el segundo sitio.",
@@ -1183,7 +1188,7 @@ CIUDADES.verona = {
 };
 
 CIUDADES.milan = {
-  nombre: "Milán", pais: "Italia", acento: "#2B2B2B", moneda: "€", tz: 1,
+  nombre: "Milán", pais: "Italia", revisado: "agosto 2026", acento: "#2B2B2B", moneda: "€", tz: 1,
   centro: [45.4650, 9.1880], zoom: 13,
   claim: "Trabaja rápido, come despacio y viste mejor que tú",
   consejo: "Metro barato y puntual; el aperitivo (18:00-21:00) es la comida más rentable de la ciudad: con la copa, buffet.",
@@ -1220,7 +1225,7 @@ CIUDADES.milan = {
 };
 
 CIUDADES.napoles = {
-  nombre: "Nápoles", pais: "Italia", acento: "#8B3A1A", moneda: "€", tz: 1,
+  nombre: "Nápoles", pais: "Italia", revisado: "agosto 2026", acento: "#8B3A1A", moneda: "€", tz: 1,
   centro: [40.8460, 14.2560], zoom: 13,
   claim: "Un volcán, cien iglesias y la mejor pizza del mundo por cinco euros",
   consejo: "Camina con el móvil en el bolsillo y disfruta: el caos es amable. El funicular a Vomero cuesta lo que un billete de metro.",
@@ -1257,7 +1262,7 @@ CIUDADES.napoles = {
 };
 
 CIUDADES.amsterdam = {
-  nombre: "Ámsterdam", pais: "Países Bajos", acento: "#B5462A", moneda: "€", tz: 1,
+  nombre: "Ámsterdam", pais: "Países Bajos", revisado: "agosto 2026", acento: "#B5462A", moneda: "€", tz: 1,
   centro: [52.3700, 4.8950], zoom: 13,
   claim: "Cien canales, mil puentes y bicicletas que no frenan",
   consejo: "Se paga todo con tarjeta, muchos sitios no aceptan efectivo. Alquila bici solo si sabes: los carriles van rápido. Museos con reserva horaria obligatoria.",
@@ -1294,7 +1299,7 @@ CIUDADES.amsterdam = {
 };
 
 CIUDADES.praga = {
-  nombre: "Praga", pais: "Chequia", acento: "#4A3B2A", moneda: "Kč", tz: 1,
+  nombre: "Praga", pais: "Chequia", revisado: "agosto 2026", acento: "#4A3B2A", moneda: "Kč", tz: 1,
   centro: [50.0870, 14.4200], zoom: 13,
   claim: "Cien torres, una cerveza a un euro y Kafka en cada esquina",
   consejo: "Nunca cambies dinero en la calle ni en casas de cambio con '0 % comisión': paga con tarjeta o saca en cajero de banco. Tranvía 22 para subir al castillo.",
@@ -1331,7 +1336,7 @@ CIUDADES.praga = {
 };
 
 CIUDADES.viena = {
-  nombre: "Viena", pais: "Austria", acento: "#3B2A4A", moneda: "€", tz: 1,
+  nombre: "Viena", pais: "Austria", revisado: "agosto 2026", acento: "#3B2A4A", moneda: "€", tz: 1,
   centro: [48.2082, 16.3738], zoom: 13,
   claim: "Cafés con periódico, valses y una ciudad que nunca tuvo prisa",
   consejo: "Transporte impecable: pase de 48 o 72 h, o Vienna City Card con descuentos. Los domingos cierran las tiendas pero abren museos y cafés.",
@@ -1371,7 +1376,7 @@ CIUDADES.viena = {
    REPOSITORIO DE CIUDADES · TANDA 3
    ====================================================================== */
 CIUDADES.budapest = {
-  nombre: "Budapest", pais: "Hungría", acento: "#2F4A2A", moneda: "Ft", tz: 1,
+  nombre: "Budapest", pais: "Hungría", revisado: "agosto 2026", acento: "#2F4A2A", moneda: "Ft", tz: 1,
   centro: [47.4980, 19.0450], zoom: 13,
   claim: "Dos ciudades, un río, balnearios y bares en ruinas",
   consejo: "Paga con tarjeta y en forintos, nunca en euros; el tranvía 2 por la orilla de Pest es el mejor paseo por un billete. Bañador siempre en la mochila.",
@@ -1408,7 +1413,7 @@ CIUDADES.budapest = {
 };
 
 CIUDADES.londres = {
-  nombre: "Londres", pais: "Reino Unido", acento: "#1F2F5A", moneda: "£", tz: 0,
+  nombre: "Londres", pais: "Reino Unido", revisado: "agosto 2026", acento: "#1F2F5A", moneda: "£", tz: 0,
   centro: [51.5074, -0.1278], zoom: 12,
   claim: "Una ciudad que son veinte pueblos con un metro en común",
   consejo: "Paga el transporte con tarjeta contactless (tope diario automático); los grandes museos son gratis. Sunday roast el domingo, sin discusión.",
@@ -1445,7 +1450,7 @@ CIUDADES.londres = {
 };
 
 CIUDADES.berlin = {
-  nombre: "Berlín", pais: "Alemania", acento: "#3A3A3A", moneda: "€", tz: 1,
+  nombre: "Berlín", pais: "Alemania", revisado: "agosto 2026", acento: "#3A3A3A", moneda: "€", tz: 1,
   centro: [52.5170, 13.3900], zoom: 12,
   claim: "Cicatrices a la vista, techno hasta el lunes y currywurst a las 4",
   consejo: "Berlín es grande: S-Bahn y U-Bahn con billete de 24 h y valida siempre. Muchos sitios solo aceptan efectivo, sobre todo bares y kebabs.",
@@ -1482,7 +1487,7 @@ CIUDADES.berlin = {
 };
 
 CIUDADES.atenas = {
-  nombre: "Atenas", pais: "Grecia", acento: "#1E4D6B", moneda: "€", tz: 2,
+  nombre: "Atenas", pais: "Grecia", revisado: "agosto 2026", acento: "#1E4D6B", moneda: "€", tz: 2,
   centro: [37.9750, 23.7300], zoom: 13,
   claim: "Mármol de hace 2.500 años y una ciudad que cena a las once",
   consejo: "Metro limpio y barato; los sitios arqueológicos cierran a las 15:00 en invierno y la Acrópolis tiene entrada horaria obligatoria. Agua siempre.",
@@ -1519,7 +1524,7 @@ CIUDADES.atenas = {
 };
 
 CIUDADES.edimburgo = {
-  nombre: "Edimburgo", pais: "Escocia", acento: "#3A4A3A", moneda: "£", tz: 0,
+  nombre: "Edimburgo", pais: "Escocia", revisado: "agosto 2026", acento: "#3A4A3A", moneda: "£", tz: 0,
   centro: [55.9500, -3.1900], zoom: 13,
   claim: "Un castillo sobre un volcán, callejones que bajan y whisky que sube",
   consejo: "Todo a pie, con cuestas y viento; capas y no paraguas. En agosto (Festival) todo triplica de precio y de gente. Las 'closes' son atajos públicos.",
@@ -1556,7 +1561,7 @@ CIUDADES.edimburgo = {
 };
 
 CIUDADES.dublin = {
-  nombre: "Dublín", pais: "Irlanda", acento: "#2A4A3A", moneda: "€", tz: 0,
+  nombre: "Dublín", pais: "Irlanda", revisado: "agosto 2026", acento: "#2A4A3A", moneda: "€", tz: 0,
   centro: [53.3450, -6.2650], zoom: 13,
   claim: "Puertas de colores, literatura en cada pub y lluvia con buen humor",
   consejo: "Casi todo a pie; el pub es la institución, pide en la barra y no dejes propina en la pinta. Los museos nacionales son gratis.",
@@ -1596,7 +1601,7 @@ CIUDADES.dublin = {
    REPOSITORIO DE CIUDADES · TANDA 4
    ====================================================================== */
 CIUDADES.copenhague = {
-  nombre: "Copenhague", pais: "Dinamarca", acento: "#2A4A5A", moneda: "kr", tz: 1,
+  nombre: "Copenhague", pais: "Dinamarca", revisado: "agosto 2026", acento: "#2A4A5A", moneda: "kr", tz: 1,
   centro: [55.6780, 12.5800], zoom: 13,
   claim: "Bicis, canales y una sirena pequeña que todos van a ver igual",
   consejo: "Todo con tarjeta, nada de efectivo. Alquila bici desde el primer día: la ciudad está hecha para ella. Los daneses cenan a las 18:00 y los restaurantes cierran cocina pronto.",
@@ -1633,7 +1638,7 @@ CIUDADES.copenhague = {
 };
 
 CIUDADES.bruselas = {
-  nombre: "Bruselas", pais: "Bélgica", acento: "#4A3A2A", moneda: "€", tz: 1,
+  nombre: "Bruselas", pais: "Bélgica", revisado: "agosto 2026", acento: "#4A3A2A", moneda: "€", tz: 1,
   centro: [50.8460, 4.3550], zoom: 13,
   claim: "Cerveza de abadía, cómic en las paredes y una plaza que corta la respiración",
   consejo: "El centro se hace a pie; metro para Atomium. Cerveza en su copa siempre: cada marca tiene la suya y el camarero se ofende si no.",
@@ -1663,14 +1668,14 @@ CIUDADES.bruselas = {
     { nombre: "Europa, Cinquantenaire y Atomium", paradas: [
       { n: "Parque del Cinquantenaire", lat: 50.8404, lng: 4.3928, tags: ["Parque","Museo","Mirador"], precio: 0, dur: 75, d: "El arco de triunfo de Leopoldo II con museos a los lados y la terraza de arriba gratis.", truco: "La terraza del arco se sube por el Museo Militar, gratis; Autoworld, con 300 coches, para los de motor. La Gran Mezquita está en una esquina del parque.", salseo: "El arco lo pagó Leopoldo II de su bolsillo (o sea, del Congo) porque el Parlamento se negó; el pabellón de Horta del parque se reconstruyó tras 90 años de piezas en cajas.", atardecer: true },
       { n: "Barrio Europeo y Parlamentarium", lat: 50.8385, lng: 4.3755, tags: ["Museo","Historia","Fuera de ruta"], precio: 0, dur: 60, d: "Las instituciones de la UE, con el centro de visitantes del Parlamento gratis y el hemiciclo visitable.", truco: "Parlamentarium y Casa de la Historia Europea son gratis; el hemiciclo se visita con pasaporte los días sin pleno. Place Luxembourg, jueves tarde, es el afterwork de los eurócratas.", salseo: "El edificio del Parlamento se llama Caprice des Dieux por parecerse al queso; el barrio Leopold se demolió casa a casa desde 1960 y la Place Jourdan tiene la friterie de al lado de la Comisión donde comen los comisarios." },
-      { n: "Atomium", lat: 50.8949, lng: 4.3415, tags: ["Imprescindible","Mirador"], precio: 16, dur: 90, d: "La molécula de hierro de 102 metros de la Expo 58, con escaleras mecánicas entre las esferas y vista arriba.", truco: "Metro a Heysel; entrada online con hora. Mini-Europe está al lado (combinada). Al atardecer las esferas reflejan el cielo.", salseo: "Iba a durar seis meses y sigue; las esferas se recubrieron de aluminio nuevo en 2006 y las de acero originales se vendieron a trozos. Hay un huevo de hierro por dentro donde duermen niños en visitas escolares.", atardecer: true, ninos: true },
+      { n: "Atomium", lat: 50.8949, lng: 4.3415, tags: ["Imprescindible","Mirador"], precio: 16, dur: 90, d: "La molécula de hierro de 102 metros de la Expo 58, con escaleras mecánicas entre las esferas y vista arriba.", truco: "Metro a Heysel; entrada online con hora. Mini-Europe está al lado (combinada). Al atardecer las esferas reflejan el cielo.", salseo: "Iba a durar seis meses y sigue; las esferas se recubrieron de aluminio nuevo en 2006 y las de acero originales se vendieron a trozos. Hay un huevo de hierro por dentro donde duermen niños en visitas escolares.", atardecer: true, ninos: true , reservar: true},
       { n: "Casa Horta y Art Nouveau de Saint-Gilles", lat: 50.8240, lng: 4.3550, tags: ["Museo","Paseo","Fuera de ruta"], precio: 12, dur: 60, d: "La casa-estudio de Victor Horta, patrimonio mundial, y el paseo por las fachadas art nouveau de Saint-Gilles e Ixelles.", truco: "Entrada sin reserva pero cupo pequeño; el Hôtel Tassel (Rue Paul-Émile Janson 6) solo se ve por fuera y es el primer edificio art nouveau del mundo.", salseo: "Horta diseñaba hasta los pomos y los picaportes; en la guerra huyó a EE. UU. y volvió a un Bruselas que demolía sus obras. La Maison du Peuple, su obra maestra, se tiró en 1965 y las piezas se perdieron." }
     ]}
   ]
 };
 
 CIUDADES.munich = {
-  nombre: "Múnich", pais: "Alemania", acento: "#2A3A5A", moneda: "€", tz: 1,
+  nombre: "Múnich", pais: "Alemania", revisado: "agosto 2026", acento: "#2A3A5A", moneda: "€", tz: 1,
   centro: [48.1370, 11.5750], zoom: 13,
   claim: "Bávara, católica y con jardines de cerveza desde las once",
   consejo: "Transporte por zonas, billete de día; el centro a pie. En los biergarten puedes llevar tu comida a las mesas sin mantel; la cerveza la compras allí.",
@@ -1707,7 +1712,7 @@ CIUDADES.munich = {
 };
 
 CIUDADES.sevilla = {
-  nombre: "Sevilla", pais: "España", acento: "#8A4A1A", moneda: "€", tz: 1,
+  nombre: "Sevilla", pais: "España", revisado: "agosto 2026", acento: "#8A4A1A", moneda: "€", tz: 1,
   centro: [37.3890, -5.9950], zoom: 14,
   claim: "Azahar, azulejo y una ciudad que vive en la calle hasta que aprieta el sol",
   consejo: "Todo a pie o en bici por el carril del río; de junio a septiembre, sombra y siesta obligatorias de 15 a 19. El tapeo de barra es la comida.",
@@ -1744,7 +1749,7 @@ CIUDADES.sevilla = {
 };
 
 CIUDADES.cracovia = {
-  nombre: "Cracovia", pais: "Polonia", acento: "#3A2A4A", moneda: "zł", tz: 1,
+  nombre: "Cracovia", pais: "Polonia", revisado: "agosto 2026", acento: "#3A2A4A", moneda: "zł", tz: 1,
   centro: [50.0600, 19.9400], zoom: 14,
   claim: "Una plaza inmensa, un castillo con dragón y vodka a precio de agua",
   consejo: "Todo a pie, la ciudad vieja es un óvalo con parque alrededor; tranvía a Kazimierz si hay prisa. Paga en złoty y con tarjeta; los cambios 'kantor' de la plaza son malos.",
@@ -1781,7 +1786,7 @@ CIUDADES.cracovia = {
 };
 
 CIUDADES.estocolmo = {
-  nombre: "Estocolmo", pais: "Suecia", acento: "#2A3A4A", moneda: "kr", tz: 1,
+  nombre: "Estocolmo", pais: "Suecia", revisado: "agosto 2026", acento: "#2A3A4A", moneda: "kr", tz: 1,
   centro: [59.3260, 18.0700], zoom: 12,
   claim: "Catorce islas, agua limpia en el centro y fika a media tarde",
   consejo: "Sin efectivo, todo con tarjeta; SL app para el transporte. Los ferris del transporte público son la mejor excursión por el precio de un billete. Fika (café con bollo) a las 15:00 es obligatorio.",
@@ -1799,7 +1804,7 @@ CIUDADES.estocolmo = {
     { nombre: "Djurgården", paradas: [
       { n: "Museo Vasa", lat: 59.3280, lng: 18.0914, tags: ["Imprescindible","Museo"], precio: 190, dur: 120, d: "El buque de guerra de 1628 que se hundió a los 20 minutos de zarpar y se sacó entero en 1961, con el 98 % original.", truco: "Entra a la apertura o a última hora; la película de 20 minutos primero. Las caras reconstruidas de la tripulación en la planta superior.", salseo: "El rey Gustavo Adolfo lo quiso más alto y con dos cubiertas de cañones y se volcó con la primera ráfaga de viento delante de todo Estocolmo; el juicio no culpó a nadie porque el culpable era el rey. Las esculturas estaban pintadas de colores chillones.", ninos: true },
       { n: "Skansen", lat: 59.3260, lng: 18.1040, tags: ["Parque","Museo","Imprescindible"], precio: 240, dur: 180, d: "El primer museo al aire libre del mundo (1891): casas de toda Suecia, artesanos de época y zoo nórdico con alces y osos.", truco: "Ve por la tarde: las casas cierran sus interiores a las 16-17 pero el zoo y el mirador siguen; los alces y linces por la parte norte. Fiesta de mediados de verano y Santa Lucía aquí.", salseo: "Artur Hazelius compró casas enteras por toda Suecia y las trasladó pieza a pieza porque veía morir el campo; la palabra 'skansen' es hoy museo al aire libre en varios idiomas. Los renos pertenecen a una familia sami.", ninos: true, atardecer: true },
-      { n: "ABBA The Museum", lat: 59.3247, lng: 18.0962, tags: ["Museo"], precio: 280, dur: 90, d: "El museo interactivo del grupo: cantas en el escenario, te pones sus trajes en holograma y hay un teléfono que solo llaman ellos.", truco: "Entrada horaria online; si el teléfono rojo suena, cógelo: es un miembro del grupo. Pop House Hotel para dormir entre discos de oro.", salseo: "Suecia exporta más música per cápita que nadie y ABBA empezó aquí en 1974 con Waterloo en Eurovisión; Björn y Benny escribían en una cabaña de una isla que se visita. El teléfono lo han descolgado de verdad algunas veces.", ninos: true },
+      { n: "ABBA The Museum", lat: 59.3247, lng: 18.0962, tags: ["Museo"], precio: 280, dur: 90, d: "El museo interactivo del grupo: cantas en el escenario, te pones sus trajes en holograma y hay un teléfono que solo llaman ellos.", truco: "Entrada horaria online; si el teléfono rojo suena, cógelo: es un miembro del grupo. Pop House Hotel para dormir entre discos de oro.", salseo: "Suecia exporta más música per cápita que nadie y ABBA empezó aquí en 1974 con Waterloo en Eurovisión; Björn y Benny escribían en una cabaña de una isla que se visita. El teléfono lo han descolgado de verdad algunas veces.", ninos: true , reservar: true},
       { n: "Rosendals Trädgård", lat: 59.3300, lng: 18.1130, tags: ["Comida","Parque","Fuera de ruta"], precio: 0, dur: 75, d: "El jardín biodinámico al fondo de Djurgården, con café en invernadero, pan de horno de leña y manzanos para tumbarse.", truco: "Fika bajo los manzanos: tarta de cardamomo y café en taza de barro; llega andando por el canal desde el Vasa (25 min) o en tranvía 7.", salseo: "Era el jardín del palacio de Rosendal de Carlos XIV Juan, el mariscal francés de Napoleón que acabó de rey sueco sin hablar sueco; el jardín lo salvó una fundación en 1982 y es el picnic favorito de Estocolmo.", comida: true, sg: "Sopas, ensaladas y quesos; el pan de leña no." }
     ]},
     { nombre: "Södermalm", paradas: [
@@ -2680,6 +2685,253 @@ Object.keys(CIERRES).forEach(k => {
   }));
 });
 
+/* ======================================================================
+   EXCURSIONES DE UN DIA
+   Una por ciudad. Se anaden como zona especial (excursion: true) y solo
+   entran en el plan si el viajero marca "Una escapada" o si sobra un dia.
+   Llevan como (transporte y tiempo), coordenadas reales, truco y salseo.
+   ====================================================================== */
+const EXCURSIONES = {
+  lisboa: { nombre: "Sintra", como: "Tren desde Rossio, 40 min; bus 434 arriba", paradas: [
+    { n: "Palacio da Pena", lat: 38.7876, lng: -9.3906, tags: ["Imprescindible","Historia"], precio: 20, dur: 120, d: "El palacio romántico de colores sobre la sierra, con torres, terrazas y nubes a la altura de los ojos.", truco: "Entrada horaria online y el primer turno: a las 11 la cola del bus dura una hora. Baja andando por el parque.", salseo: "Fernando II, un príncipe alemán casado con la reina de Portugal, lo pintó de amarillo y rojo en 1840 para que se viera desde Lisboa. Se ve. Los portugueses tardaron un siglo en decidir si les gustaba.", reservar: true, wiki: "es:Palacio da Pena" },
+    { n: "Quinta da Regaleira", lat: 38.7963, lng: -9.3959, tags: ["Imprescindible","Parque","Fuera de ruta"], precio: 15, dur: 90, d: "Jardín iniciático con pozo en espiral, grutas y túneles, obra de un millonario masón.", truco: "Baja por el Pozo Iniciático y sal por el túnel al lago: ese es el sentido 'correcto'. Lleva móvil con linterna.", salseo: "Carvalho Monteiro, 'el millonario', lo diseñó con un escenógrafo de ópera para representar el camino masónico; el pozo tiene nueve niveles como el Infierno de Dante y él nunca vivió aquí.", wiki: "es:Quinta da Regaleira" },
+    { n: "Centro histórico de Sintra y travesseiros", lat: 38.7972, lng: -9.3906, tags: ["Comida","Paseo"], precio: 3, dur: 60, d: "El pueblo bajo el Palacio Nacional, con las chimeneas cónicas y la pastelería Piriquita.", truco: "Travesseiro (hojaldre de almendra) en Piriquita, en la calle principal, y no en la sucursal; la cola va rápida.", salseo: "Byron llamó a Sintra 'el Edén glorioso' y luego se quejó de la posada; Hans Christian Andersen vivió aquí y decía que era lo más bonito de Portugal. Los dos se fueron pronto.", comida: true, sg: "Nada apto en Piriquita; café sí.", wiki: "es:Sintra" }
+  ]},
+  oporto: { nombre: "Guimarães", como: "Tren desde São Bento, 1 h 10", paradas: [
+    { n: "Castillo de Guimarães", lat: 41.4478, lng: -8.2905, tags: ["Imprescindible","Historia"], precio: 2, dur: 60, d: "El castillo donde nació Portugal, con siete torres y murallas del siglo X.", truco: "Sube a las almenas al abrir; la Capilla de San Miguel al lado es donde 'bautizaron' a Afonso Henriques.", salseo: "'Aquí nació Portugal' está escrito en la muralla, y los de Guimarães lo dicen tres veces al día. Afonso Henriques venció a su propia madre en batalla a 300 metros de aquí para quedarse el condado.", wiki: "es:Castillo de Guimarães" },
+    { n: "Palacio de los Duques de Braganza", lat: 41.4466, lng: -8.2910, tags: ["Historia","Museo"], precio: 5, dur: 60, d: "Palacio del XV con 39 chimeneas, tapices flamencos y armas.", truco: "Entrada combinada con el castillo; cierra lunes por la mañana.", salseo: "Estaba en ruinas y Salazar lo reconstruyó en 1959 como residencia oficial; solo durmió una noche. Las chimeneas son tan altas que parecen de un pueblo entero.", wiki: "es:Palacio de los Duques de Braganza" },
+    { n: "Largo da Oliveira y Rua de Santa Maria", lat: 41.4415, lng: -8.2926, tags: ["Paseo","Comida","Imprescindible"], precio: 0, dur: 90, d: "La plaza medieval con el olivo y las calles de casas con balcón de madera, patrimonio mundial.", truco: "Come en Cor de Tangerina (vegetariano) o en Casa Amarela; teleférico a la Penha si sobra tarde.", salseo: "El olivo de la plaza es del XIV según la leyenda: se plantó seco y reverdeció al colgarle una cruz. Se seca cada 50 años y lo replantan sin decirlo.", comida: true, sg: "Bacalao y caldo verde, aptos.", wiki: "es:Guimarães" }
+  ]},
+  paris: { nombre: "Versalles", como: "RER C desde el centro, 45 min", paradas: [
+    { n: "Palacio de Versalles", lat: 48.8049, lng: 2.1204, tags: ["Imprescindible","Historia"], precio: 21, dur: 150, d: "La Galería de los Espejos, los aposentos del rey y 2.300 habitaciones de las que ves 40.", truco: "Entrada 'Passeport' online a las 9:00 en punto o a partir de las 15:00; martes y fines de semana, no.", salseo: "Luis XIV se levantaba en público: cien nobles miraban cómo se vestía y el privilegio de darle la camisa se vendía. El palacio olía tan mal que había que dormir con perfume.", reservar: true, wiki: "es:Palacio de Versalles" },
+    { n: "Jardines y Gran Canal", lat: 48.8080, lng: 2.1100, tags: ["Parque","Paseo"], precio: 0, dur: 90, d: "Los jardines de Le Nôtre, las fuentes con música los fines de semana y el canal donde se alquilan barcas.", truco: "Alquila bici o carrito eléctrico en el Gran Canal para llegar al Trianón: son 3 km. Las fuentes solo funcionan en 'Grandes Eaux' (con entrada aparte).", salseo: "El Gran Canal tuvo góndolas venecianas de verdad y gondoleros importados que vivían en un barrio llamado 'la pequeña Venecia'. Aún se llama así.", wiki: "es:Jardines de Versalles" },
+    { n: "Trianón y Aldea de la Reina", lat: 48.8150, lng: 2.1130, tags: ["Fuera de ruta","Parque"], precio: 12, dur: 90, d: "Los palacetes íntimos y el pueblo de cuento que María Antonieta se hizo para jugar a campesina.", truco: "Con el Passeport entra; abre a las 12:00. Ve aquí primero por la tarde, que se vacía.", salseo: "María Antonieta ordeñaba vacas con cubos de porcelana de Sèvres en una granja con molino que no molía. Francia se lo apuntó en la lista de agravios.", wiki: "es:Petit Trianon" }
+  ]},
+  roma: { nombre: "Tívoli", como: "Tren desde Tiburtina, 1 h; bus CAT a Villa Adriana", paradas: [
+    { n: "Villa d'Este", lat: 41.9628, lng: 12.7960, tags: ["Imprescindible","Parque","Historia"], precio: 15, dur: 120, d: "El jardín renacentista de las 500 fuentes, con órgano de agua y terrazas sobre el valle.", truco: "El órgano hidráulico suena a las 10:30 y cada dos horas; ve primero abajo y sube por las fuentes.", salseo: "El cardenal Ippolito d'Este no consiguió ser papa y se consoló con la casa más exagerada de Italia; robó estatuas de la villa de Adriano de al lado para decorarla.", reservar: true, wiki: "es:Villa de Este" },
+    { n: "Villa Adriana", lat: 41.9430, lng: 12.7735, tags: ["Historia","Parque"], precio: 12, dur: 120, d: "La ciudad-villa del emperador Adriano: teatro marítimo, piscinas y 120 hectáreas de ruinas entre olivos.", truco: "Lleva agua y gorra: no hay sombra; el Canopo, el estanque con estatuas, es el rincón para quedarse.", salseo: "Adriano la llenó de copias de lo que había visto en sus viajes; Egipto, Grecia, todo. Tenía un 'teatro marítimo' con isla donde se encerraba a leer sin que nadie pudiera llegar salvo por un puente que él retiraba.", wiki: "es:Villa Adriana" },
+    { n: "Centro de Tívoli y Villa Gregoriana", lat: 41.9640, lng: 12.8000, tags: ["Comida","Parque"], precio: 8, dur: 90, d: "El pueblo con templos romanos al borde de un barranco y cascadas dentro de un parque salvaje.", truco: "Come en Sibilla, con terraza sobre los templos; la Villa Gregoriana es un barranco con cascada que se baja y se sube (zapatos).", salseo: "El templo de Vesta lleva 2.000 años al borde del precipicio; en 1826 el río se lo llevó todo alrededor y el Papa Gregorio desvió el cauce. Nada de esto impidió que Sibilla abriera en 1730 y siga.", comida: true, sg: "Pasta sin gluten en casi todo Lacio; pregunta.", wiki: "es:Tívoli (Italia)" }
+  ]},
+  florencia: { nombre: "Siena", como: "Bus SITA desde la estación, 1 h 15 (mejor que el tren)", paradas: [
+    { n: "Piazza del Campo y Torre del Mangia", lat: 43.3186, lng: 11.3317, tags: ["Imprescindible","Mirador"], precio: 10, dur: 90, d: "La plaza en concha donde se corre el Palio y la torre de 400 escalones.", truco: "Túmbate en la plaza como todos; la torre tiene cupo, sube al abrir. Fuente Gaia para la foto.", salseo: "El Palio se corre dos veces al año en 90 segundos, sin reglas salvo una (no agarrar las riendas del rival) y con jockeys sobornados. El caballo puede ganar sin jinete. Siena vive para esto los otros 363 días.", wiki: "es:Piazza del Campo" },
+    { n: "Duomo de Siena", lat: 43.3176, lng: 11.3289, tags: ["Imprescindible","Historia"], precio: 15, dur: 90, d: "La catedral de mármol a rayas con un suelo de mosaicos que solo se destapa unos meses al año.", truco: "Entrada 'Opa Si Pass' con biblioteca Piccolomini y la 'Puerta del Cielo' por los tejados; el suelo se ve entero de finales de agosto a octubre.", salseo: "Siena empezó una catedral tres veces más grande para superar a Florencia, llegó la peste de 1348 y se quedó a medias: la nave inacabada es hoy un mirador. Florencia ganó por epidemia.", reservar: true, wiki: "es:Catedral de Siena" },
+    { n: "Contradas y Via Banchi di Sopra", lat: 43.3210, lng: 11.3315, tags: ["Paseo","Comida"], precio: 0, dur: 90, d: "Las calles de los 17 barrios con sus fuentes de animal, y la ricciarelli de la calle principal.", truco: "Nannini para ricciarelli y panforte; cada contrada tiene una fuente donde bautizan a los niños del barrio, búscalas.", salseo: "Cada senés pertenece a una contrada de por vida (la de su nacimiento o la de su padre) con himno, bandera y enemigos oficiales; los matrimonios entre contradas rivales se consideran traición y pasa cada año.", comida: true, sg: "Ricciarelli (almendra) sin harina en varias pastelerías: pregunta.", wiki: "es:Siena" }
+  ]},
+  venecia: { nombre: "Padua", como: "Tren regional, 30 min", paradas: [
+    { n: "Capilla de los Scrovegni", lat: 45.4118, lng: 11.8797, tags: ["Imprescindible","Museo"], precio: 15, dur: 45, d: "Los frescos de Giotto de 1305 que cambiaron la pintura: 15 minutos dentro, con reserva.", truco: "Reserva online con días de antelación; te meten primero en una cámara para estabilizar la humedad. Es el mejor cuarto de hora de arte de Italia.", salseo: "Scrovegni la pagó para redimir a su padre, usurero, al que Dante puso en el Infierno; en el Juicio Final de Giotto el hijo aparece entregando la capilla a la Virgen. Dante no lo sacó del Infierno igualmente.", reservar: true, wiki: "es:Capilla de los Scrovegni" },
+    { n: "Basílica de San Antonio", lat: 45.4013, lng: 11.8807, tags: ["Historia","Imprescindible"], precio: 0, dur: 60, d: "El santuario con cúpulas bizantinas del santo de las cosas perdidas, con Donatello en el altar.", truco: "La capilla de las reliquias tiene la lengua incorrupta del santo; los exvotos de la tumba se leen como un diario de Padua.", salseo: "San Antonio era lisboeta y murió aquí de paso; le abrieron la tumba a los 30 años y la lengua estaba intacta. Es el santo con más peticiones de objetos perdidos, llaves incluidas.", wiki: "es:Basílica de San Antonio de Padua" },
+    { n: "Prato della Valle y Caffè Pedrocchi", lat: 45.3985, lng: 11.8765, tags: ["Paseo","Comida"], precio: 5, dur: 90, d: "La plaza elíptica más grande de Italia con 78 estatuas y el café de 1831 que nunca cerraba.", truco: "Pedrocchi: café con menta y nata, en la sala verde, que era la de los pobres (gratis para sentarse). Mercadillo en el Prato los sábados.", salseo: "Pedrocchi estuvo abierto día y noche sin puertas de 1831 a 1916; Stendhal escribía aquí y los estudiantes de 1848 empezaron una revolución en la sala blanca. Hay un agujero de bala austriaca enmarcado.", comida: true, sg: "Café y helado, sí.", wiki: "es:Prato della Valle" }
+  ]},
+  verona: { nombre: "Lago de Garda: Sirmione", como: "Tren a Desenzano (25 min) y bus o barco a Sirmione", paradas: [
+    { n: "Castillo Scaligero de Sirmione", lat: 45.4914, lng: 10.6081, tags: ["Imprescindible","Historia"], precio: 6, dur: 60, d: "Castillo almenado con dársena propia a la entrada de la península, rodeado de agua.", truco: "Sube a la torre pronto; después de las 11 el pueblo se llena y los coches no pasan del puente.", salseo: "Es uno de los pocos castillos de Europa con puerto fortificado dentro: los Scaligeri guardaban la flota del lago para cobrar peaje a todo el que cruzara. Verona controlaba el agua desde aquí.", wiki: "es:Castillo Scaligero (Sirmione)" },
+    { n: "Grutas de Catulo", lat: 45.5057, lng: 10.6040, tags: ["Historia","Mirador","Parque"], precio: 8, dur: 75, d: "La villa romana más grande del norte de Italia, en ruinas entre olivos con el lago a tres lados.", truco: "Ve andando por la punta de la península (20 min) y baja a la playa Giamaica, de rocas planas, a meter los pies.", salseo: "Catulo, el poeta de los versos guarros, era de Sirmione y la llamó 'la joya de las islas'. La villa no es suya, pero nadie se atreve a cambiar el cartel. Maria Callas tenía villa a 200 metros.", atardecer: true, wiki: "es:Grutas de Catulo" },
+    { n: "Centro de Sirmione y baños termales", lat: 45.4930, lng: 10.6070, tags: ["Comida","Paseo"], precio: 0, dur: 90, d: "Las callejuelas de la península, el helado en el puerto y las termas sulfurosas del Aquaria.", truco: "Come en La Fiasca (casera) o en Osteria al Torcol; el barco a Desenzano al atardecer es la mejor forma de volver.", salseo: "El agua termal sale a 69 grados del fondo del lago y huele a huevos; Callas se bañaba en ella para la voz. Lo de la voz no está demostrado; lo del olor sí.", comida: true, sg: "Pescado del lago a la brasa y risotto: aptos.", wiki: "es:Sirmione" }
+  ]},
+  milan: { nombre: "Lago de Como: Varenna y Bellagio", como: "Tren a Varenna, 1 h; ferry a Bellagio, 15 min", paradas: [
+    { n: "Varenna y Villa Monastero", lat: 46.0093, lng: 9.2860, tags: ["Imprescindible","Parque","Paseo"], precio: 10, dur: 90, d: "El pueblo de colores pegado al agua, el 'paseo de los enamorados' y un jardín de 2 km sobre el lago.", truco: "Baja de la estación por la Passeggiata degli Innamorati y entra en Villa Monastero: el jardín es lo que la gente cree que es Bellagio.", salseo: "Varenna fue refugio de los habitantes de la isla Comacina cuando Como la arrasó en 1169; se trajeron a los santos y el rencor. El pueblo tiene una fuente por cada familia fundadora.", wiki: "es:Varenna" },
+    { n: "Bellagio", lat: 45.9857, lng: 9.2617, tags: ["Imprescindible","Paseo","Comida"], precio: 0, dur: 120, d: "La 'perla del lago', en la punta que divide los dos brazos, con escaleras de tiendas y villas.", truco: "Villa Melzi (jardín, 8 €) es mejor que Villa Serbelloni (no se visita); gelateria Bar Rossi en el embarcadero.", salseo: "El casino Bellagio de Las Vegas copió el pueblo y sus fuentes; el pueblo real tiene 3.000 habitantes y el casino recibe más visitas. Aquí los vecinos siguen esperando el ferry con la compra.", comida: true, sg: "Risotto de perca (persico) apto, sin harina.", wiki: "es:Bellagio" },
+    { n: "Ferry por el lago y Villa Carlotta", lat: 45.9860, lng: 9.2400, tags: ["Parque","Mirador"], precio: 15, dur: 120, d: "El barco lento entre las tres orillas y el jardín botánico con azaleas en Tremezzo.", truco: "Billete 'centro lago' de día libre para saltar entre Varenna, Bellagio y Tremezzo; Villa Carlotta en abril-mayo, con las azaleas, es otro planeta.", salseo: "George Clooney vive en Laglio, más abajo; el ayuntamiento multa con 500 euros a quien se acerque a su villa. Los ferrys reducen la velocidad para que los turistas miren y no les da tiempo a nada.", atardecer: true, wiki: "es:Villa Carlotta" }
+  ]},
+  napoles: { nombre: "Pompeya y el Vesubio", como: "Circumvesuviana a Pompei Scavi, 35 min; bus al Vesubio", paradas: [
+    { n: "Pompeya", lat: 40.7510, lng: 14.4860, tags: ["Imprescindible","Historia"], precio: 18, dur: 180, d: "La ciudad romana detenida en el año 79: calles, termas, burdel, panaderías y los moldes de las víctimas.", truco: "Entrada online y a las 9:00; el Lupanar, la Casa del Fauno y la Villa de los Misterios (un paseo) son lo que hay que ver. Mapa de papel en la entrada, es enorme.", salseo: "Los grafitis de Pompeya sobrevivieron: 'Aquí Cayo se acostó con...' y críticas de restaurantes. En el burdel los precios estaban en la pared y una pintada dice 'he venido y me he ido'. Los romanos éramos así.", reservar: true, wiki: "es:Pompeya" },
+    { n: "Vesubio", lat: 40.8214, lng: 14.4260, tags: ["Imprescindible","Mirador","Parque"], precio: 12, dur: 120, d: "El volcán activo con 700.000 personas viviendo en su ladera; 20 minutos de subida al cráter desde el parking.", truco: "Entrada horaria online obligatoria; bus EAV desde Pompei o taxi compartido. Viento arriba: chaqueta aunque abajo haga calor.", salseo: "El Vesubio lleva 'dormido' desde 1944, cuando enterró un aeródromo aliado; los vulcanólogos dicen que despertará 'pronto' y los napolitanos plantan tomates en su ladera porque la tierra es la mejor. Hay un plan de evacuación que nadie se ha leído.", atardecer: true, wiki: "es:Vesubio" },
+    { n: "Herculano", lat: 40.8060, lng: 14.3480, tags: ["Historia","Fuera de ruta"], precio: 16, dur: 90, d: "La otra ciudad sepultada, más pequeña y mejor conservada: madera, comida carbonizada y casas de dos plantas.", truco: "Si solo hay medio día, Herculano gana a Pompeya: más pequeño, con sombra y con los esqueletos de los arcos del puerto. Ercolano Scavi, misma línea.", salseo: "En 1980 encontraron 300 esqueletos abrazados en los cobertizos del puerto: esperaban barcos que nunca llegaron. Estuvieron 1.900 años a 400 grados en un segundo y por eso se conservó hasta el pan.", wiki: "es:Herculano" }
+  ]},
+  amsterdam: { nombre: "Zaanse Schans y Haarlem", como: "Tren a Zaandijk (17 min) + paseo; tren a Haarlem, 15 min", paradas: [
+    { n: "Zaanse Schans", lat: 52.4740, lng: 4.8170, tags: ["Imprescindible","Paseo"], precio: 0, dur: 120, d: "Molinos de viento de verdad funcionando, casas verdes y fábrica de zuecos a 20 minutos de Ámsterdam.", truco: "Llega a las 9:00 antes de los autobuses; el molino De Kat (pigmentos) se sube por dentro (6 €). La quesería es tienda con muestras gratis.", salseo: "Fue el primer polígono industrial de la historia: 600 molinos en 1700 serrando madera para la flota holandesa. Pedro el Grande vino de incógnito a aprender a construir barcos y lo descubrieron porque medía dos metros.", wiki: "es:Zaanse Schans" },
+    { n: "Haarlem: Grote Markt y Sint-Bavo", lat: 52.3813, lng: 4.6370, tags: ["Imprescindible","Historia"], precio: 4, dur: 90, d: "La plaza mayor con la catedral del órgano que tocó Mozart de niño y las terrazas donde los de Ámsterdam van los sábados.", truco: "Mercado en la plaza sábados; el órgano de Sint-Bavo tiene concierto gratis martes y jueves de verano.", salseo: "Mozart tocó este órgano a los 10 años y Händel antes; los Molenaar de Haarlem son la familia que ha afinado el órgano durante generaciones. La ciudad dio nombre a Harlem en Nueva York, mucho menos tranquilo.", wiki: "es:Haarlem" },
+    { n: "Museo Frans Hals y Jopenkerk", lat: 52.3785, lng: 4.6340, tags: ["Museo","Bar","Comida"], precio: 16, dur: 90, d: "Los retratos de grupo del pintor de las risas, y una iglesia convertida en cervecería.", truco: "Jopenkerk: cerveza Jopen en la nave de una iglesia de 1500, con almuerzo bajo el órgano. Los patios de caridad (hofjes) de Haarlem son 20 y todos abiertos.", salseo: "Frans Hals murió pobre en Haarlem pintando a los regentes del asilo en el que iba a acabar; los pintó con cara de amargados a propósito. El cuadro cuelga en el museo del mismo asilo.", comida: true, sg: "Jopen tiene cerveza sin gluten (Jopen Vrijheid) y platos marcados.", wiki: "es:Museo Frans Hals" }
+  ]},
+  praga: { nombre: "Kutná Hora", como: "Tren desde la estación central, 1 h; bus local al osario", paradas: [
+    { n: "Osario de Sedlec", lat: 49.9618, lng: 15.2881, tags: ["Imprescindible","Fuera de ruta"], precio: 160, dur: 45, d: "La capilla decorada con los huesos de 40.000 personas: lámpara, escudo y guirnaldas de fémures.", truco: "Entrada combinada con la catedral de Sedlec y Santa Bárbara; prohibido fotografiar dentro desde 2020, así que mira.", salseo: "Un abad trajo tierra del Gólgota en 1278 y todo el mundo quiso enterrarse aquí; la peste llenó el cementerio y en 1870 un tallador de madera medio ciego ordenó los huesos 'para que sirvieran'. Firmó con huesos.", wiki: "es:Osario de Sedlec" },
+    { n: "Catedral de Santa Bárbara", lat: 49.9445, lng: 15.2626, tags: ["Imprescindible","Historia"], precio: 180, dur: 60, d: "Gótico tardío de bóvedas de encaje pagado con la plata de las minas, con frescos de mineros.", truco: "Llega por el paseo de los jesuitas (estatuas barrocas) con vistas al valle; dentro, busca al minero pintado con su lámpara.", salseo: "Los mineros la construyeron para competir con la catedral de Praga y se quedaron sin plata a mitad; tardaron 500 años en terminarla (1905). Santa Bárbara es la patrona de los mineros porque protege de las muertes súbitas.", wiki: "es:Iglesia de Santa Bárbara (Kutná Hora)" },
+    { n: "Mina de plata y centro histórico", lat: 49.9490, lng: 15.2670, tags: ["Historia","Paseo","Comida"], precio: 200, dur: 120, d: "El Museo de la Plata con bajada a la mina medieval en casco y capa, y las calles de la ciudad más rica de Bohemia.", truco: "La visita a la mina es de 1 h 30 y con reserva; en algunos tramos son 40 cm de ancho. Dačický, la cervecería, para comer con cerveza local.", salseo: "Aquí se acuñó el 'groschen' de Praga que fue la moneda de media Europa; la ceca era tan grande que se llamaba 'la Corte Italiana' por los expertos florentinos. Cuando se acabó la plata, se acabó la ciudad, y por eso está intacta.", comida: true, sg: "Cerveza no; pide carne asada con verduras.", wiki: "es:Kutná Hora" }
+  ]},
+  viena: { nombre: "Valle del Wachau: Melk y Dürnstein", como: "Tren a Melk, 1 h 15; barco por el Danubio a Dürnstein", paradas: [
+    { n: "Abadía de Melk", lat: 48.2280, lng: 15.3310, tags: ["Imprescindible","Historia"], precio: 14, dur: 90, d: "La abadía barroca amarilla sobre el Danubio, con biblioteca de 100.000 libros y una iglesia de oro.", truco: "Visita con audio; la biblioteca y la terraza sobre el río son el final. Umberto Eco la usó de modelo en El nombre de la rosa.", salseo: "Los monjes llevan aquí desde 1089 y el colegio de la abadía tiene 900 alumnos; el barroco dorado lo pagaron con vino. Napoleón durmió aquí dos veces y los monjes le hicieron una cama especial que sigue en el museo.", wiki: "es:Abadía de Melk" },
+    { n: "Crucero Melk-Dürnstein", lat: 48.3960, lng: 15.5200, tags: ["Paseo","Mirador","Imprescindible"], precio: 30, dur: 100, d: "El tramo más bonito del Danubio: viñedos en terraza, castillos en ruinas y pueblos con iglesia azul.", truco: "Barco de la naviera DDSG o Brandner, cubierta superior a estribor bajando; en octubre, con la vendimia, es de foto.", salseo: "Ricardo Corazón de León estuvo preso en el castillo de Dürnstein en 1192; su trovador lo encontró cantando por los castillos hasta que Ricardo respondió desde la ventana. Inglaterra pagó 35 toneladas de plata de rescate y con eso Viena se construyó la muralla.", wiki: "es:Wachau" },
+    { n: "Dürnstein y albaricoques", lat: 48.3956, lng: 15.5195, tags: ["Comida","Paseo","Fuera de ruta"], precio: 0, dur: 90, d: "El pueblo azul y blanco bajo el castillo de Ricardo, con licor y mermelada de albaricoque en cada puerta.", truco: "Sube al castillo en ruinas (20 min) para la vista; Heuriger en la calle principal para Grüner Veltliner y schnitzel. Vuelta en tren desde Krems.", salseo: "El albaricoque del Wachau tiene denominación de origen y florece en abril; los vecinos discuten cada año si el licor ha de ser dulce o seco y hay dos bandos con tienda propia.", comida: true, sg: "Vino y albaricoques, aptos; el strudel no.", wiki: "es:Dürnstein" }
+  ]},
+  budapest: { nombre: "Szentendre", como: "Tren HÉV H5 desde Batthyány tér, 40 min; barco en verano", paradas: [
+    { n: "Centro barroco de Szentendre", lat: 47.6690, lng: 19.0760, tags: ["Imprescindible","Paseo"], precio: 0, dur: 90, d: "El pueblo de artistas a orillas del Danubio: plazas de colores, iglesias serbias y galerías.", truco: "Plaza Fő tér y las callejuelas hacia el río; el Museo del Mazapán es una trampa turística que gusta a los niños.", salseo: "Lo fundaron serbios que huían de los turcos en 1690 y hay siete iglesias ortodoxas para 2.000 habitantes; los artistas llegaron en los años 20 porque era barato y bonito, en ese orden.", wiki: "es:Szentendre" },
+    { n: "Museo Kovács Margit", lat: 47.6665, lng: 19.0768, tags: ["Museo"], precio: 1600, dur: 45, d: "La ceramista más querida de Hungría: figuras de barro con cara de cuento en una casa del XVIII.", truco: "Es pequeño y se ve en 40 minutos; sus figuras de mujeres campesinas son las que se venden en todo el país como recuerdo.", salseo: "Kovács trabajaba con las manos hasta los 75 y decía que el barro 'es la única cosa que nunca miente'; tiene calle, museo y una lápida hecha por ella misma de cerámica.", wiki: "en:Margit Kovács" },
+    { n: "Skanzen, el museo al aire libre", lat: 47.7080, lng: 19.0530, tags: ["Parque","Museo","Fuera de ruta"], precio: 3000, dur: 150, d: "Pueblos enteros de toda Hungría trasladados y reconstruidos: molinos, iglesias, tabernas y un tren de vapor.", truco: "Bus desde Szentendre (10 min); los fines de semana hay artesanos, pan de horno y pálinka. Cierra de noviembre a marzo.", salseo: "Es el mayor museo al aire libre de Europa central: 300 edificios que se desmontaron piedra a piedra en su pueblo original con las abuelas mirando. Algunas vinieron a vivir al museo como guías.", comida: true, sg: "Pan no, pero el pörkölt y las brasas de los fines de semana sí.", wiki: "en:Skanzen (Hungary)" }
+  ]},
+  londres: { nombre: "Greenwich y Windsor", como: "Barco Thames Clipper a Greenwich, 40 min; tren a Windsor desde Paddington, 40 min", paradas: [
+    { n: "Real Observatorio de Greenwich", lat: 51.4769, lng: -0.0005, tags: ["Imprescindible","Mirador","Historia"], precio: 18, dur: 90, d: "El meridiano cero: un pie en cada hemisferio, la bola roja que cae a las 13:00 y la vista de Canary Wharf.", truco: "Sube por el parque desde el museo marítimo (gratis); la línea del meridiano de fuera es gratis, la de dentro cuesta. A las 13:00 cae la bola.", salseo: "La hora de Greenwich se impuso en 1884 por votación mundial; Francia votó en contra y usó 'hora de París retrasada 9 minutos y 21 segundos' hasta 1911 para no decir Greenwich. Sigue sin decirlo.", wiki: "es:Real Observatorio de Greenwich" },
+    { n: "Cutty Sark y mercado de Greenwich", lat: 51.4826, lng: -0.0096, tags: ["Historia","Mercado","Comida"], precio: 16, dur: 90, d: "El clíper del té más rápido del mundo, suspendido en el aire, y el mercado cubierto de comida y artesanos.", truco: "El mercado de Greenwich (miércoles a domingo) para comer; el Cutty Sark se visita por debajo del casco, que es lo raro.", salseo: "El Cutty Sark corría a Londres con el té nuevo y luego con lana desde Australia; su mascarón es una bruja con la camisa corta ('cutty sark' en escocés) del poema de Burns. Ardió en 2007 mientras lo restauraban; se salvó porque las piezas estaban en un almacén.", comida: true, sg: "Puestos con etiquetado; los currys y las brasas, aptos.", wiki: "es:Cutty Sark" },
+    { n: "Castillo de Windsor", lat: 51.4839, lng: -0.6044, tags: ["Imprescindible","Historia"], precio: 30, dur: 150, d: "El castillo habitado más antiguo del mundo: apartamentos de Estado, capilla de San Jorge y la casa de muñecas de la reina.", truco: "Entrada online con hora; cambio de guardia a las 11:00 martes, jueves y sábado. Cierra cuando el rey está.", salseo: "Isabel II está enterrada aquí junto a Felipe y sus padres, en una capilla lateral con una losa de mármol negro; a 500 metros, en Frogmore, Victoria y Alberto tienen un mausoleo que casi nadie visita. La casa de muñecas tiene agua corriente y vino de verdad en botellas de 3 cm.", reservar: true, wiki: "es:Castillo de Windsor" }
+  ]},
+  berlin: { nombre: "Potsdam", como: "S-Bahn S7, 40 min; bus 695 al palacio", paradas: [
+    { n: "Palacio de Sanssouci", lat: 52.4043, lng: 13.0384, tags: ["Imprescindible","Historia"], precio: 14, dur: 90, d: "El Versalles prusiano en pequeño: el palacio de verano de Federico el Grande sobre terrazas de viñedos.", truco: "Entrada horaria online (sanssouci+ para todo); el palacio son 12 salas y la gracia son los jardines: el Nuevo Palacio al fondo, a 2 km, es el grande.", salseo: "Federico pidió ser enterrado en la terraza con sus galgos y sin ceremonia; el Estado no le hizo caso y tardó 205 años en cumplirlo (1991). Los turistas le dejan patatas en la tumba porque introdujo la patata en Prusia a base de decretos.", reservar: true, wiki: "es:Palacio de Sanssouci" },
+    { n: "Palacio de Cecilienhof", lat: 52.4192, lng: 13.0712, tags: ["Historia"], precio: 10, dur: 75, d: "La mansión inglesa donde Truman, Churchill y Stalin repartieron Europa en 1945, con la mesa redonda intacta.", truco: "La estrella roja de geranios del patio la plantaron los soviéticos y la siguen replantando cada año; ve por el parque Nuevo Jardín.", salseo: "Truman recibió aquí el telegrama de que la bomba atómica funcionaba y se lo dijo a Stalin como quien comenta el tiempo; Stalin ya lo sabía por sus espías y respondió 'me alegro'. Churchill perdió las elecciones a mitad de conferencia y lo sustituyó Attlee.", wiki: "es:Palacio de Cecilienhof" },
+    { n: "Barrio holandés y Puente Glienicke", lat: 52.4020, lng: 13.0620, tags: ["Paseo","Comida","Fuera de ruta"], precio: 0, dur: 90, d: "Cuatro manzanas de casas de ladrillo rojo holandesas del XVIII y, en las afueras, el puente de los espías.", truco: "Café y tarta en el Barrio Holandés (Mittelstraße); el puente Glienicke (tranvía 93) para la foto de Guerra Fría, con la línea pintada en medio.", salseo: "En el puente Glienicke se intercambiaron espías tres veces; en 1962 el piloto Powers por el coronel Abel, el de 'El puente de los espías'. Tom Hanks rodó en el puente real y los vecinos de Potsdam hicieron de extras en su propia calle.", comida: true, sg: "Cafés con tartas sin gluten marcadas en el barrio holandés.", wiki: "es:Puente de Glienicke" }
+  ]},
+  atenas: { nombre: "Delfos", como: "Bus KTEL desde Liosion, 3 h; o excursión organizada", paradas: [
+    { n: "Santuario de Apolo", lat: 38.4824, lng: 22.5010, tags: ["Imprescindible","Historia","Mirador"], precio: 12, dur: 120, d: "El 'ombligo del mundo' colgado del Parnaso: la vía sagrada, el templo del oráculo, el teatro y el estadio arriba.", truco: "Sube hasta el estadio (10 min más) que casi nadie lo hace; a las 8:30 tienes el templo para ti y luz lateral.", salseo: "La pitonisa daba sus profecías drogada con gases de una falla (etileno, dice la geología) y los sacerdotes las traducían en verso ambiguo. A Creso le dijeron que 'destruiría un gran imperio' si atacaba a Persia. Era el suyo.", wiki: "es:Delfos" },
+    { n: "Museo de Delfos", lat: 38.4806, lng: 22.4990, tags: ["Museo","Imprescindible"], precio: 0, dur: 60, d: "El Auriga de bronce con los ojos de ónice, la Esfinge de Naxos y el ónfalos, la piedra del ombligo.", truco: "Incluido en la entrada; el Auriga está al fondo y hay que dar la vuelta para mirarle a los ojos.", salseo: "El Auriga sobrevivió 2.400 años porque un terremoto lo enterró en el 373 a. C. y se libró de que lo fundieran; le faltan el carro y los caballos, pero conserva las pestañas de cobre. Un ojo mira ligeramente a otro lado, adrede.", wiki: "es:Museo Arqueológico de Delfos" },
+    { n: "Arachova y Tholos de Atenea", lat: 38.4790, lng: 22.5070, tags: ["Comida","Paseo","Mirador"], precio: 0, dur: 90, d: "El templo redondo de Atenea Pronaia, la foto de Delfos, y el pueblo de montaña donde se come cordero y se compran mantas.", truco: "El Tholos está fuera del recinto principal, 500 m carretera abajo, y es gratis mirarlo desde arriba. Arachova, a 10 km, para comer con vistas (formaela, el queso a la plancha).", salseo: "Arachova es el Gstaad griego: los atenienses ricos esquían en el Parnaso y toman el sol en la terraza en marzo con abrigo de piel. En Pascua tiran de un cordero por el campanario y lo asan en la plaza.", comida: true, sg: "Formaela a la plancha y cordero al horno, aptos.", wiki: "es:Aráchova" }
+  ]},
+  edimburgo: { nombre: "Rosslyn, North Berwick y el Forth", como: "Bus 37 a Roslin, 40 min; tren a North Berwick, 35 min", paradas: [
+    { n: "Capilla de Rosslyn", lat: 55.8555, lng: -3.1602, tags: ["Imprescindible","Historia"], precio: 15, dur: 75, d: "La capilla del XV cubierta de tallas por dentro (el Pilar del Aprendiz, los ángeles músicos, las mazorcas antes de Colón).", truco: "Charla gratuita del guía cada hora: la del Pilar del Aprendiz es la buena. Después, paseo por el glen hasta el castillo en ruinas.", salseo: "El Código Da Vinci la llenó de turistas buscando el Grial bajo el suelo; los guías ya no discuten y señalan una cripta sellada desde 1690. El aprendiz talló el pilar mejor que su maestro y el maestro lo mató con un mazo; hay tres caras en la piedra que lo cuentan.", wiki: "es:Capilla de Rosslyn" },
+    { n: "North Berwick y Bass Rock", lat: 56.0585, lng: -2.7170, tags: ["Parque","Paseo","Mirador"], precio: 0, dur: 120, d: "El pueblo de playa con la roca blanca de alcatraces enfrente y la subida a la 'Law', el cono volcánico con mandíbula de ballena.", truco: "Sube a North Berwick Law (30 min) para ver Bass Rock, las islas y Edimburgo; el Scottish Seabird Centre tiene cámaras en directo de los alcatraces y barcos en verano.", salseo: "Bass Rock es blanca porque tiene 150.000 alcatraces encima, la mayor colonia del mundo; fue prisión de presbiterianos en el XVII y los presos comían alcatraz. La mandíbula de ballena de la cima es de fibra de vidrio: la original se pudrió en 2005.", wiki: "es:North Berwick" },
+    { n: "Puentes del Forth desde South Queensferry", lat: 55.9905, lng: -3.3980, tags: ["Mirador","Fuera de ruta","Comida"], precio: 0, dur: 90, d: "Los tres puentes juntos: el de hierro rojo de 1890, el colgante de 1964 y el de tirantes de 2017, desde un pueblo de una calle.", truco: "Tren a Dalmeny y bajada a pie (15 min); la mejor vista es desde el muelle del pueblo al atardecer con fish and chips del Hawes Inn.", salseo: "Pintar el puente rojo tardaba tanto que 'como pintar el Forth Bridge' es una expresión inglesa para las tareas infinitas; en 2011 lo pintaron con un producto que dura 25 años y se cargaron la frase. Stevenson escribió Secuestrado en el Hawes Inn.", atardecer: true, comida: true, sg: "Hawes Inn tiene rebozado sin gluten los martes; el resto, salmón.", wiki: "es:Puente de Forth" }
+  ]},
+  dublin: { nombre: "Glendalough y las Wicklow", como: "Bus St Kevin's desde Dawson St, 1 h 30; o excursión organizada", paradas: [
+    { n: "Monasterio de Glendalough", lat: 53.0106, lng: -6.3284, tags: ["Imprescindible","Historia"], precio: 0, dur: 75, d: "La torre redonda de 30 metros y las siete iglesias de piedra del siglo VI en un valle de dos lagos.", truco: "Centro de visitantes con la maqueta (5 €) y luego el cementerio y la torre gratis; llega antes de las 11 o después de las 16 para evitar los autobuses.", salseo: "San Kevin vivió siete años en una cueva del lago comiendo bayas y, según la leyenda, un mirlo puso huevos en su mano extendida y él la mantuvo abierta hasta que salieron. Los turistas se meten en la cueva y salen a los cinco minutos.", wiki: "es:Glendalough" },
+    { n: "Lago Superior y ruta de los Spinc", lat: 53.0000, lng: -6.3500, tags: ["Parque","Mirador","Paseo"], precio: 0, dur: 150, d: "El sendero de tablas por la cresta del valle con el lago 300 metros abajo y las ruinas de la mina al fondo.", truco: "Ruta blanca (Spinc, 3 h, 380 m de subida) con botas: la mejor caminata a una hora de Dublín. Hay ciervos y en invierno, nieve.", salseo: "El valle fue mina de plomo hasta 1957 y los mineros vivían en un poblado que ahora son ruinas junto al lago; el poeta Seamus Heaney escribió aquí sobre san Kevin y el mirlo. Excalibur y Braveheart se rodaron en estas montañas por lo vacías.", wiki: "es:Montañas de Wicklow" },
+    { n: "Powerscourt y su cascada", lat: 53.1846, lng: -6.1870, tags: ["Parque","Comida"], precio: 13, dur: 120, d: "Los jardines más famosos de Irlanda, en terrazas frente a la montaña Sugarloaf, y la cascada más alta del país a 6 km.", truco: "El cementerio de mascotas de la mansión (con lápidas de vacas) y el jardín japonés; té en la terraza de Avoca, dentro de la casa.", salseo: "La mansión ardió en 1974 la noche antes de reabrirse tras 20 años de obras; los dueños se quedaron mirando y luego reconstruyeron. La cascada de 121 metros aparece en Excalibur con un caballo blanco que se resbaló.", comida: true, sg: "Avoca marca todo; sopas y ensaladas.", wiki: "es:Powerscourt Estate" }
+  ]},
+  copenhague: { nombre: "Helsingør y Louisiana", como: "Tren Kystbanen a Humlebæk (35 min) y Helsingør (45 min)", paradas: [
+    { n: "Museo Louisiana", lat: 55.9690, lng: 12.5420, tags: ["Imprescindible","Museo","Parque"], precio: 150, dur: 150, d: "El mejor museo de arte moderno del norte: pabellones de cristal sobre el mar, Giacometti mirando al Öresund y un jardín de esculturas.", truco: "Ve directo al ala de Giacometti y baja al jardín hacia el mar; el café con terraza es donde comen los daneses el fin de semana. Los martes cierra.", salseo: "Se llama Louisiana porque el primer dueño de la casa se casó tres veces con tres mujeres llamadas Louise, y así lo dejó por escrito. Los niños se bañan en la playa del museo en verano con la entrada.", wiki: "es:Museo de Arte Moderno Louisiana" },
+    { n: "Castillo de Kronborg", lat: 56.0390, lng: 12.6222, tags: ["Imprescindible","Historia"], precio: 145, dur: 120, d: "El castillo de Hamlet, fortaleza renacentista en la punta del estrecho, con casamatas donde duerme Holger el Danés.", truco: "Baja a las casamatas con linterna: Holger Danske, el gigante de piedra, despertará cuando Dinamarca lo necesite. Los actores hacen Hamlet en verano por los pasillos.", salseo: "Shakespeare nunca vino, pero los cómicos ingleses que actuaban en el castillo le contaron todo; en 1816 empezaron a representar Hamlet aquí y no han parado. Suecia está a 4 km enfrente y desde aquí se cobraba peaje a cada barco durante 400 años.", wiki: "es:Castillo de Kronborg" },
+    { n: "Helsingør y ferry a Helsingborg", lat: 56.0360, lng: 12.6110, tags: ["Paseo","Comida","Fuera de ruta"], precio: 60, dur: 90, d: "El pueblo de madera del XVI, el Museo Marítimo bajo tierra y el ferry de 20 minutos a Suecia para decir que has estado.", truco: "Ferry Forsea cada 20 minutos (ida y vuelta 60 kr), sin bajar si quieres; los daneses van a comprar carne y los suecos, cerveza. Comida en el Kulturværftet con vistas.", salseo: "El Museo Marítimo lo diseñó BIG bajo el suelo, dentro de un dique seco, para no tapar el castillo; ganó premios por un edificio que no se ve. El ferry es el 'ferry del alcohol': los suecos cargan cajas de cerveza barata y vuelven en el mismo barco.", comida: true, sg: "Pescado ahumado y smørrebrød sin pan en el puerto.", wiki: "es:Helsingør" }
+  ]},
+  bruselas: { nombre: "Brujas", como: "Tren desde Bruselas Central, 1 h", paradas: [
+    { n: "Markt y Campanario de Brujas", lat: 51.2089, lng: 3.2247, tags: ["Imprescindible","Mirador"], precio: 15, dur: 90, d: "La plaza de fachadas escalonadas y el campanario de 366 escalones con carillón de 47 campanas.", truco: "El campanario tiene cupo: entrada online y ve a las 9:30. Desde arriba se entiende la ciudad; luego evita el Markt para comer.", salseo: "Brujas fue la ciudad más rica de Europa en 1400 y se quedó dormida cuando el canal se llenó de arena en 1500; por eso está intacta. En 1892 una novela ('Brujas la muerta') la puso de moda y no ha vuelto a dormir.", reservar: true, wiki: "es:Campanario de Brujas" },
+    { n: "Canales y Beaterio", lat: 51.2030, lng: 3.2240, tags: ["Paseo","Parque","Imprescindible"], precio: 12, dur: 90, d: "El paseo en barca de 30 minutos, el Rozenhoedkaai (la foto), y el beaterio de 1245 con álamos y silencio.", truco: "Barca desde cualquier embarcadero (mismo precio, mismo recorrido); el Beaterio es gratis y a las 17:00 cierran las puertas, así que ve antes. El Minnewater al lado.", salseo: "Las beguinas eran mujeres que vivían solas sin votos en un tiempo en que eso no existía; la última se fue en 1927 y ahora viven benedictinas con la condición de que no hablen. El 'lago del amor' es un embalse medieval con cisnes por decreto.", wiki: "es:Beaterio de Brujas" },
+    { n: "Cerveza, chocolate y patatas en Brujas", lat: 51.2110, lng: 3.2260, tags: ["Comida","Museo","Bar"], precio: 14, dur: 120, d: "La cervecería De Halve Maan (visita y cerveza en la azotea), el chocolate de The Chocolate Line y las patatas de la Frietmuseum.", truco: "De Halve Maan tiene una tubería de 3 km bajo la ciudad que lleva la cerveza a la embotelladora; visita de 45 min con cerveza. Chocolate Line para bombones raros (wasabi, tabaco).", salseo: "La tubería de cerveza se pagó con crowdfunding: quien dio 7.500 euros recibe cerveza gratis de por vida en la cervecería. La ciudad tiene 50 chocolaterías para 20.000 habitantes y una guerra por el 'chocolate de Brujas' contra una fábrica que no está en Brujas.", comida: true, sg: "Patatas fritas en grasa (freidora aparte en Frietmuseum), chocolate sí, cerveza no.", wiki: "es:Brujas" }
+  ]},
+  munich: { nombre: "Neuschwanstein", como: "Tren a Füssen (2 h) y bus 78 a Hohenschwangau", paradas: [
+    { n: "Castillo de Neuschwanstein", lat: 47.5576, lng: 10.7498, tags: ["Imprescindible","Historia"], precio: 21, dur: 120, d: "El castillo de cuento de Luis II sobre el barranco, con salas wagnerianas y una gruta artificial dentro.", truco: "Entrada horaria online semanas antes; sube a pie (40 min) o en bus; la visita dura 30 min. El puente Marienbrücke es la foto.", salseo: "Luis II lo construyó para vivir la ópera de Wagner y solo durmió en él 172 noches; murió a los 40 con el castillo a medias y su familia lo abrió al público seis semanas después para pagar las deudas. Disney lo copió y Baviera cobra 1,5 millones de entradas al año.", reservar: true, wiki: "es:Castillo de Neuschwanstein" },
+    { n: "Puente Marienbrücke y Hohenschwangau", lat: 47.5560, lng: 10.7422, tags: ["Mirador","Historia"], precio: 21, dur: 90, d: "El puente colgante sobre el barranco, con la postal del castillo, y el castillo amarillo donde Luis creció.", truco: "Marienbrücke cierra con hielo o viento; ve al puente antes de tu hora de entrada. Hohenschwangau es el castillo de la infancia y explica al personaje.", salseo: "Luis creció en Hohenschwangau mirando los frescos de Lohengrin y decidió ser el caballero del cisne; su madre Marie era escaladora y cruzaba el barranco por un tronco antes de que hubiera puente. Le pusieron su nombre.", wiki: "es:Castillo de Hohenschwangau" },
+    { n: "Füssen y el lago Alpsee", lat: 47.5700, lng: 10.7020, tags: ["Paseo","Comida","Parque"], precio: 0, dur: 90, d: "El pueblo medieval de colores al final de la Ruta Romántica y el lago verde bajo los castillos donde nadaba el rey.", truco: "Baño en el Alpsee en verano (agua a 20 grados), bocadillo en Füssen; el Museo de la ciudad tiene la fábrica de laúdes.", salseo: "Füssen fabricaba los laúdes y violines de media Europa en el XVI; los luthiers emigraron a Venecia y Cremona y allí nació Stradivarius. El pueblo se quedó con la Ruta Romántica, que inventó una agencia de viajes en 1950.", comida: true, sg: "Kässpatzen no; salchichas y ensaladas, sí.", wiki: "es:Füssen" }
+  ]},
+  sevilla: { nombre: "Córdoba", como: "AVE, 45 min", paradas: [
+    { n: "Mezquita-Catedral de Córdoba", lat: 37.8790, lng: -4.7794, tags: ["Imprescindible","Historia"], precio: 13, dur: 120, d: "El bosque de 856 columnas y arcos bicolores con una catedral renacentista incrustada en medio.", truco: "Gratis de 8:30 a 9:30 (sin grupos) de lunes a sábado; entra por el Patio de los Naranjos y busca el mihrab al fondo, a la izquierda.", salseo: "Carlos V autorizó la catedral en medio de la mezquita y al verla dijo: 'habéis destruido lo que era único en el mundo'. El cabildo aún discute si la frase es cierta; los turistas lo tienen claro.", reservar: true, wiki: "es:Mezquita-catedral de Córdoba" },
+    { n: "Judería y Calleja de las Flores", lat: 37.8795, lng: -4.7800, tags: ["Paseo","Imprescindible"], precio: 0, dur: 60, d: "Las calles blancas con macetas azules, la sinagoga del XIV y el patio de las flores con la torre al fondo.", truco: "La Calleja de las Flores a primera hora; la Sinagoga es gratis y minúscula. En mayo, festival de los Patios: casas privadas abiertas con premios.", salseo: "Maimónides nació aquí, se fue de niño huyendo de los almohades y tiene estatua con el pie brillante de tanto frotarlo 'para ser sabio'. Séneca, Averroes y él: tres filósofos y ninguna universidad hasta 1972.", wiki: "es:Judería de Córdoba" },
+    { n: "Alcázar de los Reyes Cristianos y Puente Romano", lat: 37.8770, lng: -4.7815, tags: ["Historia","Parque","Mirador"], precio: 5, dur: 90, d: "Los jardines de estanques donde Colón pidió barcos a los Reyes Católicos, y el puente romano al atardecer con la mezquita detrás.", truco: "El puente a la hora azul desde la Torre de la Calahorra; tapas en Bodegas Mezquita o salmorejo en Casa Pepe de la Judería.", salseo: "Colón se reunió con Isabel y Fernando en este Alcázar en 1486 y salió sin barcos; su hijo Hernando nació en Córdoba de una cordobesa que nunca fue su mujer. Los jardines los diseñaron en 1950 para que pareciera que siempre estuvieron.", atardecer: true, comida: true, sg: "Salmorejo lleva pan: pide gazpacho o flamenquín no; el rabo de toro, sí.", wiki: "es:Alcázar de los Reyes Cristianos" }
+  ]},
+  cracovia: { nombre: "Zakopane y los Tatras", como: "Bus desde la estación, 2 h; o tren", paradas: [
+    { n: "Krupówki y arquitectura de Zakopane", lat: 49.2955, lng: 19.9520, tags: ["Paseo","Comida","Imprescindible"], precio: 0, dur: 90, d: "La calle principal de la capital de la montaña polaca, casas de madera con tejados en punta y queso ahumado en cada puesto.", truco: "Oscypek (queso de oveja ahumado) a la plancha con mermelada de arándano en cualquier puesto; huye de Krupówki para comer, en Karczma Zapiecek o en un 'bacówka'.", salseo: "El estilo Zakopane lo inventó un pintor en 1890 para que Polonia tuviera arquitectura nacional; los montañeses (górale) lo adoptaron y hoy tienen dialecto, música propia y reputación de ser 'la mafia de la montaña'. Con cariño.", comida: true, sg: "Oscypek y carne a la brasa, aptos; pierogi no.", wiki: "es:Zakopane" },
+    { n: "Gubałówka", lat: 49.3050, lng: 19.9420, tags: ["Mirador","Parque"], precio: 30, dur: 90, d: "El funicular de 1938 a la colina con la panorámica de los Tatras y toda la ciudad.", truco: "Funicular desde el final de Krupówki (3 min); arriba, paseo por la cresta y bajada a pie por Butorowy Wierch (40 min) con vistas todo el rato.", salseo: "Zakopane pidió los Juegos de Invierno de 2006 con este funicular como argumento y perdió contra Turín; los górale dicen que fue por envidia y siguen usándolo como pista de trineo en invierno.", wiki: "es:Gubałówka" },
+    { n: "Morskie Oko", lat: 49.2013, lng: 20.0710, tags: ["Imprescindible","Parque","Mirador"], precio: 8, dur: 180, d: "El 'ojo del mar', el lago más famoso de los Tatras, a 9 km de subida suave por carretera asfaltada entre bosque.", truco: "Bus desde Zakopane a Palenica Białczańska; los carros de caballos cuestan 50 zł y van llenos; a pie son 2 h de ida por asfalto. Refugio con sopa arriba. Lleva capa: cambia el tiempo en diez minutos.", salseo: "La leyenda dice que el lago está conectado con el mar por un túnel; en 1900 tiraron un tronco marcado y apareció en el Báltico... o eso cuentan. Es el segundo sitio más visitado de Polonia después de Auschwitz, con un millón de personas al año, y ninguna ve el túnel.", atardecer: true, wiki: "es:Morskie Oko" }
+  ]},
+  estocolmo: { nombre: "Drottningholm y Uppsala", como: "Barco desde el Ayuntamiento a Drottningholm (1 h); tren a Uppsala, 40 min", paradas: [
+    { n: "Palacio de Drottningholm", lat: 59.3216, lng: 17.8867, tags: ["Imprescindible","Historia","Parque"], precio: 160, dur: 120, d: "Donde viven los reyes: el palacio barroco sobre el lago Mälaren, el teatro del XVIII intacto y el pabellón chino.", truco: "Barco Strömma desde Stadshuskajen (mejor que el metro); el teatro de 1766 conserva la maquinaria de madera original y se ve con visita guiada.", salseo: "El rey Carlos Gustavo y Silvia viven en el ala sur y se cruzan con los turistas en el jardín; en 1991 Suecia lo hizo patrimonio mundial y los reyes tuvieron que abrir las cortinas. El teatro se olvidó durante un siglo y se encontró con los decorados puestos.", wiki: "es:Palacio de Drottningholm" },
+    { n: "Catedral y Universidad de Uppsala", lat: 59.8585, lng: 17.6330, tags: ["Imprescindible","Historia"], precio: 0, dur: 90, d: "La catedral más alta de Escandinavia, con Gustavo Vasa y Linneo dentro, y la universidad más antigua del norte (1477).", truco: "El Gustavianum (museo de la universidad) tiene el teatro anatómico de 1663 y el gabinete de curiosidades; el jardín de Linneo, con sus plantas ordenadas, es a diez minutos.", salseo: "Linneo clasificó a los seres vivos desde aquí y ponía nombres latinos feos a las plantas de sus enemigos; el paseo de los estudiantes (el 30 de abril, Valborg) acaba con miles de gorras blancas y baños en el río a 8 grados.", wiki: "es:Catedral de Uppsala" },
+    { n: "Gamla Uppsala", lat: 59.8980, lng: 17.6330, tags: ["Historia","Parque","Fuera de ruta"], precio: 0, dur: 90, d: "Los tres túmulos reales vikingos del siglo VI, el templo pagano bajo la iglesia y el museo del culto a Odín.", truco: "Bus 2 desde el centro de Uppsala (15 min); sube a los túmulos al atardecer y toma hidromiel en Odinsborg, la taberna 'vikinga' de 1899.", salseo: "Adam de Bremen contó en 1075 que aquí sacrificaban nueve machos de cada especie, hombres incluidos, y los colgaban de un árbol sagrado; los arqueólogos no han encontrado el árbol pero sí muchos huesos. Los suecos hacen picnic sobre las tumbas de sus reyes sin ningún problema.", atardecer: true, comida: true, sg: "Hidromiel apta; en Odinsborg hay carne asada.", wiki: "es:Gamla Uppsala" }
+  ]}
+};
+// Se anaden al repositorio como zona especial y las wikis a la guia
+Object.keys(EXCURSIONES).forEach(k => {
+  const c = CIUDADES[k], ex = EXCURSIONES[k]; if (!c) return;
+  ex.paradas.forEach(p => { p.excursion = true; if (GUIA[k]) GUIA[k].wiki[p.n] = p.wiki; });
+  c.zonas.push({ nombre: "Escapada: " + ex.nombre, excursion: true, como: ex.como, paradas: ex.paradas });
+});
+
+/* ======================================================================
+   BARCELONA (ciudad nueva, completa)
+   ====================================================================== */
+CIUDADES.barcelona = {
+  nombre: "Barcelona", pais: "España", revisado: "agosto 2026", acento: "#B03A2E", moneda: "€", tz: 1,
+  centro: [41.3870, 2.1700], zoom: 13,
+  claim: "Gaudí, mar, vermut y una ciudad que se piensa a sí misma en cuadrícula",
+  consejo: "T-casual de 10 viajes para metro y bus; todo el Eixample se anda en cuadrícula. Los carteristas del metro y la Rambla son profesionales: móvil en el bolsillo de delante.",
+  presupuesto: "Entradas ≈ 20-30 € por persona (Sagrada Familia y Park Güell mandan); comer para dos ≈ 40-70 €.",
+  lluvia: "Museo Picasso o MNAC, y una tarde de vermut en un bar de Gràcia.",
+  comer: ["Bar del Pla (Born): tapas de mercado con toque, cola a las 20:00, sin reservas", "Can Paixano (Barceloneta): cava barato, bocadillos y codos, de pie desde 1969", "Quimet & Quimet (Poble Sec): montaditos y conservas en un bar de 20 m², de pie"],
+  singluten: ["La escalivada, el pan con tomate sin pan (sí, existe: 'tomate con pan aparte') y la fideuá no; el suquet y las brasas sí", "Copasetic (Eixample) y Conesa (Sant Jaume) tienen pan sin gluten y horno aparte"],
+  zonas: [
+    { nombre: "Gótico y Born", paradas: [
+      { n: "Catedral de Barcelona y claustro de las ocas", lat: 41.3839, lng: 2.1762, tags: ["Imprescindible","Historia"], precio: 11, dur: 60, d: "La catedral gótica con un claustro donde viven trece ocas, una por cada año de Santa Eulalia.", truco: "Gratis de 8:30 a 12:30 (entrada de culto) y el claustro por la puerta lateral; la azotea cuesta aparte y merece.", salseo: "Las trece ocas llevan ahí desde el siglo XV y tienen cuidador oficial; cuando muere una, la sustituyen en silencio. Los sábados por la tarde se baila sardana en la plaza, y no es para turistas: es religión laica." },
+      { n: "Plaça del Rei y MUHBA", lat: 41.3842, lng: 2.1777, tags: ["Historia","Museo"], precio: 7, dur: 60, d: "La plaza medieval intacta y, debajo, cuatro mil metros cuadrados de Barcino romana con lavanderías y bodegas.", truco: "El MUHBA se recorre por pasarelas sobre la ciudad romana; domingos por la tarde es gratis. En la plaza, Colón contó a los Reyes Católicos lo de América.", salseo: "Aquí se cree que Fernando el Católico sufrió un intento de asesinato en 1492 por un campesino que lo apuñaló en el cuello; sobrevivió por la cadena de oro. Al campesino lo descuartizaron en la misma plaza. Barcelona no perdona." },
+      { n: "Santa Maria del Mar", lat: 41.3838, lng: 2.1820, tags: ["Imprescindible","Historia"], precio: 0, dur: 40, d: "La catedral del pueblo, gótico puro y vacío, construida en 55 años por los estibadores del puerto.", truco: "Entra al mediodía por la luz del rosetón; la visita a las terrazas (10 €) tiene la mejor vista del Born. Gratis en horario de culto.", salseo: "Los 'bastaixos', los descargadores del puerto, subieron las piedras desde Montjuïc a la espalda y aparecen tallados en la puerta; en 1936 ardió once días y quedó sin retablos, que es como está mejor. La catedral del mar es la novela; el sitio es mejor." },
+      { n: "Passeig del Born y Mercat del Born", lat: 41.3855, lng: 2.1840, tags: ["Paseo","Bar","Historia"], precio: 0, dur: 60, d: "El paseo de los torneos medievales, hoy de bares, y el mercado de hierro con la ciudad de 1714 bajo el suelo.", truco: "El Mercat del Born es gratis y se ve la ciudad demolida tras el asedio; después, vermut en El Xampanyet (Montcada) con anchoas.", salseo: "Felipe V derribó el barrio entero para construir la Ciudadela que vigilara a los barceloneses; cuando en 2001 excavaron el mercado apareció el barrio tal cual lo dejaron, con las cocinas. El 11 de septiembre viene de aquí.", comida: true, sg: "Anchoas, aceitunas y cava en El Xampanyet: fácil." }
+    ]},
+    { nombre: "Eixample y Gaudí", paradas: [
+      { n: "Sagrada Familia", lat: 41.4036, lng: 2.1744, tags: ["Imprescindible","Historia"], precio: 26, dur: 120, d: "La basílica que Gaudí dejó al 20 % y se terminará en 2026 con la torre de Jesús: bosque de columnas y vidrieras de colores.", truco: "Entrada online semanas antes; a las 9:00 o a las 18:00 en verano, cuando el sol entra por la fachada de la Pasión y la nave se pone naranja. Torre de la Natividad con ascensor.", salseo: "Gaudí murió atropellado por un tranvía en 1926 y lo tomaron por mendigo; tardaron un día en reconocerlo. Está enterrado en la cripta. La torre de Jesús se termina en 2026, cien años después, y la ciudad discute si derribar una manzana para la escalinata que él dibujó.", reservar: true, ninos: true },
+      { n: "Casa Batlló", lat: 41.3917, lng: 2.1650, tags: ["Imprescindible","Museo"], precio: 35, dur: 75, d: "La casa de huesos y escamas de dragón en el Passeig de Gràcia, con azotea de tejado de escamas.", truco: "Cara pero completa (audiovisual incluido); la 'entrada nocturna' con concierto en la azotea en verano es la mejor forma. La Casa Amatller de al lado cuesta la mitad y es gótico modernista.", salseo: "La fachada es Sant Jordi matando al dragón: el tejado es el lomo, la torre la lanza y los balcones las calaveras de las víctimas. En la Manzana de la Discordia, tres arquitectos competían pared con pared y Gaudí ganó por exageración.", reservar: true },
+      { n: "La Pedrera (Casa Milà)", lat: 41.3954, lng: 2.1619, tags: ["Imprescindible","Museo","Mirador"], precio: 28, dur: 75, d: "El edificio de piedra ondulada sin una línea recta, con la azotea de chimeneas guerreras.", truco: "Entrada al atardecer ('Pedrera Night') o primera hora; la azotea es lo que importa, el piso de época es el bonus.", salseo: "Los vecinos la odiaron ('la cantera') y una dueña demandó a Gaudí por el techo del ático; George Lucas dijo que las chimeneas inspiraron los cascos de los soldados imperiales. Está la mejor azotea de la ciudad y una vecina que sigue viviendo dentro pagando renta antigua.", reservar: true, atardecer: true },
+      { n: "Passeig de Gràcia y Rambla de Catalunya", lat: 41.3920, lng: 2.1650, tags: ["Paseo","Mercado"], precio: 0, dur: 45, d: "El bulevar de las farolas de Falqués y los bancos de trencadís, y su hermana pequeña con terrazas.", truco: "Las baldosas del suelo son diseño de Gaudí para la Casa Batlló; los bancos-farola de 1906 son de Pere Falqués. En Rambla de Catalunya, vermut en La Bodegueta.", salseo: "Fue el paseo de los ricos que huían del casco antiguo con las fábricas; el Eixample lo diseñó Cerdà con chaflanes para que giraran los tranvías y patios interiores de manzana que los especuladores llenaron de edificios. Se están recuperando uno a uno.", comida: true, sg: "La Bodegueta: conservas y jamón, aptos." }
+    ]},
+    { nombre: "Gràcia y Park Güell", paradas: [
+      { n: "Park Güell", lat: 41.4145, lng: 2.1527, tags: ["Imprescindible","Parque","Mirador"], precio: 10, dur: 90, d: "La urbanización fallida convertida en parque: la escalera del dragón, la sala de las cien columnas y el banco ondulado sobre la ciudad.", truco: "Entrada horaria online; entra por la puerta de Carmel y baja. El bosque de arriba, fuera de la zona monumental, es gratis y tiene la vista.", salseo: "Güell quiso hacer 60 chalets para ricos con Gaudí de arquitecto y solo vendió dos; uno lo compró el propio Gaudí. La ciudad lo compró en 1922 por fracaso inmobiliario. Ahora se agotan las entradas cada día.", reservar: true, ninos: true },
+      { n: "Bunkers del Carmel", lat: 41.4192, lng: 2.1618, tags: ["Mirador","Fuera de ruta"], precio: 0, dur: 60, d: "La batería antiaérea de la guerra civil sobre el Turó de la Rovira: 360 grados de ciudad y mar, y el atardecer más popular de Barcelona.", truco: "Bus V19 o 119 y 10 minutos de cuesta; lleva algo de beber, no hay nada arriba. Está cerrado por las noches desde 2023 por el ruido: cierra tras el atardecer.", salseo: "Las baterías defendieron la ciudad de los bombardeos italianos de 1938; después fueron barrio de chabolas hasta 1990 y el Ayuntamiento lo dejó en ruinas. Los estudiantes lo descubrieron y ahora hay más botellones que en Ibiza. Se han puesto vallas y horario.", atardecer: true },
+      { n: "Plaça del Sol y Plaça de la Vila de Gràcia", lat: 41.4020, lng: 2.1560, tags: ["Bar","Paseo","Comida"], precio: 0, dur: 90, d: "Las plazas de pueblo del barrio de Gràcia, terrazas de vermut y la torre del reloj de 1864.", truco: "Vermut en Bar Bodega Quimet o La Vermu; fiestas de Gràcia en agosto con calles decoradas por los vecinos que compiten entre sí.", salseo: "Gràcia fue municipio independiente hasta 1897 y se resiste: el reloj de la plaza se llama 'campana de Gràcia' porque la tocaron para llamar a la revuelta de las quintas en 1870. Cuando lo anexionaron, siguieron tocándola.", comida: true, sg: "Vermut, aceitunas y berberechos: sin problema." },
+      { n: "Casa Vicens", lat: 41.4035, lng: 2.1507, tags: ["Museo","Fuera de ruta"], precio: 18, dur: 60, d: "La primera casa de Gaudí, morisca y de azulejos verdes y blancos, abierta desde 2017.", truco: "Suele tener entradas el mismo día; es pequeña y la azotea tiene una cúpula naranja. Está a 5 minutos de las plazas de Gràcia.", salseo: "Gaudí la hizo a los 31 años para un corredor de bolsa, se inspiró en una palmera y una caléndula del solar, y es la casa que le consiguió a Güell. Fue vivienda privada hasta 2014: una familia vivió 100 años dentro de una obra maestra sin poder pintar una pared." }
+    ]},
+    { nombre: "Montjuïc y Poble Sec", paradas: [
+      { n: "MNAC", lat: 41.3685, lng: 2.1533, tags: ["Museo","Mirador","Imprescindible"], precio: 12, dur: 90, d: "El palacio de la Expo de 1929 con el mejor románico del mundo (ábsides de Taüll) y la terraza sobre la plaza de España.", truco: "Sábado a partir de las 15:00 y primer domingo de mes gratis; sube en escaleras mecánicas desde plaza España. La terraza es gratis y tiene la vista de la ciudad.", salseo: "Los frescos románicos se arrancaron de iglesias del Pirineo en 1919 porque un anticuario americano ya los estaba comprando; se los llevaron a Barcelona 'para salvarlos' con la técnica del strappo, y las iglesias tienen copias. Los valles aún los reclaman.", atardecer: true },
+      { n: "Fundació Joan Miró", lat: 41.3686, lng: 2.1600, tags: ["Museo"], precio: 14, dur: 75, d: "El edificio blanco de Sert entre pinos con la obra de Miró y una azotea de esculturas.", truco: "Entra por la tienda para ver la Fuente de Mercurio de Calder (mercurio de verdad, tras cristal); la azotea con las esculturas de colores mira al mar.", salseo: "La Fuente de Mercurio se hizo para la Expo de París de 1937 con mercurio de Almadén, para denunciar el asedio franquista a las minas; estuvo al lado del Guernica. Hoy es el objeto más tóxico de cualquier museo europeo, protegido por un cristal." },
+      { n: "Castillo de Montjuïc y teleférico", lat: 41.3634, lng: 2.1659, tags: ["Historia","Mirador","Parque"], precio: 9, dur: 90, d: "La fortaleza que apuntaba a la ciudad y no al mar, hoy mirador sobre el puerto, con teleférico desde el parque.", truco: "Teleférico de Montjuïc (14 € ida y vuelta) desde el funicular de Paral·lel; el castillo cuesta 9 € y es gratis los domingos por la tarde. Cine de verano en el foso en julio.", salseo: "El castillo bombardeó Barcelona varias veces (1842, 1843) y aquí fusilaron a Lluís Companys en 1940; los barceloneses tardaron en verlo como sitio de paseo. Ahora se ve el puerto de cruceros, que también apunta a la ciudad.", atardecer: true },
+      { n: "Poble Sec: Carrer de Blai y Quimet & Quimet", lat: 41.3725, lng: 2.1650, tags: ["Comida","Bar","Paseo"], precio: 0, dur: 90, d: "La calle de los pinchos a 1-2 euros y el bar de conservas más famoso de la ciudad, en el barrio de teatros.", truco: "Carrer de Blai para pinchos baratos de pie; Quimet & Quimet (Poeta Cabanyes) abre a las 12 y a las 19 y se llena en cinco minutos: pide montaditos de mejillón y queso con miel.", salseo: "Poble Sec era el barrio de los cabarets del Paral·lel (El Molino, con su famoso Bel Ami) y de los obreros de las fábricas de la Espanya Industrial; el Molino cerró en 1997, reabrió en 2010 y sigue con plumas. La Bella Dorita cantaba aquí.", comida: true, sg: "Quimet & Quimet: conservas y quesos sin pan, aptos." }
+    ]},
+    { nombre: "Barceloneta y Raval", paradas: [
+      { n: "La Boqueria", lat: 41.3817, lng: 2.1719, tags: ["Mercado","Comida","Imprescindible"], precio: 0, dur: 60, d: "El mercado de la Rambla, de 1840, con la puerta de hierro, las paradas de fruta cortada para turistas y, al fondo, los bares de siempre.", truco: "Entra antes de las 10 y pasa de largo los zumos; al fondo, El Quim de la Boqueria para huevos con chipirones o Bar Pinotxo (reabierto en La Marina, Kiosko). Cierra domingo.", salseo: "El mercado empezó en 1217 con puestos de carne en la puerta de la muralla; el nombre viene de 'boc' (macho cabrío) porque vendían cabra. En 2015 prohibieron los grupos de más de 15 personas porque no cabía la clientela. Pinotxo, el bar mítico, tenía un camarero con pajarita, Juanito, que murió en 2023 y le hicieron minuto de silencio en el mercado.", comida: true, sg: "Fruta, jamón, conservas; en El Quim, huevos con chipirones sin harina." },
+      { n: "Palau de la Música Catalana", lat: 41.3876, lng: 2.1753, tags: ["Imprescindible","Historia"], precio: 22, dur: 60, d: "La sala de conciertos modernista de Domènech i Montaner, de cristal y mosaico, con la claraboya invertida.", truco: "Visita guiada de 50 min con el órgano sonando; los conciertos de guitarra española por la noche cuestan lo mismo que la visita y ves la sala encendida.", salseo: "Es patrimonio mundial y se construyó en tres años (1905-08) para un coro de obreros; en 2009 el presidente del Palau confesó haber robado 23 millones durante 30 años para pagarse la vida. La sala, mientras, ni se enteró.", reservar: true },
+      { n: "MACBA y el Raval", lat: 41.3831, lng: 2.1667, tags: ["Museo","Paseo","Fuera de ruta"], precio: 12, dur: 75, d: "El cubo blanco de Richard Meier con la plaza de skaters más famosa de Europa, en el barrio más mestizo de la ciudad.", truco: "La plaza es gratis y es el espectáculo: skaters todo el día. Dentro, el CCCB (al lado) tiene mejor programa. Rambla del Raval con el gato de Botero para el vermut.", salseo: "El Raval fue el Barrio Chino de Genet y de las Ramblas del vicio; lo llamaron 'chino' sin que hubiera un solo chino. Hoy tiene 30 % de vecinos paquistaníes, el museo blanco y la Filmoteca. La plaza del MACBA sale en todos los vídeos de skate del mundo y Meier no lo previó.", ninos: true },
+      { n: "Barceloneta: playa y Can Paixano", lat: 41.3784, lng: 2.1900, tags: ["Paseo","Comida","Bar"], precio: 0, dur: 120, d: "El barrio de pescadores en cuadrícula, la playa urbana con el pez de Gehry y la champañería más ruidosa de la ciudad.", truco: "Bombas (croquetas de patata picantes) en La Cova Fumada (sin cartel, abre a mediodía y cierra a las 15:30); Can Paixano para cava a 4 euros con bocadillo obligatorio. Paseo hasta el W al atardecer.", salseo: "La playa la construyeron para los Juegos de 1992 con arena importada: antes eran chiringuitos con pies en el agua, derribados en un fin de semana. La Cova Fumada inventó la 'bomba' en 1955 y la bautizó por las bombas de la guerra; sigue sin cartel porque nunca lo necesitó.", comida: true, sg: "Cava y sepia en Can Paixano; bombas no (harina).", atardecer: true }
+    ]}
+  ]
+};
+GUIA.barcelona = {
+  portada: "es:Barcelona",
+  historia: "Barcelona empezó como colonia romana (Barcino) en una colina que hoy es la Plaça Sant Jaume y creció hasta ser la capital de un imperio mediterráneo en el siglo XIV, con Atenas y Sicilia en la corona. Perdió la guerra de Sucesión en 1714, Felipe V le derribó un barrio y le puso una ciudadela, y ese 11 de septiembre sigue siendo su fiesta. En el XIX tiró las murallas, Cerdà dibujó el Eixample en cuadrícula y las fábricas la hicieron rica y anarquista: 'la rosa de fuego'. Gaudí y el modernismo son el ocio de esa riqueza. La guerra civil, la dictadura y los Juegos de 1992 (que la abrieron al mar) explican todo lo demás. Es una ciudad de diseño y de barrios que se odian con cariño, con playa a diez minutos del metro y una relación complicada con sus 30 millones de visitantes.",
+  salseos: [
+    "Gaudí murió atropellado por un tranvía y lo llevaron a un hospital de pobres porque iba sin documentación y con la ropa raída; cuando lo reconocieron ya no quiso que lo movieran. El tranvía era el 30. La Sagrada Familia se terminará 100 años después, en 2026, y la ciudad sigue discutiendo si derribar una manzana para su escalinata.",
+    "La Rambla se llama así por 'ramla', arroyo en árabe: era la riera de la muralla y por eso baja hasta el mar. Los quioscos de pájaros los cerraron en 2010 y las flores están desde 1850; el mosaico de Miró del centro lo pisan 100.000 personas al día y él quería que lo pisaran.",
+    "En el metro de Barcelona los carteristas tienen especialidades: los de la línea 3 trabajan en pareja y los de Sagrada Familia con niños. La policía dice que son 30 personas que detienen 300 veces al año. El truco funciona igual: bolsillo delantero y ya.",
+    "El Barça tiene más socios (140.000) que habitantes muchos pueblos, y el Espanyol tiene menos pero 'los de verdad'. Nunca preguntes por el Espanyol en un bar sin mirar antes qué bufanda cuelga. Y el 'més que un club' es de un presidente de 1968, no de un jugador.",
+    "Cerdà dibujó las esquinas del Eixample en chaflán para que los tranvías girasen y para dejar entrar la luz; el Ayuntamiento decía que era un invento de Madrid y lo boicoteó. Hoy los chaflanes valen oro y las 'superilles' (supermanzanas) intentan devolverle a Cerdà el patio de manzana que los constructores se comieron."
+  ],
+  platos: [
+    { n: "Pa amb tomàquet", wiki: "es:Pan con tomate", d: "Pan tostado, tomate restregado, aceite y sal. La religión catalana, con fuet o anchoas." },
+    { n: "Bombas de la Barceloneta", wiki: "es:Bomba (gastronomía)", d: "Croqueta de patata y carne con alioli y salsa picante, inventada en La Cova Fumada en 1955." },
+    { n: "Escalivada y calçots", wiki: "es:Escalivada", d: "Pimiento y berenjena asados; en invierno, calçots con romesco y babero en Valls o en cualquier masía." },
+    { n: "Crema catalana", wiki: "es:Crema catalana", d: "Natillas con costra de azúcar quemada, que Cataluña reclama como anterior a la francesa." }
+  ],
+  frases: ["Bon dia / bona tarda", "Un vermut, sisplau", "Merci (sí, en catalán se dice mucho)", "Adéu (adiós)"],
+  wiki: {
+    "Catedral de Barcelona y claustro de las ocas": "es:Catedral de la Santa Cruz y Santa Eulalia", "Plaça del Rei y MUHBA": "es:Plaza del Rey (Barcelona)", "Santa Maria del Mar": "es:Basílica de Santa María del Mar", "Passeig del Born y Mercat del Born": "es:Mercado del Borne",
+    "Sagrada Familia": "es:Templo Expiatorio de la Sagrada Familia", "Casa Batlló": "es:Casa Batlló", "La Pedrera (Casa Milà)": "es:Casa Milà", "Passeig de Gràcia y Rambla de Catalunya": "es:Paseo de Gracia",
+    "Park Güell": "es:Parque Güell", "Bunkers del Carmel": "es:Turó de la Rovira", "Plaça del Sol y Plaça de la Vila de Gràcia": "es:Gracia (Barcelona)", "Casa Vicens": "es:Casa Vicens",
+    "MNAC": "es:Museo Nacional de Arte de Cataluña", "Fundació Joan Miró": "es:Fundación Joan Miró", "Castillo de Montjuïc y teleférico": "es:Castillo de Montjuic", "Poble Sec: Carrer de Blai y Quimet & Quimet": "es:Pueblo Seco (Barcelona)",
+    "La Boqueria": "es:Mercado de La Boquería", "Palau de la Música Catalana": "es:Palacio de la Música Catalana", "MACBA y el Raval": "es:Museo de Arte Contemporáneo de Barcelona", "Barceloneta: playa y Can Paixano": "es:La Barceloneta"
+  }
+};
+EXTRA.barcelona = {
+  salseos: [
+    "La Casa Batlló tiene 'entrada mágica' nocturna con concierto en la azotea y la Pedrera 'noche'; las dos compiten por el mismo cliente y por la misma manzana. Hay una tercera, la Casa Amatller, con chocolate: el dueño era chocolatero y hoy la visita termina con un chocolate caliente.",
+    "El Palau de la Música tuvo un presidente, Fèlix Millet, que se llevó 23 millones en 30 años y lo confesó en una carta; los conciertos siguieron. Ahora el Palau tiene más control que el Banco de España y los guías cuentan la historia con una sonrisa.",
+    "Park Güell iba a ser una urbanización de lujo con 60 parcelas; se vendieron dos. La casa donde vivió Gaudí (ahora museo) la compró él por caridad al promotor. Los turistas hacen cola para entrar en el fracaso inmobiliario más rentable de la historia.",
+    "El mosaico de Miró de la Rambla está diseñado para pisarse: Miró lo dijo. Hay otro en el aeropuerto y otro en el Parc Miró (el pájaro de colores); los tres forman una bienvenida a la ciudad por mar, aire y tierra. Casi nadie lo sabe y casi nadie mira al suelo.",
+    "Las ocas de la catedral son trece porque Santa Eulalia tenía trece años cuando la martirizaron, y sufrió trece tormentos; hay una bajada, la 'baixada de Santa Eulàlia', por donde la hicieron rodar en un barril con clavos. Los niños del barrio la bajan en bici."
+  ],
+  guiri: [
+    "Comer en la Rambla o en la Boqueria a la entrada (zumos a 5 €, cucuruchos de jamón a 8): al fondo del mercado o a dos calles, la mitad.",
+    "Llamar 'paella' a la de marisco de la Barceloneta con guisantes a las 13:00: se come a las 14:30, y en Barcelona el arroz es 'arròs' del senyoret o fideuá; la paella es de Valencia y lo saben.",
+    "Ir a la Sagrada Familia sin entrada: se agotan con días. Y no 'ver la fachada por fuera' como sustituto: lo importante está dentro.",
+    "Decir 'España' y 'Cataluña' como si fueran lo mismo o lo contrario en la primera conversación. Escucha antes; el vermut de las 12 es mejor sin política.",
+    "Ir a la playa con la mochila abierta y el móvil a la vista mientras te bañas. Barceloneta tiene los carteristas más rápidos del Mediterráneo, y la mejor arena artificial."
+  ],
+  datos: [
+    "La Sagrada Familia es el monumento más visitado de España (4,7 millones al año) y se financia solo con las entradas: nunca ha recibido dinero público.",
+    "El Eixample tiene 520 manzanas idénticas de 113 metros de lado con chaflán de 20 metros; Cerdà quería que se viera el mar desde cualquier calle.",
+    "Barcelona tiene 4,5 km de playas urbanas que no existían antes de 1992; la arena viene del fondo del mar y se repone cada primavera.",
+    "El Camp Nou reabrió en 2025 con 105.000 asientos; es el estadio más grande de Europa y el Barça es el club con más socios del mundo.",
+    "El vermut de Reus se bebe en Barcelona con sifón, aceitunas y berberechos; 'fer el vermut' es la actividad social número uno del domingo."
+  ]
+};
+DISENOS.barcelona = [
+  { nombre: "Trencadís", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F6F1E6", papel: "#FFFFFF", tinta: "#1E2A3A", tinta2: "#5E6A78", acento: "#B03A2E", acento2: "#1F6F8B" }, motivo: "azulejo" },
+  { nombre: "Modernista", maqueta: "vitrina", titulo: "Italiana", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1B1712", papel: "#26201A", tinta: "#F1E9DA", tinta2: "#B8AC98", acento: "#C9A24B", acento2: "#5E7A4F" }, motivo: "artnouveau" },
+  { nombre: "Mediterráneo", maqueta: "revista", titulo: "Playfair Display", cuerpo: "Manrope", manuscrita: "Caveat", paleta: { fondo: "#F4F8FA", papel: "#FFFFFF", tinta: "#132030", tinta2: "#5A6B7A", acento: "#1F4E89", acento2: "#E8A33D" }, motivo: "ondas" },
+  { nombre: "Fiesta mayor", maqueta: "fiesta", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF3D6", papel: "#FFFFFF", tinta: "#1F1A14", tinta2: "#5E5448", acento: "#C8102E", acento2: "#1F6F8B" }, motivo: "confeti" },
+  { nombre: "Póster de la Barceloneta", maqueta: "ilustrado", titulo: "Alfa Slab One", cuerpo: "Nunito", manuscrita: "Caveat", agua: "#7FB3D5", paleta: { fondo: "#FBF4E4", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#6B5E4D", acento: "#B03A2E", acento2: "#1F6F8B" }, motivo: "acuarela" }
+];
+const CIERRES_BCN = { "La Boqueria": { cierra: [0] }, "MNAC": { cierra: [1] }, "Fundació Joan Miró": { cierra: [1] }, "Plaça del Rei y MUHBA": { cierra: [1] }, "Casa Vicens": { cierra: [] }, "Mercat del Born": { cierra: [1] } };
+const EXCURSION_BCN = { nombre: "Montserrat", como: "Tren R5 desde Plaça Espanya (1 h) y cremallera o aéreo", paradas: [
+  { n: "Monasterio de Montserrat y la Moreneta", lat: 41.5932, lng: 1.8375, tags: ["Imprescindible","Historia"], precio: 0, dur: 90, d: "El monasterio benedictino incrustado en la montaña de agujas, con la Virgen negra y la escolanía que canta a las 13:00.", truco: "Escolanía a las 13:00 de lunes a viernes (llega 30 min antes); la cola para tocar la bola de la Moreneta es de 40 minutos, ve a la apertura o al cerrar la basílica.", salseo: "La Moreneta es negra por el humo de las velas de siglos y no por diseño; en 1947 se hizo la primera manifestación catalanista de la posguerra disfrazada de entronización de la Virgen, con 100.000 personas. Franco no pudo prohibir una misa.", wiki: "es:Monasterio de Montserrat" },
+  { n: "Funicular de Sant Joan y caminos de la montaña", lat: 41.6005, lng: 1.8310, tags: ["Parque","Mirador","Paseo"], precio: 15, dur: 120, d: "El funicular más empinado de España sube a los senderos entre las agujas de conglomerado; ida y vuelta al monasterio en una hora de paseo.", truco: "Funicular de subida y bajada andando por el camino de las ermitas (1 h); la ruta a Sant Jeroni (cima, 1.236 m) son 2 h más. Hay bar arriba.", salseo: "Las agujas se formaron con cantos rodados de un delta hace 50 millones de años y tienen nombres: la Momia, el Elefante, la Cabeza de Camello; los escaladores catalanes aprendieron aquí y Gaudí quería hacer la Sagrada Familia con estas formas. Las hizo.", atardecer: true, wiki: "es:Montserrat (montaña)" },
+  { n: "Mercado de productos de la montaña y mel i mató", lat: 41.5940, lng: 1.8390, tags: ["Comida","Mercado"], precio: 5, dur: 45, d: "Los puestos de las payesas a la entrada del monasterio: mató (requesón) con miel, coca, queso y licores de los monjes.", truco: "El mató con miel de las payesas, en la explanada, es el mejor tentempié; el restaurante del monasterio es de autoservicio y correcto. La 'Aromes de Montserrat' es el licor de hierbas de los monjes.", salseo: "Las payesas llevan vendiendo mató en la puerta desde el siglo XIX con licencia del abad; hay lista de espera de años para un puesto y se heredan. El mató de Montserrat es un queso fresco sin sal que los monjes comían en Cuaresma.", comida: true, sg: "Mató, miel y queso, aptos; la coca no.", wiki: "es:Mató" }
+]};
+
+// Aplicar cierres y escapada (esta ciudad se carga despues de los modulos generales)
+CIUDADES.barcelona.zonas.forEach(z => z.paradas.forEach(p => { const r = CIERRES_BCN[p.n]; if (r) p.cierra = r.abre ? [0, 1, 2, 3, 4, 5, 6].filter(d => !r.abre.includes(d)) : r.cierra; }));
+EXCURSION_BCN.paradas.forEach(p => { p.excursion = true; GUIA.barcelona.wiki[p.n] = p.wiki; });
+CIUDADES.barcelona.zonas.push({ nombre: "Escapada: " + EXCURSION_BCN.nombre, excursion: true, como: EXCURSION_BCN.como, paradas: EXCURSION_BCN.paradas });
+
 
 /* ======================================================================
    UTILIDADES
@@ -2879,6 +3131,7 @@ function leerFormulario() {
     ciudad: v("destino"), fecha: v("fecha"), dias: v("dias"), ritmo: v("ritmo"),
     presupuesto: v("presupuesto"), grupo: v("grupo"), transporte: v("transporte"), evitar: v("evitar"),
     intereses: [...document.querySelectorAll('input[name="interes"]:checked')].map(c => c.value),
+    escapada: document.getElementById("escapada").checked,
     excluidas: []
   };
 }
@@ -2888,6 +3141,7 @@ function aplicarFormulario(e) {
   set("destino", e.ciudad); set("fecha", e.fecha); set("dias", e.dias); set("ritmo", e.ritmo);
   set("presupuesto", e.presupuesto); set("grupo", e.grupo); set("transporte", e.transporte); set("evitar", e.evitar || "");
   document.querySelectorAll('input[name="interes"]').forEach(c => { c.checked = (e.intereses || []).includes(c.value); });
+  document.getElementById("escapada").checked = !!e.escapada;
 }
 
 function cuadrar(entrada) {
@@ -2910,7 +3164,9 @@ function cuadrar(entrada) {
 
   const elegible = p => !p._evitado && p._s > -1.5 && !opciones.excluidas.includes(p.n);
   // Una zona por dia: se eligen las que suman mas con sus mejores paradas
-  const zonasPuntuadas = ciudad.zonas.map(z => {
+  const zonaExcursion = ciudad.zonas.find(z => z.excursion);
+  const quiereEscapada = !!e.escapada && numDias >= 3 && zonaExcursion;
+  const zonasPuntuadas = ciudad.zonas.filter(z => !z.excursion).map(z => {
     const mejores = [...z.paradas].filter(elegible).sort((a, b) => b._s - a._s).slice(0, porDia);
     return { zona: z, paradas: mejores, total: mejores.reduce((s, p) => s + p._s, 0) };
   }).sort((a, b) => b.total - a.total);
@@ -2920,7 +3176,8 @@ function cuadrar(entrada) {
   // Dia de la semana de cada jornada, para respetar los cierres semanales
   const semanaDe = i => { const f = new Date(fecha); f.setDate(f.getDate() + i); return f.getDay(); };
   const abiertaEl = (p, w) => !(p.cierra && p.cierra.includes(w));
-  const zonasElegidas = zonasPuntuadas.filter(zp => zp.paradas.length >= 2).slice(0, numDias);
+  const diasCiudad = quiereEscapada ? numDias - 1 : numDias;
+  const zonasElegidas = zonasPuntuadas.filter(zp => zp.paradas.length >= 2).slice(0, diasCiudad);
   // Mejores paradas de una zona para un dia concreto (excluye lo cerrado ese dia)
   const mejoresZonaDia = (z, w) => [...z.paradas].filter(p => elegible(p) && abiertaEl(p, w)).sort((a, b) => b._s - a._s).slice(0, porDia);
   const valor = (z, w) => mejoresZonaDia(z, w).reduce((s, p) => s + p._s, 0);
@@ -2938,12 +3195,18 @@ function cuadrar(entrada) {
     dias.push({ zona: z.nombre, paradas: elegidas.map(p => ({ ...p })) });
   });
 
+  let excursionPuesta = false;
+  const diaExcursion = () => ({ zona: zonaExcursion.nombre, como: zonaExcursion.como, excursion: true, paradas: zonaExcursion.paradas.map(p => ({ ...p, _s: 5, _zona: zonaExcursion.nombre })) });
   // Si hay mas dias que zonas: dias extra con lo mejor que quedo, agrupado por cercania
-  while (dias.length < numDias) {
+  while (dias.length < (quiereEscapada ? numDias - 1 : numDias)) {
     const wExtra = semanaDe(dias.length);
-    let restantes = todas.filter(p => !usadas.has(p) && elegible(p) && abiertaEl(p, wExtra)).sort((a, b) => b._s - a._s);
+    let restantes = todas.filter(p => !usadas.has(p) && !p.excursion && elegible(p) && abiertaEl(p, wExtra)).sort((a, b) => b._s - a._s);
     // Con menos de dos paradas que merezcan la pena, mejor un dia libre o de excursion que un dia flojo
-    if (restantes.length < 2) { dias.push({ zona: "Día libre o excursión", paradas: [], libre: true }); continue; }
+    if (restantes.length < 2) {
+      // Antes que un dia flojo, la escapada (si existe y no se ha usado)
+      if (zonaExcursion && !excursionPuesta && !quiereEscapada) { dias.push(diaExcursion()); excursionPuesta = true; continue; }
+      dias.push({ zona: "Día libre", paradas: [], libre: true }); continue;
+    }
     const grupo = [restantes[0]]; usadas.add(restantes[0]);
     restantes = restantes.slice(1);
     while (grupo.length < porDia && restantes.length) {
@@ -2955,12 +3218,13 @@ function cuadrar(entrada) {
     dias.push({ zona: "Lo que faltaba: " + [...new Set(grupo.map(p => p._zona))].join(" y "), paradas: grupo.map(p => ({ ...p })) });
   }
 
+  if (quiereEscapada && !excursionPuesta) { dias.push(diaExcursion()); excursionPuesta = true; }
   // Si un dia se queda corto, se completa con lo mas cercano que quede sin usar
   dias.forEach((d, di) => {
-    if (d.libre) return;
+    if (d.libre || d.excursion) return;
     while (d.paradas.length < porDia) {
       const centro = { lat: d.paradas.reduce((s, p) => s + p.lat, 0) / d.paradas.length, lng: d.paradas.reduce((s, p) => s + p.lng, 0) / d.paradas.length };
-      const cand = todas.filter(p => !usadas.has(p) && elegible(p) && abiertaEl(p, semanaDe(di)) && distKm(centro, p) < 1.8).sort((a, b) => (b._s - distKm(centro, b)) - (a._s - distKm(centro, a)))[0];
+      const cand = todas.filter(p => !usadas.has(p) && !p.excursion && elegible(p) && abiertaEl(p, semanaDe(di)) && distKm(centro, p) < 1.8).sort((a, b) => (b._s - distKm(centro, b)) - (a._s - distKm(centro, a)))[0];
       if (!cand) break;
       usadas.add(cand); d.paradas.push({ ...cand });
     }
@@ -3032,7 +3296,7 @@ function renderResultado(plan) {
   dias.forEach((dia, i) => {
     html += '<div class="dia" id="dia-' + i + '"><div class="cabecera-dia"><span class="num">' + (i + 1) + '</span>';
     html += '<h3>' + esc(dia.etiqueta) + '</h3>';
-    html += '<div class="franja">Zona: ' + esc(dia.zona) + ' · atardecer a las ' + hhmm(dia.ocaso) + '</div></div>';
+    html += '<div class="franja">' + (dia.excursion ? '🚆 ' + esc(dia.como) : 'Zona: ' + esc(dia.zona)) + ' · atardecer a las ' + hhmm(dia.ocaso) + '</div></div>';
     if (dia.libre) {
       html += '<p class="desc" style="margin-top:14px">Ya has visto todo lo que el repositorio tiene de ' + esc(ciudad.nombre) + ' con estos filtros. Día para repetir lo que más gustó, cambiar los intereses o hacer una excursión.</p></div>';
       return;
@@ -3587,7 +3851,7 @@ function htmlGuia(plan, d, corta) {
   // Itinerario
   h += '<div class="seccion' + (corta ? ' corta' : '') + '"><h2><small>Día a día</small>🗺️ El itinerario</h2>';
   dias.forEach((dia, i) => {
-    h += '<div class="dia bloque"><div class="dia-cab"><span class="num">' + (i + 1) + '</span><h3>' + esc(dia.etiqueta) + '</h3><span class="zona">' + esc(dia.zona) + '<br>atardecer ' + hhmm(dia.ocaso) + '</span></div>';
+    h += '<div class="dia bloque"><div class="dia-cab"><span class="num">' + (i + 1) + '</span><h3>' + esc(dia.etiqueta) + '</h3><span class="zona">' + esc(dia.zona) + '<br>' + (dia.excursion ? esc(dia.como) : 'atardecer ' + hhmm(dia.ocaso)) + '</span></div>';
     if (dia.libre) { h += '<p class="prosa">Día libre: repetir lo que más gustó, cambiar los filtros o hacer una excursión.</p></div>'; return; }
     dia.filas.forEach(f => {
       if (f.hueco) { h += '<div class="hueco">' + EMOJI_HUECO_GUIA(f.texto) + ' ' + f.h + ' · ' + esc(f.texto) + '</div>'; return; }
@@ -3632,7 +3896,7 @@ function htmlGuia(plan, d, corta) {
     h += '<div class="seccion"><div class="dos"><div><h5 class="eyebrow">🍴 Dónde comer</h5><ul class="lista">' + ciudad.comer.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div><div><h5 class="eyebrow">🌾 Sin gluten y bueno saber</h5><ul class="lista">' + ciudad.singluten.map(c => '<li>' + esc(c) + '</li>').join('') + '<li>' + esc(ciudad.consejo) + '</li></ul></div></div></div>';
   }
 
-  h += '<div class="cierre bloque"><div class="t">Hecho para pasearlo sin prisa</div>Horas, precios y aperturas son orientativos. Lo marcado como Reservar se agota. Fotos: Wikimedia Commons, licencia libre.</div>';
+  h += '<div class="cierre bloque"><div class="t">Hecho para pasearlo sin prisa</div>Datos revisados en ' + esc(ciudad.revisado || "2026") + '. Horas, precios y aperturas son orientativos. Lo marcado como Reservar se agota. Fotos: Wikimedia Commons, licencia libre.</div>';
   return h;
 }
 
@@ -4575,7 +4839,7 @@ function datosGuia(plan, d, corta) {
     ciudad: { nombre: ciudad.nombre, pais: ciudad.pais, claim: ciudad.claim, consejo: ciudad.consejo, presupuesto: ciudad.presupuesto, lluvia: ciudad.lluvia, comer: ciudad.comer, singluten: ciudad.singluten },
     guia: { portada: g.portada, historia: g.historia, frases: g.frases, salseos: (g.salseos || []).concat(((EXTRA[plan.entrada.ciudad] || {}).salseos) || []), platos: g.platos, guiri: (EXTRA[plan.entrada.ciudad] || {}).guiri || [], datos: (EXTRA[plan.entrada.ciudad] || {}).datos || [] },
     dias: dias.map(dia => ({
-      etiqueta: dia.etiqueta, zona: dia.zona, ocaso: hhmm(dia.ocaso), libre: !!dia.libre,
+      etiqueta: dia.etiqueta, zona: dia.zona + (dia.excursion ? " · " + dia.como : ""), ocaso: hhmm(dia.ocaso), libre: !!dia.libre,
       paradas: dia.paradas.map(p => ({ n: p.n, salseo: p.salseo })),
       filas: (dia.filas || []).map(f => f.hueco ? { hueco: true, h: f.h, texto: f.texto } : { parada: {
         n: f.parada.n, h: f.parada._h, t: f.parada._t, tag: f.parada.tags[0], precio: precioTexto(f.parada.precio, ciudad.moneda),
