@@ -5,7 +5,7 @@
   LA BRUJULA - Planificador de viajes con repositorio propio
   Que hace: a partir de unos filtros (ciudad, fecha, dias, ritmo, presupuesto,
   con quien vas, transporte, intereses y cosas a evitar) arma un itinerario
-  completo con un repositorio de 24 ciudades europeas escrito a mano: cada
+  completo con un repositorio de 29 ciudades europeas escrito a mano: cada
   parada lleva coordenadas, precio, duracion, un truco practico y un salseo
   (anecdota, leyenda o cotilleo historico). Lo pinta con mapas Leaflet, uno
   global y otro por dia, y lo exporta a calendario, texto o PDF.
@@ -214,6 +214,188 @@
   @media (max-width: 560px) { .hecho-caja { grid-column: 1; } }
   .resumen-dia { margin-top: 12px; font-size: 12px; color: var(--tinta-2); display: flex; flex-wrap: wrap; gap: 6px 18px; }
 </style>
+<style id="premium-v29">
+  /* ====================================================================
+     CAPA PREMIUM v29 · billete, popovers, panel de ciudades, modal de la
+     guia, pases de embarque, transicion de ruta y pulido tipografico.
+     ==================================================================== */
+  @property --acento { syntax: '<color>'; inherits: true; initial-value: #1F4E5A; }
+  html { transition: --acento .7s ease; }
+
+  /* Pulido tipografico general */
+  header { padding: 72px 0 44px; }
+  header h1 { font-size: clamp(46px, 7.5vw, 76px); }
+  .sello-interior { padding: 44px 48px 36px; }
+  .sello h2 { font-size: clamp(44px, 8.5vw, 84px); letter-spacing: -0.015em; }
+  .sello .claim { font-size: 22px; max-width: 620px; }
+  .dia { padding: 28px 30px; }
+  .btn-principal { padding: 17px 40px; box-shadow: 0 12px 28px color-mix(in srgb, var(--acento) 30%, transparent); }
+  .btn-principal:hover { box-shadow: 0 16px 34px color-mix(in srgb, var(--acento) 38%, transparent); }
+
+  /* Revelado escalonado del resultado */
+  @keyframes aparecer { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .revelar { opacity: 0; animation: aparecer .55s cubic-bezier(.2,.7,.25,1) forwards; }
+
+  /* ------------------- El billete (formulario) ------------------- */
+  .filtros.billete { display: block; padding: 0; overflow: visible; box-shadow: var(--sombra); }
+  .billete-cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 30px 0; }
+  .billete-cab .contador { margin: 0; }
+  .billete-cuerpo { padding: 14px 30px 6px; }
+  .frase { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(23px, 3.6vw, 30px); line-height: 1.55; letter-spacing: -0.005em; }
+  .ranura { display: inline; font: inherit; color: var(--acento); background: none; border: none; border-bottom: 1.5px dashed var(--acento-linea); padding: 0 2px 1px; cursor: pointer; transition: background .15s, border-color .15s; border-radius: 6px 6px 0 0; }
+  @media (min-width: 561px) { .ranura { white-space: nowrap; } }
+  .ranura:hover { background: var(--acento-suave); border-bottom-style: solid; }
+  .ranura:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+  .ranura .chev { display: inline-block; width: 11px; height: 11px; margin-left: 3px; vertical-align: baseline; opacity: .55; }
+  .claim-ciudad { margin-top: 12px; font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-size: 16.5px; color: var(--tinta-2); min-height: 22px; }
+  .claim-ciudad b { font-style: normal; font-family: "Manrope", sans-serif; font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--acento); margin-left: 10px; }
+  .billete-sec { padding: 16px 30px 0; }
+  .sec-titulo { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--tinta-2); margin-bottom: 10px; }
+  .sec-titulo em { font-style: normal; color: var(--acento); letter-spacing: .06em; }
+  .chips label { display: inline-flex; align-items: center; gap: 7px; padding: 9px 15px 9px 12px; background: var(--papel); }
+  .chips .ci { display: inline-grid; place-items: center; width: 16px; height: 16px; opacity: .8; transition: transform .18s cubic-bezier(.3,1.6,.5,1); }
+  .chips .ci svg { width: 16px; height: 16px; display: block; }
+  .chips label:has(input:checked) .ci { transform: scale(1.12); opacity: 1; }
+  .chips label:active { transform: scale(.97); }
+  .fila-extra { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .campo-evitar { display: flex; align-items: center; gap: 10px; background: var(--fondo); border: 1px solid var(--linea); border-radius: 12px; padding: 4px 6px 4px 14px; }
+  .campo-evitar svg { width: 16px; height: 16px; flex: none; color: var(--tinta-2); }
+  .campo-evitar input { flex: 1; font: 500 14.5px/1.4 Manrope, sans-serif; color: var(--tinta); background: none; border: none; padding: 9px 6px; }
+  .campo-evitar input:focus-visible { outline: none; }
+  .campo-evitar:focus-within { border-color: var(--acento); }
+  .troquel { position: relative; margin-top: 24px; border-top: 2px dashed var(--linea); }
+  .troquel::before, .troquel::after { content: ""; position: absolute; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: var(--fondo); border: 1px solid var(--linea); }
+  .troquel::before { left: -10px; clip-path: inset(0 0 0 50%); }
+  .troquel::after { right: -10px; clip-path: inset(0 50% 0 0); }
+  .billete-pie { padding: 22px 30px 26px; display: flex; align-items: center; justify-content: center; }
+  @media (max-width: 560px) { .billete-cab, .billete-cuerpo, .billete-sec { padding-left: 20px; padding-right: 20px; } .billete-pie { padding: 20px; } .billete-pie .btn-principal { width: 100%; } }
+
+  /* ------------------- Popovers de opciones ------------------- */
+  .pop { position: absolute; z-index: 60; background: var(--papel); border: 1px solid var(--linea); border-radius: 16px; box-shadow: 0 24px 70px rgba(0,0,0,.2); padding: 8px; min-width: 280px; max-width: min(360px, calc(100vw - 24px)); opacity: 0; transform: translateY(8px) scale(.98); pointer-events: none; transition: opacity .18s, transform .18s; }
+  .pop.abierto { opacity: 1; transform: none; pointer-events: auto; }
+  .pop h6 { font-size: 10.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-2); padding: 8px 12px 6px; }
+  .opcion { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; background: none; border: 0; border-radius: 12px; padding: 11px 12px; cursor: pointer; font: inherit; color: var(--tinta); transition: background .12s; }
+  .opcion:hover { background: var(--acento-suave); }
+  .opcion.activa { background: var(--acento); color: #fff; }
+  .opcion svg { flex: none; width: 20px; height: 20px; color: var(--acento); }
+  .opcion.activa svg { color: #fff; }
+  .opcion b { display: block; font-weight: 700; font-size: 14.5px; line-height: 1.25; }
+  .opcion i { display: block; font-style: normal; font-size: 12px; color: var(--tinta-2); margin-top: 1px; }
+  .opcion.activa i { color: rgba(255,255,255,.75); }
+  .pop .pista { font-size: 11.5px; color: var(--tinta-2); padding: 6px 12px 8px; }
+  .pop input[type="date"] { width: 100%; font: 500 15px/1.4 Manrope, sans-serif; color: var(--tinta); background: var(--fondo); border: 1px solid var(--linea); border-radius: 10px; padding: 11px 14px; }
+  .stepper { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 8px; padding: 6px; }
+  .stepper button { width: 48px; height: 48px; border-radius: 14px; border: 1.5px solid var(--linea); background: var(--fondo); color: var(--acento); font: 700 22px/1 Manrope, sans-serif; cursor: pointer; transition: .12s; }
+  .stepper button:hover { border-color: var(--acento); background: var(--acento-suave); }
+  .stepper output { text-align: center; font-family: "Instrument Serif", Georgia, serif; font-size: 34px; line-height: 1; }
+  .stepper output small { display: block; font-family: Manrope, sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--tinta-2); margin-top: 4px; }
+  @media (max-width: 560px) { .pop { position: fixed; left: 12px; right: 12px; bottom: 12px; top: auto !important; max-width: none; transform: translateY(14px); } .pop.abierto { transform: none; } }
+
+  /* ------------------- Velo y paneles modales ------------------- */
+  .velo { position: fixed; inset: 0; background: rgba(15,16,18,.45); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .velo.abierto { opacity: 1; pointer-events: auto; }
+  .panel { position: fixed; z-index: 71; left: 50%; top: 5vh; transform: translate(-50%, 12px); width: min(700px, calc(100vw - 24px)); max-height: 90vh; background: var(--papel); border: 1px solid var(--linea); border-radius: 22px; box-shadow: 0 40px 110px rgba(0,0,0,.35); display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s; }
+  .panel.abierto { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .panel-cab { padding: 24px 28px 16px; border-bottom: 1px solid var(--linea); }
+  .panel-cab .fila { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+  .panel-cab h3 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 28px; }
+  .cerrar { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--linea); background: var(--fondo); color: var(--tinta-2); font: 400 17px/1 Manrope, sans-serif; cursor: pointer; }
+  .cerrar:hover { border-color: var(--acento); color: var(--acento); }
+  .buscador { margin-top: 14px; display: flex; align-items: center; gap: 10px; background: var(--fondo); border: 1px solid var(--linea); border-radius: 12px; padding: 0 14px; }
+  .buscador svg { width: 16px; height: 16px; color: var(--tinta-2); flex: none; }
+  .buscador input { flex: 1; font: 500 15px/1.4 Manrope, sans-serif; color: var(--tinta); background: none; border: none; padding: 12px 0; }
+  .buscador input:focus-visible { outline: none; }
+  .buscador:focus-within { border-color: var(--acento); }
+  .panel-cuerpo { overflow: auto; padding: 6px 20px 22px; overscroll-behavior: contain; }
+  .grupo-pais { margin-top: 16px; }
+  .grupo-pais h6 { font-size: 10.5px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--tinta-2); padding-left: 4px; }
+  .malla-ciudades { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; margin-top: 9px; }
+  .tarjeta-ciudad { --ac: #1F4E5A; position: relative; text-align: left; border: 1px solid var(--linea); border-left: 4px solid var(--ac); background: var(--papel); border-radius: 14px; padding: 12px 14px 11px; cursor: pointer; font: inherit; color: var(--tinta); transition: background .14s, transform .14s, box-shadow .14s; }
+  .tarjeta-ciudad:hover { background: color-mix(in srgb, var(--ac) 8%, var(--papel)); transform: translateY(-1px); box-shadow: var(--sombra-2); }
+  .tarjeta-ciudad b { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 20px; display: block; line-height: 1.1; }
+  .tarjeta-ciudad i { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--tinta-2); letter-spacing: .1em; text-transform: uppercase; }
+  .tarjeta-ciudad em { display: block; font-style: normal; font-size: 11.5px; color: color-mix(in srgb, var(--ac) 75%, var(--tinta)); margin-top: 5px; }
+  .tarjeta-ciudad.activa { box-shadow: 0 0 0 2px var(--ac); }
+  .sin-resultados { padding: 26px 8px; text-align: center; color: var(--tinta-2); font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-size: 17px; }
+
+  /* ------------------- Acciones del resultado ------------------- */
+  .btn-accion { cursor: pointer; display: inline-flex; align-items: center; gap: 9px; font: 700 12px/1 Manrope, sans-serif; letter-spacing: .12em; text-transform: uppercase; border-radius: 99px; padding: 14px 24px; border: 1.5px solid var(--acento-linea); color: var(--acento); background: var(--papel); transition: border-color .15s, background .15s, transform .15s, box-shadow .15s; }
+  .btn-accion:hover { border-color: var(--acento); background: var(--acento-suave); transform: translateY(-1px); }
+  .btn-accion.primario { background: var(--acento); color: #fff; border-color: var(--acento); box-shadow: 0 10px 26px color-mix(in srgb, var(--acento) 30%, transparent); }
+  .btn-accion.primario:hover { background: var(--acento); box-shadow: 0 14px 32px color-mix(in srgb, var(--acento) 38%, transparent); }
+  .btn-accion svg { width: 15px; height: 15px; display: block; }
+  .panel-exportar { display: none; margin-top: 12px; background: var(--papel); border: 1px solid var(--linea); border-radius: 16px; padding: 8px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 4px; box-shadow: var(--sombra-2); }
+  .panel-exportar.visible { display: grid; }
+  .exp { text-align: left; background: none; border: 0; border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; color: var(--tinta); transition: background .12s; }
+  .exp:hover { background: var(--acento-suave); }
+  .exp b { display: block; font-size: 13.5px; font-weight: 700; }
+  .exp i { font-style: normal; font-size: 12px; color: var(--tinta-2); }
+
+  /* ------------------- Modal de la guia ------------------- */
+  .malla-disenos { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-top: 10px; }
+  .tarjeta-diseno { position: relative; text-align: left; border: 1.5px solid var(--linea); border-radius: 16px; overflow: hidden; background: var(--papel); cursor: pointer; font: inherit; color: var(--tinta); padding: 0; transition: border-color .14s, box-shadow .14s, transform .14s; }
+  .tarjeta-diseno:hover { transform: translateY(-1px); box-shadow: var(--sombra-2); }
+  .tarjeta-diseno .vista { height: 78px; display: grid; place-items: center; padding: 8px 14px; text-align: center; font-size: 23px; line-height: 1.05; }
+  .tarjeta-diseno .pie { padding: 10px 14px 12px; border-top: 1px solid var(--linea); }
+  .tarjeta-diseno .pie b { display: block; font-size: 14px; font-weight: 700; }
+  .tarjeta-diseno .pie i { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--tinta-2); text-transform: uppercase; letter-spacing: .1em; }
+  .muestras { display: flex; gap: 5px; margin-top: 8px; }
+  .muestras span { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18); }
+  .tarjeta-diseno.activa { border-color: var(--acento); box-shadow: 0 0 0 2px var(--acento); }
+  .formatos { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-top: 10px; }
+  .formato { text-align: left; border: 1.5px solid var(--linea); border-radius: 14px; background: var(--papel); padding: 12px 14px; cursor: pointer; font: inherit; color: var(--tinta); transition: .14s; }
+  .formato:hover { border-color: var(--acento-linea); background: var(--acento-suave); }
+  .formato.activa { border-color: var(--acento); background: var(--acento-suave); }
+  .formato b { display: block; font-size: 13.5px; font-weight: 700; }
+  .formato i { font-style: normal; font-size: 11.5px; color: var(--tinta-2); }
+  .panel-pie { padding: 16px 28px 22px; border-top: 1px solid var(--linea); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .panel-pie .btn-principal { grid-column: auto; padding: 14px 30px; }
+  .btn-fantasma { cursor: pointer; font: 700 11px/1 Manrope, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-2); background: none; border: none; border-bottom: 1px solid var(--linea); padding: 4px 1px; }
+  .btn-fantasma:hover { color: var(--acento); border-color: var(--acento); }
+  .panel-pie .nota { flex-basis: 100%; font-size: 11.5px; color: var(--tinta-2); }
+  .panel .eyebrow + h3 { margin-top: 4px; }
+
+  /* ------------------- Viajes guardados: pases de embarque ------------------- */
+  .viaje.pase { --ac: var(--acento); position: relative; display: grid; grid-template-columns: 1fr auto; gap: 0; align-items: stretch; border: 1px solid var(--linea); border-radius: 16px; background: var(--papel); margin-top: 12px; padding: 0; overflow: hidden; box-shadow: var(--sombra-2); transition: transform .15s, box-shadow .15s; }
+  .viaje.pase:first-of-type { border-top: 1px solid var(--linea); }
+  .viaje.pase:hover { transform: translateY(-1px); box-shadow: var(--sombra); }
+  .viaje.pase::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--ac); }
+  .pase-info { padding: 16px 20px 15px 22px; min-width: 0; }
+  .pase-info .eyebrow-pase { font-size: 9.5px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: color-mix(in srgb, var(--ac) 80%, var(--tinta)); }
+  .pase-info .titulo-viaje { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 21px; line-height: 1.15; margin-top: 2px; }
+  .pase-info .sub-viaje { margin-top: 3px; }
+  .pase-info .barra-viaje { margin-top: 10px; }
+  .pase-info .barra-viaje div { background: var(--ac); }
+  .pase-talon { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px 18px; border-left: 2px dashed var(--linea); min-width: 108px; }
+  .pase-talon::before, .pase-talon::after { content: ""; position: absolute; left: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--fondo); border: 1px solid var(--linea); }
+  .pase-talon::before { top: -10px; }
+  .pase-talon::after { bottom: -10px; }
+  .pase-dias { text-align: center; font-family: "Instrument Serif", Georgia, serif; font-size: 27px; line-height: 1; color: var(--ac); }
+  .pase-dias i { display: block; font-style: normal; font-family: Manrope, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-2); margin-top: 3px; }
+  @media (max-width: 480px) { .pase-talon { min-width: 92px; padding: 12px; } .pase-info { padding: 14px 14px 13px 18px; } }
+
+  /* ------------------- Transicion de ruta al cuadrar ------------------- */
+  .transicion { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: color-mix(in srgb, var(--fondo) 84%, transparent); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+  .transicion.fuera { opacity: 0; transition: opacity .45s ease; pointer-events: none; }
+  .transicion .caja-t { text-align: center; }
+  .transicion svg { width: min(340px, 72vw); height: auto; display: block; margin: 0 auto; }
+  .transicion .ruta-t { fill: none; stroke: var(--acento); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 4 8; animation: trazar 1.1s ease-out forwards; }
+  @keyframes trazar { from { stroke-dashoffset: 560; } to { stroke-dashoffset: 0; } }
+  .transicion .punto-t { fill: var(--acento); }
+  .transicion .destino-t { fill: none; stroke: var(--acento); stroke-width: 2; animation: latir 1.2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  @keyframes latir { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+  .transicion .t-texto { margin-top: 14px; font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-size: 21px; color: var(--tinta); }
+
+  /* Movimiento reducido y oscuro */
+  @media (prefers-reduced-motion: reduce) { .revelar { animation: none; opacity: 1; } html { transition: none; } .transicion { display: none !important; } .chips .ci, .btn-accion, .tarjeta-ciudad, .tarjeta-diseno, .viaje.pase { transition: none; } }
+  @media (prefers-color-scheme: dark) {
+    .muestras span { border-color: rgba(255,255,255,.22); }
+    .pop { box-shadow: 0 24px 70px rgba(0,0,0,.6); }
+    .panel { box-shadow: 0 40px 110px rgba(0,0,0,.7); }
+    .btn-accion.primario, .btn-principal { color: #fff; }
+  }
+  @media print { .panel-exportar, .pop, .panel, .velo, .transicion, .claim-ciudad { display: none !important; } }
+</style>
 </head>
 <body>
 <div class="contenedor">
@@ -226,77 +408,76 @@
     </div>
   </header>
 
-  <div class="filtros">
-    <div class="campo ancho">
-      <label for="destino">Ciudad</label>
-      <select id="destino" class="ciudad"></select>
+  <div class="filtros billete">
+    <div class="billete-cab">
+      <span class="eyebrow">Billete de ida</span>
       <span class="contador" id="contador"></span>
     </div>
-    <div class="campo">
-      <label for="fecha">Fecha de llegada</label>
-      <input type="date" id="fecha">
+    <div class="billete-cuerpo">
+      <p class="frase" id="frase">Nos vamos a
+        <button type="button" class="ranura" id="ranura-ciudad"><span>elegir ciudad</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        el <button type="button" class="ranura" id="ranura-fecha" data-pop="pop-fecha"><span>elegir fecha</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>:
+        <button type="button" class="ranura" id="ranura-dias" data-pop="pop-dias"><span>3 días</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <button type="button" class="ranura" id="ranura-grupo" data-pop="pop-grupo"><span>en pareja</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>,
+        a ritmo <button type="button" class="ranura" id="ranura-ritmo" data-pop="pop-ritmo"><span>normal</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>,
+        moviéndonos <button type="button" class="ranura" id="ranura-transporte" data-pop="pop-transporte"><span>a pie y en transporte público</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        y con presupuesto <button type="button" class="ranura" id="ranura-presupuesto" data-pop="pop-presupuesto"><span>medio</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>.
+      </p>
+      <div class="claim-ciudad" id="claim-ciudad"></div>
     </div>
-    <div class="campo">
-      <label for="dias">Días completos (1–8)</label>
+    <div class="billete-sec">
+      <div class="sec-titulo">Qué os apetece <em id="chips-contador"></em></div>
+      <div class="chips" id="chips-intereses">
+        <label><input type="checkbox" name="interes" value="Imprescindible" checked><span class="ci" data-ico="estrella"></span><span>Imprescindibles</span></label>
+        <label><input type="checkbox" name="interes" value="Museo"><span class="ci" data-ico="museo"></span><span>Museos y arte</span></label>
+        <label><input type="checkbox" name="interes" value="Mirador" checked><span class="ci" data-ico="mirador"></span><span>Miradores</span></label>
+        <label><input type="checkbox" name="interes" value="Mercado"><span class="ci" data-ico="mercado"></span><span>Mercados y gastro</span></label>
+        <label><input type="checkbox" name="interes" value="Parque"><span class="ci" data-ico="arbol"></span><span>Naturaleza</span></label>
+        <label><input type="checkbox" name="interes" value="Paseo"><span class="ci" data-ico="paseo"></span><span>Barrios y paseo</span></label>
+        <label><input type="checkbox" name="interes" value="Bar"><span class="ci" data-ico="bar"></span><span>Bares y noche</span></label>
+        <label><input type="checkbox" name="interes" value="Historia"><span class="ci" data-ico="historia"></span><span>Historia</span></label>
+        <label><input type="checkbox" name="interes" value="Fuera de ruta"><span class="ci" data-ico="brujula"></span><span>Fuera de ruta</span></label>
+      </div>
+    </div>
+    <div class="billete-sec fila-extra">
+      <div class="chips">
+        <label><input type="checkbox" id="escapada"><span class="ci" data-ico="tren"></span><span>Una escapada de un día fuera de la ciudad (con 3 días o más)</span></label>
+      </div>
+      <div class="campo-evitar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12h7"/></svg>
+        <input type="text" id="evitar" placeholder="A evitar (opcional): museos, colas, iglesias, cuestas...">
+      </div>
+    </div>
+    <div class="troquel" aria-hidden="true"></div>
+    <div class="billete-pie">
+      <button class="btn-principal" id="btn-cuadrar" type="button"><span id="cta-texto">Cuadrar el itinerario</span></button>
+    </div>
+    <div class="nativos" hidden aria-hidden="true">
+      <select id="destino" class="ciudad"></select>
       <input type="number" id="dias" min="1" max="8" value="3">
-    </div>
-    <div class="campo">
-      <label for="presupuesto">Presupuesto</label>
       <select id="presupuesto">
         <option value="ajustado">Ajustado: gratis y tapeo</option>
         <option value="medio" selected>Medio: sin mirar mucho</option>
         <option value="alto">A lo grande: reservas y caprichos</option>
       </select>
-    </div>
-    <div class="campo">
-      <label for="grupo">Con quién</label>
       <select id="grupo">
         <option value="pareja" selected>En pareja</option>
         <option value="amigos">Con amigos</option>
         <option value="familia">En familia con niños</option>
         <option value="solo">En solitario</option>
       </select>
-    </div>
-    <div class="campo">
-      <label for="ritmo">Ritmo</label>
       <select id="ritmo">
         <option value="3">Con calma (3 paradas al día)</option>
         <option value="4" selected>Normal (4 paradas al día)</option>
         <option value="5">Completo (5 paradas al día)</option>
       </select>
-    </div>
-    <div class="campo">
-      <label for="transporte">Cómo os movéis</label>
       <select id="transporte">
         <option value="publico" selected>A pie y transporte público</option>
         <option value="motor">En coche o moto</option>
         <option value="pie">Solo a pie</option>
       </select>
+      <span class="porta-fecha"><input type="date" id="fecha"></span>
     </div>
-    <div class="campo ancho">
-      <span class="titulo">Qué os apetece</span>
-      <div class="chips">
-        <label><input type="checkbox" name="interes" value="Imprescindible" checked><span>Imprescindibles</span></label>
-        <label><input type="checkbox" name="interes" value="Museo"><span>Museos y arte</span></label>
-        <label><input type="checkbox" name="interes" value="Mirador" checked><span>Miradores</span></label>
-        <label><input type="checkbox" name="interes" value="Mercado"><span>Mercados y gastro</span></label>
-        <label><input type="checkbox" name="interes" value="Parque"><span>Naturaleza</span></label>
-        <label><input type="checkbox" name="interes" value="Paseo"><span>Barrios y paseo</span></label>
-        <label><input type="checkbox" name="interes" value="Bar"><span>Bares y noche</span></label>
-        <label><input type="checkbox" name="interes" value="Historia"><span>Historia</span></label>
-        <label><input type="checkbox" name="interes" value="Fuera de ruta"><span>Fuera de ruta</span></label>
-      </div>
-    </div>
-    <div class="campo ancho">
-      <div class="chips">
-        <label><input type="checkbox" id="escapada"><span>Una escapada de un día fuera de la ciudad (con 3 días o más)</span></label>
-      </div>
-    </div>
-    <div class="campo ancho">
-      <label for="evitar">A evitar (opcional, separado por comas)</label>
-      <input type="text" id="evitar" placeholder="Ej. museos, colas, iglesias, cuestas...">
-    </div>
-    <button class="btn-principal" id="btn-cuadrar" type="button">Cuadrar el itinerario</button>
   </div>
 
   <div class="hoy" id="aviso-version" style="cursor:pointer"></div>
@@ -320,7 +501,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v27";
+const VERSION_APP = "v29";
 const CIUDADES = {};
 const GUIA = {};
 const EXTRA = {};
@@ -2932,6 +3113,414 @@ CIUDADES.barcelona.zonas.forEach(z => z.paradas.forEach(p => { const r = CIERRES
 EXCURSION_BCN.paradas.forEach(p => { p.excursion = true; GUIA.barcelona.wiki[p.n] = p.wiki; });
 CIUDADES.barcelona.zonas.push({ nombre: "Escapada: " + EXCURSION_BCN.nombre, excursion: true, como: EXCURSION_BCN.como, paradas: EXCURSION_BCN.paradas });
 
+/* ======================================================================
+   OSLO Y HELSINKI (ciudades nuevas, completas)
+   ====================================================================== */
+CIUDADES.oslo = {
+  nombre: "Oslo", pais: "Noruega", revisado: "agosto 2026", acento: "#1F3A5C", moneda: "kr", tz: 1,
+  centro: [59.9139, 10.7522], zoom: 13,
+  claim: "Fiordo, madera, museos que flotan y una ciudad que se baña en el puerto",
+  consejo: "Todo con tarjeta; el pase de transporte Ruter de 24 h cubre también los ferris del fiordo. Es carísima: el súper y los 'dagens' de mediodía salvan el presupuesto.",
+  presupuesto: "Entradas ≈ 150-250 kr por persona; comer para dos ≈ 500-900 kr.",
+  lluvia: "Museo Munch (con sauna enfrente), Museo Nacional o una tarde en Mathallen.",
+  comer: ["Mathallen (Vulkan): mercado gastronómico con puestos de pescado, reno y cerveza artesana, bajo techo", "Fiskeriet Youngstorget: fish and chips de bacalao del día en pescadería con mesas", "Vippa (Vippetangen): comida callejera del mundo en un almacén del puerto, con vistas a la fortaleza"],
+  singluten: ["El salmón, el bacalao y el reno a la brasa son seguros; los brunost (queso marrón) y los waffles llevan gluten los segundos", "Freia y muchos súper tienen sección 'glutenfri'; en restaurantes, 'glutenfri' es palabra conocida"],
+  zonas: [
+    { nombre: "Centro y Ópera", paradas: [
+      { n: "Ópera de Oslo", lat: 59.9075, lng: 10.7532, tags: ["Imprescindible","Mirador","Paseo"], precio: 0, dur: 60, d: "El edificio de mármol blanco que sale del fiordo como un iceberg y por cuyo tejado se sube andando.", truco: "Sube por la rampa hasta el tejado al atardecer; el interior (vestíbulo de roble) es gratis y las visitas guiadas cuestan 150 kr.", salseo: "Snøhetta la diseñó para que la gente la pisara, y en el mármol hay cientos de 'errores' de textura que los canteros dejaron adrede para que no resbalara con hielo. En invierno la gente baja el tejado en trineo y nadie lo prohíbe.", atardecer: true, ninos: true },
+      { n: "Museo Munch", lat: 59.9060, lng: 10.7560, tags: ["Imprescindible","Museo"], precio: 180, dur: 90, d: "La torre inclinada del puerto con tres versiones de El grito que se rotan cada hora para no gastarlas.", truco: "El grito se muestra por turnos (pintura, pastel, litografía) en una sala oscura: espera al cambio; la planta 13 tiene bar con la vista del fiordo. Sauna flotante enfrente.", salseo: "Munch dejó a la ciudad 28.000 obras al morir en 1944 y Oslo las guardó en un sótano 20 años; en 2004 robaron El grito a mano armada a mediodía y apareció en 2006 con una mancha. Munch pintó cuatro Gritos porque los vendía y le pedían más.", reservar: true },
+      { n: "Karl Johans gate y Palacio Real", lat: 59.9135, lng: 10.7390, tags: ["Paseo","Historia","Imprescindible"], precio: 0, dur: 50, d: "La avenida de la estación al palacio, con el Parlamento, el Gran Café de Ibsen y el cambio de guardia a las 13:30.", truco: "Cambio de guardia diario a las 13:30 frente al palacio; el Grand Café conserva el sitio de Ibsen, que iba cada día a la misma hora a leer el periódico.", salseo: "Ibsen paseaba cada día a las 13:00 por esta calle con sombrero de copa para que la gente lo viera; los turistas ponían el reloj en hora con él. Cuando murió, el rey dijo que era 'nuestro mejor anuncio'. El palacio se construyó para un rey sueco que apenas vino." },
+      { n: "Fortaleza de Akershus", lat: 59.9075, lng: 10.7365, tags: ["Historia","Mirador","Parque"], precio: 0, dur: 60, d: "El castillo medieval sobre el puerto, con murallas para pasear, mausoleo real y vistas a Aker Brygge.", truco: "El recinto es gratis y abierto hasta las 21:00; el castillo (100 kr) tiene el mausoleo de los reyes. Vippa, el mercado de comida callejera, está justo debajo.", salseo: "Aquí fusilaron a Quisling, el colaboracionista cuyo apellido es hoy sinónimo de traidor en todos los idiomas; y aquí la resistencia ejecutó su golpe más famoso. El museo de la resistencia está dentro, y es de los mejores de Europa sobre el tema.", atardecer: true }
+    ]},
+    { nombre: "Bygdøy: la península de los museos", paradas: [
+      { n: "Museo Fram", lat: 59.9033, lng: 10.6986, tags: ["Imprescindible","Museo"], precio: 160, dur: 90, d: "El barco polar de Nansen y Amundsen entero, dentro de un edificio en forma de tienda, con la cubierta visitable.", truco: "Ferry B1 desde el ayuntamiento (billete Ruter) en verano; sube al Fram y baja a los camarotes: huele a madera de 1892. El Kon-Tiki está al lado.", salseo: "El Fram estaba diseñado para que el hielo lo levantara en vez de aplastarlo; Nansen dejó que se congelara y derivó tres años por el Ártico jugando a las cartas. Amundsen lo usó para el Polo Sur y no le dijo a nadie adónde iba hasta estar en el mar.", ninos: true },
+      { n: "Museo Kon-Tiki", lat: 59.9037, lng: 10.6985, tags: ["Museo"], precio: 160, dur: 60, d: "La balsa de troncos con la que Heyerdahl cruzó el Pacífico en 1947 y la barca de papiro Ra II.", truco: "Entrada combinada con el Fram; la balsa se ve con los tiburones de mentira debajo. Es corto y divertido.", salseo: "Heyerdahl no sabía nadar y cruzó 8.000 km en una balsa de madera de balsa con cinco noruegos y un loro; el loro se lo comió una ola. Ganó un Óscar con el documental. Su teoría era falsa, pero el viaje, no.", ninos: true },
+      { n: "Museo Folclórico Noruego", lat: 59.9075, lng: 10.6845, tags: ["Parque","Museo","Historia"], precio: 180, dur: 120, d: "160 edificios de toda Noruega al aire libre: la iglesia de madera de Gol del siglo XIII, granjas con tejado de hierba y un pueblo del XIX.", truco: "La stavkirke de Gol es lo primero; en verano hay actores, lefse recién hecho y baile folk a las 14:00. Cierra pronto en invierno.", salseo: "La iglesia de madera se compró en 1884 por el rey Oscar II para su museo privado, que fue el primer museo al aire libre del mundo; los suecos dicen que Skansen fue antes. Discusión escandinava desde 1891.", ninos: true },
+      { n: "Playa de Huk y Oscarshall", lat: 59.8965, lng: 10.6760, tags: ["Parque","Fuera de ruta","Paseo"], precio: 0, dur: 75, d: "La playa de los osloenses en la punta de Bygdøy, con el palacete de verano de estilo gótico y el bosque de paseo.", truco: "Bus 30 hasta el final; la playa de Huk tiene una zona nudista tras las rocas (aviso) y agua a 18 grados en agosto. Vuelve andando por la costa hasta el ferry.", salseo: "Bygdøy era la finca de los reyes y sigue siendo del rey en gran parte; la granja real vende leche ecológica en la carretera. El palacete de Oscarshall lo construyó un rey sueco para 'tener algo en Noruega' y lo abrió al público al año porque le aburría.", atardecer: true }
+    ]},
+    { nombre: "Frogner y Vigeland", paradas: [
+      { n: "Parque Vigeland", lat: 59.9270, lng: 10.7005, tags: ["Imprescindible","Parque"], precio: 0, dur: 90, d: "212 esculturas de bronce y granito de un solo artista: el niño enfadado, el puente, la fuente y el monolito de 121 cuerpos.", truco: "Tranvía 12 a Vigelandsparken; abierto siempre y gratis. El Monolito al atardecer y el 'Sinnataggen' (niño enfadado) con la mano brillante de tocarlo.", salseo: "Vigeland le pidió a la ciudad un estudio y una casa a cambio de toda su obra; se lo dieron y tardó 20 años en llenar el parque de cuerpos desnudos que los noruegos de 1940 encontraron escandalosos. Hoy es el parque más visitado del país y el Sinnataggen ha sido robado dos veces.", atardecer: true, ninos: true },
+      { n: "Museo Vigeland", lat: 59.9235, lng: 10.7010, tags: ["Museo","Fuera de ruta"], precio: 100, dur: 45, d: "El estudio-mausoleo del escultor, con los yesos originales y sus cenizas en la torre.", truco: "A cinco minutos del parque; los moldes de yeso a tamaño real explican el Monolito. Hay un café en el jardín.", salseo: "Vigeland vivió aquí arriba con su mujer 20 años más joven, con la que se casó a los 66, y pidió que sus cenizas se pusieran en la torre para 'seguir vigilando'. Sigue." },
+      { n: "Frognerseteren y Holmenkollen", lat: 59.9640, lng: 10.6700, tags: ["Mirador","Parque","Imprescindible"], precio: 160, dur: 120, d: "El metro sube al bosque: el trampolín de saltos de esquí con museo y mirador, y el restaurante de madera con vistas a todo el fiordo.", truco: "Línea 1 del metro hasta Frognerseteren (30 min); baja andando a Holmenkollen por el bosque (20 min). El mirador del trampolín, a 60 metros, y el simulador de salto para los valientes.", salseo: "El trampolín es de 1892 y lo han reconstruido 19 veces; desde arriba se ve por qué los noruegos nacen con esquís: el bosque está lleno de pistas iluminadas hasta las 22:00 en invierno. Frognerseteren sirve tarta de manzana desde 1891 a los que suben.", atardecer: true, comida: true, sg: "Tarta no; sopa de pescado y reno, sí." },
+      { n: "Grünerløkka y Mathallen", lat: 59.9235, lng: 10.7530, tags: ["Bar","Comida","Paseo"], precio: 0, dur: 90, d: "El barrio de las cafeterías y tiendas vintage junto al río Akerselva, con el mercado gastronómico en una antigua fábrica.", truco: "Paseo por el río Akerselva desde Mathallen hacia abajo (cascadas y fábricas); Tim Wendelboe para el café más famoso de Noruega; Bar Boca para copas.", salseo: "Akerselva era el 'río industrial' con 30 fábricas y los obreros vivían en Grünerløkka; ahora es el barrio más caro para alquilar y las fábricas son escuelas de arte. Noruega bebe más café por persona que nadie salvo Finlandia, y Wendelboe fue campeón del mundo de baristas.", comida: true, sg: "Mathallen tiene puestos con 'glutenfri' señalado; el pescado, siempre." }
+    ]},
+    { nombre: "Fiordo y Tjuvholmen", paradas: [
+      { n: "Museo Nacional", lat: 59.9105, lng: 10.7265, tags: ["Imprescindible","Museo"], precio: 200, dur: 120, d: "El museo más grande de los países nórdicos, junto al ayuntamiento, con El grito 'original' de 1893 y arte hasta hoy.", truco: "El Grito de 1893 (el famoso) está aquí, no en el Munch; sala de 'Munch' en la planta 2. Terraza con vista en la azotea, gratis con la entrada.", salseo: "Costó 6.000 millones de coronas y abrió en 2022 con 'la sala de la luz', una caja de mármol translúcido en el tejado. Tiene dos Gritos en Oslo compitiendo: los guías dicen 'el nuestro es el de verdad' en los dos museos.", reservar: true },
+      { n: "Aker Brygge y Tjuvholmen", lat: 59.9085, lng: 10.7220, tags: ["Paseo","Mirador","Comida"], precio: 0, dur: 75, d: "El antiguo astillero convertido en paseo de restaurantes y la península nueva con el Museo Astrup Fearnley y playa urbana.", truco: "Playita de Tjuvholmen y el 'trampolín' de baño frente al museo; helado en Paradis. Los restaurantes de Aker Brygge son caros: come antes en Vippa o Mathallen.", salseo: "Tjuvholmen significa 'isla de los ladrones': aquí los ahorcaban en el siglo XVIII. Ahora es el metro cuadrado más caro de Noruega, con un museo de Renzo Piano y gente bañándose entre yates. Los noruegos se bañan a 12 grados y dicen que 'refresca'.", atardecer: true, comida: true, sg: "Los puestos de gambas del muelle: gambas cocidas con limón, aptas." },
+      { n: "Ferry a las islas del fiordo: Hovedøya", lat: 59.8945, lng: 10.7290, tags: ["Parque","Fuera de ruta","Paseo"], precio: 0, dur: 120, d: "Con el billete de transporte, los ferris B1-B4 van a islas con ruinas de abadía, playas y cabañas de colores.", truco: "Ferry desde Aker Brygge (Rådhusbrygge 4); Hovedøya (10 min) tiene la abadía cisterciense y playa; Gressholmen, cabañas y conejos. Lleva picnic: no hay nada.", salseo: "Las cabañas de las islas son diminutas, sin agua y llevan siendo herencia de familias de trabajadores desde 1920; hay lista de espera de 30 años. La abadía de Hovedøya fue quemada en 1532 y sus piedras están en la fortaleza de Akershus.", ninos: true },
+      { n: "Sauna flotante KOK y baño en el fiordo", lat: 59.9060, lng: 10.7500, tags: ["Fuera de ruta","Bar"], precio: 250, dur: 90, d: "Saunas de madera flotando frente a la Ópera, con escalera al fiordo para el baño helado entre sesión y sesión.", truco: "Reserva online (KOK o Oslo Badstuforening, más barata), lleva bañador y toalla; se puede en invierno con hielo, que es cuando los noruegos van. Después, cerveza en el muelle.", salseo: "Los noruegos redescubrieron la sauna en 2016 copiando a los finlandeses y ahora hay 20 flotando en el puerto; el ayuntamiento limpió el fiordo tanto que se puede beber, casi. Bañarse a 3 grados y contarlo es el nuevo deporte nacional.", comida: true, sg: "Cerveza no; hay sidra." }
+    ]}
+  ]
+};
+GUIA.oslo = {
+  portada: "es:Oslo",
+  historia: "Oslo fue fundada por vikingos hacia el año 1000, ardió tantas veces que Cristián IV de Dinamarca la refundó en 1624 con su nombre (Christiania) y la trasladó unos metros; se llamó así hasta 1925. Noruega pasó 400 años bajo Dinamarca y 90 bajo Suecia; la independencia llegó en 1905 con un rey danés importado por votación, Haakon VII, que en 1940 dijo no a Hitler desde un bosque y se convirtió en símbolo. El petróleo de 1969 la hizo la ciudad más rica de Escandinavia y el fondo soberano, el mayor del mundo, paga lo que ves: ópera, museos y un puerto reconvertido en paseo. Es pequeña, verde, cara y silenciosa, y en verano no anochece hasta las once.",
+  salseos: [
+    "Oslo se llamó Christiania 300 años por un rey danés; cuando en 1925 recuperó el nombre, los periódicos suecos siguieron escribiendo Kristiania una década por fastidiar. Munch firmó cuadros con los dos nombres.",
+    "El fondo soberano noruego tiene 1,7 billones de dólares, el 1,5 % de todas las acciones del mundo, y una regla: solo se gasta el 3 % al año. Cada noruego 'tiene' 300.000 dólares que no puede tocar, y lo lleva bien.",
+    "Los noruegos cenan a las 17:00 y el 'kveldsmat' (pan con queso a las 21:00) es la segunda cena; el 'matpakke' (bocadillo de pan de molde con queso marrón envuelto en papel) es la comida oficial del país y lo comen ministros en el Parlamento.",
+    "El Premio Nobel de la Paz se entrega en Oslo y no en Estocolmo porque Alfred Nobel lo dijo en su testamento sin explicar por qué; los suecos llevan 120 años preguntándose el motivo y los noruegos se lo agradecen cada 10 de diciembre en el ayuntamiento.",
+    "Oslo tiene una ley no escrita: no se habla con desconocidos en el metro salvo que haya nieve, un perro o una emergencia. Hay una campaña municipal para animar a los osloenses a saludar; no está funcionando."
+  ],
+  platos: [
+    { n: "Salmón ahumado y gravlaks", wiki: "es:Gravlax", d: "Del fiordo, curado con eneldo, con salsa de mostaza; el del Mathallen es de los buenos." },
+    { n: "Brunost", wiki: "es:Brunost", d: "El queso marrón de suero de cabra, dulce como caramelo, en lonchas finas sobre el waffle." },
+    { n: "Fårikål", wiki: "es:Fårikål", d: "Cordero con col y pimienta, el plato nacional votado en 1972 y celebrado el último jueves de septiembre." },
+    { n: "Reker (gambas del fiordo)", wiki: "es:Pandalus borealis", d: "Gambas cocidas en el barco, vendidas en el muelle, con pan, mayonesa y limón." }
+  ],
+  frases: ["Hei (hola) / ha det (adiós)", "Takk (gracias) / tusen takk (mil gracias)", "Skål (salud)", "Koselig (acogedor, la versión noruega del hygge)"],
+  wiki: {
+    "Ópera de Oslo": "es:Ópera de Oslo", "Museo Munch": "es:Museo Munch", "Karl Johans gate y Palacio Real": "es:Palacio Real de Oslo", "Fortaleza de Akershus": "es:Fortaleza de Akershus",
+    "Museo Fram": "es:Museo Fram", "Museo Kon-Tiki": "es:Museo Kon-Tiki", "Museo Folclórico Noruego": "es:Museo Folclórico Noruego", "Playa de Huk y Oscarshall": "es:Oscarshall",
+    "Parque Vigeland": "es:Parque de Vigeland", "Museo Vigeland": "en:Vigeland Museum", "Frognerseteren y Holmenkollen": "es:Holmenkollbakken", "Grünerløkka y Mathallen": "es:Grünerløkka",
+    "Museo Nacional": "es:Museo Nacional de Noruega", "Aker Brygge y Tjuvholmen": "es:Aker Brygge", "Ferry a las islas del fiordo: Hovedøya": "es:Hovedøya", "Sauna flotante KOK y baño en el fiordo": "es:Sauna"
+  }
+};
+EXTRA.oslo = {
+  salseos: [
+    "El Museo Munch se construyó inclinado hacia el fiordo 'como si se asomara'; los osloenses lo llaman 'la torre inclinada' y 'el fallo' y le hicieron un referéndum simbólico en contra. Ahora va un millón de personas al año a ver la torre que no querían.",
+    "En 1994, durante los Juegos de Lillehammer, robaron El grito del Museo Nacional en 50 segundos con una escalera y dejaron una nota: 'gracias por la mala seguridad'. Lo recuperaron con una trampa de la policía británica que fingió comprarlo.",
+    "El trampolín de Holmenkollen tiene un récord: en 2011 saltaron 141 metros. También tiene una tradición: la reina Sonja hizo el simulador de salto a los 74 años y dijo que 'era como esquiar de verdad pero sin caerse'.",
+    "Vigeland puso un 'niño enfadado' de bronce en el puente del parque y se convirtió en el icono de la ciudad; lo robaron en 1992 y apareció en un contenedor. Tiene la mano izquierda dorada de que la gente le dé la mano para calmarlo.",
+    "El aeropuerto de Oslo está a 50 km y el tren rápido (Flytoget) cuesta 240 kr; el tren regional (Vy) hace el mismo trayecto por 120 kr y tarda 3 minutos más. Los noruegos cogen el regional. Los turistas, el caro. Ambos llegan."
+  ],
+  guiri: [
+    "Comprar agua embotellada: la del grifo viene de un lago y sabe mejor. En Oslo pedir agua en un restaurante es gratis y esperado.",
+    "Pedir 'un vino' en un bar cualquiera: cuesta 130 kr la copa (13 euros) por los impuestos; los noruegos beben en casa (comprando en el Vinmonopolet, que cierra a las 18:00 y los domingos) y salen ya contentos.",
+    "Ir a Bygdøy en bus en verano teniendo el ferry incluido en el billete: el ferry tarda 15 minutos, tiene vistas y sale del ayuntamiento cada media hora.",
+    "Esperar que un noruego te hable en el tranvía. No pasa. Y no es mala educación: es respeto por tu espacio, y funciona al revés cuando tú les hablas.",
+    "Ir a Holmenkollen a las 12: los grupos suben a las 11. A las 9 está solo el bosque y los que corren."
+  ],
+  datos: [
+    "Noruega tiene 5,5 millones de habitantes, 450.000 cabañas de vacaciones y el índice de felicidad, democracia y desarrollo humano en el top 3 del mundo desde hace 20 años.",
+    "Oslo tiene 40 islas dentro del municipio y el 60 % de su superficie es bosque; se puede esquiar desde una parada de metro.",
+    "El 90 % de los coches nuevos que se venden en Noruega son eléctricos, y Oslo tiene un centro sin aparcamientos de superficie: los quitaron todos en 2019.",
+    "El Nobel de la Paz se decide en una sala del centro de Oslo con cinco personas nombradas por el Parlamento; Obama lo ganó a los 9 meses de mandato y el comité lo sigue defendiendo.",
+    "La ley 'allemannsretten' permite acampar en cualquier sitio a 150 metros de una casa; en Noruega también incluye el derecho a recoger bayas y setas en terreno privado."
+  ]
+};
+DISENOS.oslo = [
+  { nombre: "Fiordo", maqueta: "revista", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F4F6F8", papel: "#FFFFFF", tinta: "#131C26", tinta2: "#5A6674", acento: "#1F3A5C", acento2: "#C8792B" }, motivo: "ondas" },
+  { nombre: "Cabaña roja", maqueta: "cuaderno", titulo: "Fraunces", cuerpo: "Lora", manuscrita: "Caveat", paleta: { fondo: "#F1EBE1", papel: "#FAF6EE", tinta: "#2B2420", tinta2: "#6C625A", acento: "#A83A2E", acento2: "#3E6B5A" }, motivo: "ladrillo" },
+  { nombre: "Noche polar", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Lora", paleta: { fondo: "#0F1622", papel: "#182131", tinta: "#EEF2F7", tinta2: "#A9B4C3", acento: "#7FD1B9", acento2: "#E2B95B" }, motivo: "estrellas" },
+  { nombre: "Vikingo pop", maqueta: "fiesta", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#EAF4FF", papel: "#FFFFFF", tinta: "#0E1E33", tinta2: "#4A5A70", acento: "#BA1B3D", acento2: "#1E56C9" }, motivo: "zigzag" },
+  { nombre: "Póster del fiordo", maqueta: "ilustrado", titulo: "Alfa Slab One", cuerpo: "Nunito", manuscrita: "Caveat", agua: "#7FB3D5", paleta: { fondo: "#FBF4E4", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#6B5E4D", acento: "#1F3A5C", acento2: "#C8792B" }, motivo: "acuarela" }
+];
+const CIERRES_OSLO = { "Museo Munch": { cierra: [] }, "Museo Nacional": { cierra: [1] }, "Museo Vigeland": { cierra: [1] }, "Museo Folclórico Noruego": { cierra: [] }, "Grünerløkka y Mathallen": { cierra: [1] } };
+const EXCURSION_OSLO = { nombre: "Fiordo de Oslo: Drøbak y Oscarsborg", como: "Barco desde Aker Brygge, 1 h 30 (verano); o bus 500, 1 h", paradas: [
+  { n: "Drøbak", lat: 59.6633, lng: 10.6300, tags: ["Paseo","Comida","Imprescindible"], precio: 0, dur: 120, d: "El pueblo de casas de madera blancas donde el fiordo se estrecha, con la 'oficina de Papá Noel' abierta todo el año.", truco: "Come en Skipperstuen o gambas en el muelle; la casa de Papá Noel (Julenissen) es de 1988 y tiene buzón con respuesta. Baño en la playa del centro.", salseo: "Drøbak es el 'pueblo de Papá Noel' por decisión de un comerciante en 1988 y los noruegos lo aceptaron; el acuario tiene pulpos del fiordo y el pueblo, 12.000 habitantes y 40 galerías.", comida: true, sg: "Gambas y pescado, aptos.", wiki: "es:Drøbak" },
+  { n: "Fortaleza de Oscarsborg", lat: 59.6770, lng: 10.6045, tags: ["Historia","Mirador"], precio: 100, dur: 90, d: "La isla-fortaleza que hundió el crucero Blücher el 9 de abril de 1940 y retrasó la invasión alemana lo justo para que el rey escapara.", truco: "Ferry de 5 minutos desde Drøbak; visita los cañones 'Moses' y 'Aron' y el museo. Concierto de ópera en la fortaleza en agosto.", salseo: "El coronel Eriksen disparó sin órdenes con cañones de 1893 y dos torpedos de 1900 al Blücher, el crucero más moderno de Alemania, y lo hundió con 800 hombres; gracias a eso el rey y el oro del país huyeron de Oslo. Le hicieron un consejo de guerra y luego, héroe.", atardecer: true, wiki: "es:Fortaleza de Oscarsborg" },
+  { n: "Playa y bosque de Håøya", lat: 59.6930, lng: 10.5980, tags: ["Parque","Fuera de ruta"], precio: 0, dur: 120, d: "La isla más grande del fiordo interior, con playas, cabras salvajes y senderos por el bosque, a un ferry de Drøbak.", truco: "Ferry desde Drøbak en verano; lleva comida y bañador, no hay nada. Las cabras te seguirán.", salseo: "Håøya tiene una colonia de cabras asilvestradas desde una granja abandonada y el ejército la usó de polvorín; los noruegos acampan con 'allemannsrett' y los domingos hay más cabras que personas.", wiki: "en:Håøya" }
+]};
+CIUDADES.oslo.zonas.forEach(z => z.paradas.forEach(p => { const r = CIERRES_OSLO[p.n]; if (r) p.cierra = r.cierra; }));
+EXCURSION_OSLO.paradas.forEach(p => { p.excursion = true; GUIA.oslo.wiki[p.n] = p.wiki; });
+CIUDADES.oslo.zonas.push({ nombre: "Escapada: " + EXCURSION_OSLO.nombre, excursion: true, como: EXCURSION_OSLO.como, paradas: EXCURSION_OSLO.paradas });
+
+/* ---------------------------------------------------------------------- */
+CIUDADES.helsinki = {
+  nombre: "Helsinki", pais: "Finlandia", revisado: "agosto 2026", acento: "#1C3F6E", moneda: "€", tz: 2,
+  centro: [60.1699, 24.9384], zoom: 13,
+  claim: "Diseño, sauna, islas y un silencio que se puede escuchar",
+  consejo: "Tarjeta HSL de 24 h incluye el ferry a Suomenlinna; el tranvía 2 y 3 hacen un circuito turístico gratis con el billete. Sauna al menos una vez, en serio.",
+  presupuesto: "Entradas ≈ 15-20 € por persona; comer para dos ≈ 50-90 €.",
+  lluvia: "Museo Ateneum, la sauna Löyly o el Oodi (biblioteca) con café y vistas.",
+  comer: ["Vanha Kauppahalli (mercado viejo): sopa de salmón en Soppakeittiö, en el puesto de 1889", "Sea Horse (Kapteeninkatu): arenque, albóndigas y Baltic vibes desde 1934, el bar de Sirkka", "Ravintola Nolla (Fredrikinkatu): cocina nórdica 'zero waste', reserva"],
+  singluten: ["El pan de centeno (ruisleipä) es sagrado y lleva gluten; el salmón, el arenque y el reno no", "Finlandia es el país con más celíacos diagnosticados de Europa: 'gluteeniton' está en todas las cartas"],
+  zonas: [
+    { nombre: "Centro y plaza del Senado", paradas: [
+      { n: "Catedral y Plaza del Senado", lat: 60.1702, lng: 24.9522, tags: ["Imprescindible","Historia"], precio: 0, dur: 45, d: "La catedral blanca con cúpula verde en lo alto de la escalinata, y la plaza neoclásica que parece San Petersburgo porque la hizo el mismo arquitecto.", truco: "La escalinata es el mirador de la ciudad; entra a la catedral (gratis) y busca la iglesia ortodoxa Uspenski enfrente para el contraste.", salseo: "Engel, alemán, diseñó Helsinki para el zar como 'pequeña San Petersburgo'; en los años 60 Hollywood rodó aquí las películas ambientadas en la URSS porque no podía entrar en Rusia. Gorky Park y Reds son Helsinki.", atardecer: true },
+      { n: "Biblioteca Oodi", lat: 60.1741, lng: 24.9380, tags: ["Imprescindible","Museo","Mirador"], precio: 0, dur: 60, d: "La biblioteca-barco de madera frente al Parlamento: tercera planta con el 'cielo de libros', terraza y estudios de música gratis.", truco: "Sube a la tercera planta (la del techo blanco ondulado) y sal a la terraza; hay impresoras 3D, máquinas de coser y consolas, todo gratis. Café Fazer abajo.", salseo: "Costó 100 millones y se inauguró en 2018 como regalo por el centenario de la independencia; está frente al Parlamento a propósito, para que los diputados vean a la gente leyendo. Recibe 3 millones de visitas al año en una ciudad de 650.000.", ninos: true },
+      { n: "Iglesia de Temppeliaukio (de roca)", lat: 60.1730, lng: 24.9252, tags: ["Imprescindible","Historia"], precio: 8, dur: 40, d: "La iglesia excavada en una roca de granito con cúpula de cobre y luz que entra por una corona de ventanas.", truco: "Hay conciertos casi cada tarde por la acústica; mira los horarios en la puerta. A las 10:00 está vacía.", salseo: "Dos hermanos la ganaron en concurso en 1961 y los vecinos la llamaron 'búnker del diablo'; la cúpula tiene 22 km de hilo de cobre enrollado. Los conciertos de rock de los 70 aquí dentro dieron lugar a la primera ley municipal contra el ruido en iglesias." },
+      { n: "Museo Ateneum y Kiasma", lat: 60.1701, lng: 24.9443, tags: ["Museo"], precio: 20, dur: 90, d: "El arte finlandés clásico (Gallen-Kallela, Schjerfbeck) frente a la estación, y el museo contemporáneo curvo de Steven Holl a cien metros.", truco: "Ateneum para entender Finlandia (el Kalevala pintado); Kiasma si quieres arte del ahora. Estación central de Saarinen enfrente: los cuatro gigantes con lámparas.", salseo: "Los cuatro gigantes de la estación son los 'guardianes' y llevan lámparas; en los años 90 la publicidad los sacó bailando y los finlandeses se enfadaron. Hay una réplica de goma en la plaza que los borrachos abrazan." }
+    ]},
+    { nombre: "Puerto, mercado y Suomenlinna", paradas: [
+      { n: "Kauppatori y Vanha Kauppahalli", lat: 60.1675, lng: 24.9530, tags: ["Mercado","Comida","Imprescindible"], precio: 0, dur: 60, d: "La plaza del mercado del puerto con puestos de arenque y bayas y el mercado cubierto de 1889 con la sopa de salmón.", truco: "Sopa de salmón (lohikeitto) en Soppakeittiö del mercado cubierto, 12 €, la mejor de la ciudad; en la plaza, muikku (pescaditos fritos) con las gaviotas al acecho. Las gaviotas roban, en serio.", salseo: "Las gaviotas del mercado han aprendido a quitar la comida de la mano y hay carteles oficiales; en 2020 el ayuntamiento probó con un halcón entrenado y las gaviotas se lo tomaron como reto. El halcón se fue.", comida: true, sg: "Sopa de salmón apta (sin pan); arenque marinado, sí." },
+      { n: "Fortaleza de Suomenlinna", lat: 60.1454, lng: 24.9881, tags: ["Imprescindible","Historia","Parque"], precio: 0, dur: 180, d: "La fortaleza marítima en seis islas, patrimonio mundial, con murallas, cañones, submarino y 800 vecinos; ferry de 15 minutos con el billete de transporte.", truco: "Ferry HSL desde Kauppatori cada 20 min (no el privado); camina hasta la punta sur (Kustaanmiekka) para los cañones y el mar; pícnic entre las murallas. Cervecería Suomenlinnan Panimo al bajar del barco.", salseo: "La construyeron los suecos en 1748 contra Rusia, se rindió a Rusia en 1808 sin luchar (el comandante se dejó convencer), y Rusia la usó contra Suecia. En la guerra civil de 1918 fue campo de prisioneros. Ahora es el barrio con más lista de espera de Finlandia.", ninos: true, atardecer: true },
+      { n: "Catedral Uspenski y Katajanokka", lat: 60.1685, lng: 24.9605, tags: ["Historia","Paseo"], precio: 0, dur: 45, d: "La catedral ortodoxa de ladrillo rojo con 13 cúpulas doradas sobre el puerto, y el barrio art nouveau de detrás.", truco: "Sube la colina para la vista del puerto; Katajanokka tiene la mejor concentración de jugendstil de la ciudad (Luotsikatu). El ferry a Estocolmo sale de aquí.", salseo: "Es la catedral ortodoxa más grande de Europa occidental, construida con ladrillos de una fortaleza rusa desmontada en Åland; en 2007 robaron un icono de san Nicolás y apareció en un anticuario de... Helsinki. Los ladrones no viajaron mucho.", atardecer: true },
+      { n: "Allas Sea Pool", lat: 60.1665, lng: 24.9575, tags: ["Fuera de ruta","Bar"], precio: 18, dur: 120, d: "Piscinas flotantes en el puerto (una climatizada, dos de agua de mar) con saunas y terraza frente a la noria y el mercado.", truco: "Entrada con toalla incluida por 2 € más; sauna, piscina caliente y chapuzón en el mar al lado. El bar de la terraza tiene la vista del atardecer sobre el puerto.", salseo: "Helsinki tiene 3 millones de saunas para 5,5 millones de finlandeses; en el Parlamento hay sauna, en la embajada finlandesa de todas las capitales hay sauna y el presidente negocia en ella. Kekkonen, presidente 25 años, invitaba a Jrushchov a sudar y se sabe que así se firmaron cosas.", comida: true, sg: "Bar con opciones marcadas.", atardecer: true }
+    ]},
+    { nombre: "Diseño y Kallio", paradas: [
+      { n: "Design District y Museo del Diseño", lat: 60.1626, lng: 24.9452, tags: ["Museo","Mercado","Paseo"], precio: 15, dur: 90, d: "Las calles de Punavuori con 200 tiendas y estudios de diseño, y el museo con Aalto, Marimekko y Nokia.", truco: "Mapa del Design District gratis en cualquier tienda; Artek (Aalto), Marimekko outlet en Herttoniemi para precios. Café Ekberg (1852) para el desayuno.", salseo: "Finlandia inventó el móvil (Nokia), el corazón de Marimekko y la silla de Aalto, y Nokia empezó fabricando papel y botas de goma; el diseño nórdico nació aquí en los años 50 por pobreza: había que hacer cosas bonitas con poco.", ninos: false },
+      { n: "Löyly", lat: 60.1520, lng: 24.9210, tags: ["Imprescindible","Fuera de ruta","Bar"], precio: 23, dur: 120, d: "La sauna pública de madera en la orilla del mar, con sauna de humo, terraza y escalera al Báltico (agujero en el hielo en invierno).", truco: "Reserva turno de 2 h online, bañador obligatorio (es mixta); la sauna de humo (savusauna) es la auténtica. Restaurante con sopa de salmón y cerveza en la terraza mirando al mar.", salseo: "Löyly es la palabra para el vapor que sale de las piedras al echar agua, y la única palabra finlandesa que ha entrado en el diccionario de la sauna mundial; los finlandeses miden la calidad de una sauna por su löyly como los italianos el café. Aquí van famosos y ministros y nadie mira.", comida: true, sg: "Sopa de salmón y ensaladas, aptas.", atardecer: true },
+      { n: "Kallio y Kolmas Linja", lat: 60.1845, lng: 24.9500, tags: ["Bar","Paseo","Comida"], precio: 0, dur: 90, d: "El antiguo barrio obrero al otro lado del puente, hoy de bares baratos, saunas públicas centenarias y karaoke a cualquier hora.", truco: "Sauna Kotiharjun (1928, la de leña, separada por sexos, 15 €) y luego cerveza en la calle en Kallio; el karaoke en Finlandia es serio: los finlandeses cantan en silencio pero bien.", salseo: "Kallio fue el barrio rojo (de política) de Helsinki y en la guerra civil de 1918 se luchó calle por calle; hoy es el barrio de los estudiantes, tiene la iglesia con el carillón que toca a las 12 y 18, y el mayor número de bares por manzana del país. Los finlandeses beben en silencio y luego cantan.", comida: true, sg: "Cerveza no; pide sidra o 'lonkero' (ginebra con pomelo, el invento de 1952)." },
+      { n: "Torni Ateljee Bar", lat: 60.1682, lng: 24.9395, tags: ["Mirador","Bar"], precio: 0, dur: 45, d: "El bar en la torre del hotel Torni, en la planta 14, con la vista de 360 grados y el baño con la ventana más famosa de Helsinki.", truco: "Sube por el ascensor pequeño del hotel; consumición obligatoria (cerveza 9 €), sin reserva. Baño de señoras: el retrete tiene vista de toda la ciudad.", salseo: "El Torni fue el edificio más alto de Finlandia en 1931 y sede de la comisión de control soviética tras la guerra; los espías rusos vivían en las plantas altas y el bar era el sitio para escucharlos. Sigue siendo un buen sitio para escuchar.", atardecer: true, comida: true, sg: "Copas, sin problema." }
+    ]},
+    { nombre: "Parques, Sibelius y Seurasaari", paradas: [
+      { n: "Monumento a Sibelius", lat: 60.1823, lng: 24.9136, tags: ["Imprescindible","Parque"], precio: 0, dur: 30, d: "Los 600 tubos de acero que suenan con el viento en un parque de abedules junto al mar, con la cabeza del compositor al lado.", truco: "Tranvía 2 o 4 a Töölön halli; mete la cabeza dentro de los tubos y escucha. El café Regatta, en la orilla, tiene cabaña roja, cinnamon buns y hoguera.", salseo: "La escultora Hiltunen puso solo tubos y los finlandeses protestaron porque 'no parecía Sibelius', así que añadió la cabeza a regañadientes; los tubos suenan como el viento del Kalevala. Sibelius no compuso nada en sus últimos 30 años y quemó una sinfonía en la estufa.", comida: true, sg: "Café Regatta: café y salchichas a la hoguera, aptas." },
+      { n: "Seurasaari", lat: 60.1855, lng: 24.8850, tags: ["Parque","Museo","Fuera de ruta"], precio: 10, dur: 120, d: "La isla-museo al aire libre con 87 edificios de madera de toda Finlandia entre bosque y ardillas que comen de la mano.", truco: "Bus 24 hasta el final; el museo (junio-septiembre) tiene guías en trajes; la isla es gratis todo el año y tiene playa nudista (aviso). Ardillas rojas que se suben a los brazos.", salseo: "En la noche de San Juan (Juhannus) se enciende aquí la hoguera más grande de Helsinki y una pareja de recién casados la prende; el resto del país está en la cabaña con sauna, cerveza y silencio. Es el día más importante y el más mudo de Finlandia.", ninos: true },
+      { n: "Café Regatta y bahía de Töölö", lat: 60.1835, lng: 24.9075, tags: ["Comida","Paseo","Bar"], precio: 5, dur: 60, d: "La cabaña roja de pescadores de 1887 junto al mar con canoas de alquiler y la mejor bollería de canela de la ciudad.", truco: "Korvapuusti (bollo de canela) y café por 5 €; si compras un segundo café te devuelven 5 céntimos: es la broma de la casa. Kayak en verano por la bahía.", salseo: "La cabaña era de un pescador llamado Regatta y el dueño actual es un ex campeón de vela que decidió que el café tenía que ser el más barato y el bollo el más grande; hay cola de finlandeses en enero a -15. Con manta.", comida: true, sg: "Salchicha a la hoguera y café; el bollo no." },
+      { n: "Sauna Kulttuurisauna", lat: 60.1770, lng: 24.9695, tags: ["Fuera de ruta"], precio: 20, dur: 90, d: "La sauna pública 'de arquitecto' junto al mar en Merihaka, silenciosa por norma, con baño en el Báltico.", truco: "Cierra lunes y martes; sin reservas, se paga en efectivo o bizum finés, y la regla es no hablar. Es la sauna preferida de los finlandeses para pensar.", salseo: "La diseñaron un finlandés y una japonesa en 2013 con leña, cal y sin electricidad de más; tiene una sola regla, el silencio, y la mayoría de los usuarios son finlandeses que huyen de las saunas 'de turistas' donde se habla. Aquí el silencio es parte del calor.", comida: false }
+    ]}
+  ]
+};
+GUIA.helsinki = {
+  portada: "es:Helsinki",
+  historia: "Helsinki la fundó el rey sueco Gustavo Vasa en 1550 para competir con Tallin y fue un pueblo sin importancia dos siglos, hasta que Rusia se quedó Finlandia en 1809 y el zar la hizo capital en 1812 por estar más cerca de San Petersburgo que Turku. Un alemán, Engel, la diseñó neoclásica y blanca. Finlandia se independizó en 1917, tuvo una guerra civil de tres meses y luego peleó contra la Unión Soviética en 1939 con esquís y molotovs; perdió territorio pero no la independencia, y pagó las reparaciones construyendo barcos, que es como aprendió a ser industrial. La 'finlandización' de la Guerra Fría, Nokia en los 90, la educación mejor del mundo y el diseño después. Es tranquila, cara, honesta hasta la incomodidad, y tiene más saunas que coches.",
+  salseos: [
+    "Finlandia es el país más feliz del mundo siete años seguidos según la ONU y los finlandeses lo niegan cada año con la misma cara: dicen que la encuesta mide 'satisfacción con la vida', que es distinto, y que ellos simplemente no se quejan.",
+    "El presidente Kekkonen gobernó 25 años y decidía la política exterior en la sauna con los soviéticos; hay una foto de Jrushchov sudando en toalla que se considera un documento diplomático. La sauna de la embajada finlandesa en Washington sigue siendo el sitio donde se negocian cosas.",
+    "El 'sisu' es la palabra finlandesa para aguantar sin quejarse; los finlandeses ganaron la Guerra de Invierno con -40 grados, esquís y una relación de bajas de 1 a 5 contra el Ejército Rojo. Simo Häyhä, un granjero, mató a 500 soldados con un rifle sin mira telescópica porque 'el vaho de la mira te delata'.",
+    "Finlandia tiene el Campeonato Mundial de Lanzamiento de Móvil, de Llevar a la Esposa a Cuestas (el premio es el peso de la mujer en cerveza) y de Air Guitar; la 'kalsarikännit' (emborracharse en casa en calzoncillos sin intención de salir) tiene emoji oficial del gobierno.",
+    "Los finlandeses tienen una hora de silencio en el ascensor, en el tranvía y en la mesa, y la consideran conversación; un proverbio dice que 'el silencio es oro, hablar es plata' y otro, que 'si te encuentras un finlandés hablando, es que quiere algo'."
+  ],
+  platos: [
+    { n: "Lohikeitto", wiki: "es:Lohikeitto", d: "Sopa de salmón con nata, patata y eneldo; el plato que cura el invierno." },
+    { n: "Karjalanpiirakka", wiki: "es:Karjalanpiirakka", d: "Empanadilla de centeno con arroz y mantequilla de huevo, para desayunar." },
+    { n: "Korvapuusti", wiki: "es:Bollo de canela", d: "El bollo de canela y cardamomo finlandés, más grande y menos dulce que el sueco." },
+    { n: "Poronkäristys", wiki: "es:Poronkäristys", d: "Reno salteado con puré y arándanos rojos; viene de Laponia y se come en cualquier bar." }
+  ],
+  frases: ["Moi (hola) / moi moi (adiós)", "Kiitos (gracias)", "Kippis (salud)", "Sisu (aguante, la palabra nacional)"],
+  wiki: {
+    "Catedral y Plaza del Senado": "es:Catedral de Helsinki", "Biblioteca Oodi": "es:Biblioteca Central Oodi", "Iglesia de Temppeliaukio (de roca)": "es:Iglesia de Temppeliaukio", "Museo Ateneum y Kiasma": "es:Ateneum",
+    "Kauppatori y Vanha Kauppahalli": "es:Kauppatori", "Fortaleza de Suomenlinna": "es:Suomenlinna", "Catedral Uspenski y Katajanokka": "es:Catedral Uspenski", "Allas Sea Pool": "en:Allas Sea Pool",
+    "Design District y Museo del Diseño": "es:Museo del Diseño (Helsinki)", "Löyly": "en:Löyly", "Kallio y Kolmas Linja": "es:Kallio", "Torni Ateljee Bar": "en:Hotel Torni",
+    "Monumento a Sibelius": "es:Monumento a Sibelius", "Seurasaari": "es:Seurasaari", "Café Regatta y bahía de Töölö": "es:Töölönlahti", "Sauna Kulttuurisauna": "es:Sauna finlandesa"
+  }
+};
+EXTRA.helsinki = {
+  salseos: [
+    "El tranvía 2 y el 3 hacen un circuito en ocho por la ciudad y la HSL publica una guía para hacerlos como tour: es la vuelta turística más barata de Europa, 3 euros, y en verano hay un tranvía-pub (Spårakoff) con cerveza.",
+    "La estatua de Havis Amanda, la sirena desnuda de Kauppatori, la coronan con gorra de estudiante cada 30 de abril (Vappu) desde 1932, la fiesta en que Finlandia se emborracha en público una vez al año; en 2023 la protegieron con vallas por la restauración y los estudiantes coronaron la valla.",
+    "Los finlandeses tienen el mayor consumo de café del mundo, 12 kilos por persona, y una pausa de café obligatoria por convenio; el café es flojo, aguado y se toma con leche fría, y cualquier crítica a esto ofende.",
+    "El metro de Helsinki es el más septentrional del mundo, tiene dos líneas naranjas y estaciones excavadas en granito que sirven de refugio nuclear; toda la ciudad tiene refugio para 900.000 personas y se prueban con simulacros. Nadie se pone nervioso.",
+    "El Oodi tiene una sala donde puedes tocar la batería a cualquier hora, una cocina para grabar programas de cocina y una máquina de coser industrial; la lista de espera para el estudio de grabación es de semanas y los que graban son abuelas con el coro."
+  ],
+  guiri: [
+    "Ir a la sauna en bañador en una sauna finlandesa 'de verdad' (separada por sexos): se va desnudo. En las mixtas (Löyly, Allas), bañador. Pregunta o mira, y no mires.",
+    "Hablar en el ascensor, el tranvía o la sauna para 'romper el hielo': no se rompe. El silencio es cómodo para ellos y solo incómodo para ti.",
+    "Coger el ferry 'turístico' a Suomenlinna a 8 €: el de HSL (transporte público) sale del mismo muelle, va incluido en el billete de día y tarda lo mismo.",
+    "Pedir 'un vino' en un restaurante y quejarse del precio (12 €): el alcohol se compra en Alko, monopolio estatal, que cierra a las 21:00 y los domingos. Los finlandeses lo saben y preparan.",
+    "Ir en julio esperando que la ciudad esté en marcha: en julio Helsinki se va a la cabaña ('mökki') y cierran hasta las farmacias. Junio o agosto."
+  ],
+  datos: [
+    "Finlandia tiene 3,3 millones de saunas para 5,5 millones de habitantes, incluidas una en el Parlamento, otra en cada embajada y una en el Burger King de Mannerheimintie.",
+    "Helsinki es la capital más septentrional de la UE y en junio el sol se pone a las 22:50 y sale a las 3:50; en diciembre hay seis horas de luz gris.",
+    "La educación finlandesa no tiene exámenes hasta los 16 años, deberes casi nulos y los profesores son la profesión más respetada; el país está en el top 5 mundial desde 2000.",
+    "Linux lo creó Linus Torvalds en Helsinki en 1991 en su habitación de estudiante; el Nokia 3310 y Angry Birds también son de aquí, y el Clash of Clans.",
+    "El agua del grifo de Helsinki viene de un lago a 120 km por un túnel de roca, es la más pura de las capitales y el ayuntamiento la embotella para ganar concursos."
+  ]
+};
+DISENOS.helsinki = [
+  { nombre: "Nórdico limpio", maqueta: "revista", titulo: "Space Grotesk", cuerpo: "Inter", paleta: { fondo: "#F5F7F8", papel: "#FFFFFF", tinta: "#141B22", tinta2: "#5A6570", acento: "#1C3F6E", acento2: "#D08C2B" }, motivo: "puntos" },
+  { nombre: "Marimekko", maqueta: "mosaico", titulo: "Archivo Black", cuerpo: "Nunito", paleta: { fondo: "#FFFFFF", papel: "#F6F6F4", tinta: "#111111", tinta2: "#555555", acento: "#1B1B1B", acento2: "#E63946" }, motivo: "lunares" },
+  { nombre: "Madera de sauna", maqueta: "cuaderno", titulo: "Lora", cuerpo: "Nunito", manuscrita: "Caveat", paleta: { fondo: "#F2E9DB", papel: "#FBF6EC", tinta: "#2B241C", tinta2: "#6C6152", acento: "#6B4A2A", acento2: "#3F6E8A" }, motivo: "ladrillo" },
+  { nombre: "Aurora", maqueta: "fiesta", titulo: "Unbounded", cuerpo: "Manrope", manuscrita: "Permanent Marker", paleta: { fondo: "#0D1220", papel: "#171E30", tinta: "#F1F4FA", tinta2: "#B9C1D3", acento: "#55E6C1", acento2: "#B96BFF" }, motivo: "zigzag" },
+  { nombre: "Póster del Báltico", maqueta: "ilustrado", titulo: "Alfa Slab One", cuerpo: "Nunito", manuscrita: "Caveat", agua: "#8FB6C4", paleta: { fondo: "#FBF4E4", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#6B5E4D", acento: "#1C3F6E", acento2: "#D08C2B" }, motivo: "acuarela" }
+];
+const CIERRES_HEL = { "Museo Ateneum y Kiasma": { cierra: [1] }, "Design District y Museo del Diseño": { cierra: [1] }, "Kauppatori y Vanha Kauppahalli": { cierra: [0] }, "Sauna Kulttuurisauna": { cierra: [1, 2] }, "Seurasaari": { cierra: [] } };
+const EXCURSION_HEL = { nombre: "Porvoo", como: "Bus desde Kamppi, 1 h; barco J.L. Runeberg en verano, 3 h", paradas: [
+  { n: "Casco viejo de Porvoo", lat: 60.3960, lng: 25.6640, tags: ["Imprescindible","Paseo"], precio: 0, dur: 90, d: "La segunda ciudad más antigua de Finlandia: calles empedradas, casas de madera de colores y la catedral en lo alto.", truco: "Sube a la catedral por la calle Kirkkokatu y baja hacia el río; las tiendas de artesanía de la calle Välikatu son de verdad.", salseo: "En la catedral, en 1809, el zar Alejandro I prometió respetar las leyes finlandesas y así empezó la autonomía; en 2006 un chaval de 18 años la incendió 'por aburrimiento' y la reconstruyeron en dos años. Está enterrado el poeta nacional Runeberg, que comía las tartas que llevan su nombre.", wiki: "es:Porvoo" },
+  { n: "Almacenes rojos del río y Brunberg", lat: 60.3945, lng: 25.6600, tags: ["Imprescindible","Comida","Mirador"], precio: 3, dur: 60, d: "Los graneros rojos de la orilla del Porvoonjoki, la foto de Finlandia, y la fábrica de chocolate del pueblo.", truco: "Foto desde el puente viejo; Brunberg (Välikatu) para 'suukot', los besos de chocolate; tarta Runeberg en Café Helmi.", salseo: "Los graneros se pintaron de rojo en 1760 para impresionar al rey sueco Gustavo III cuando llegó en barco; el rojo era el color barato de las casas nórdicas (óxido de cobre de Falun) y por eso las cabañas son rojas. Nadie lo eligió por bonito.", comida: true, sg: "Chocolate Brunberg apto; la tarta Runeberg no.", atardecer: true, wiki: "en:Porvoo River" },
+  { n: "Casa de Runeberg y calle Runeberginkatu", lat: 60.3915, lng: 25.6650, tags: ["Museo","Historia"], precio: 8, dur: 45, d: "La casa del poeta nacional tal como la dejó en 1877, con el jardín y la escopeta con la que cazaba desde la cama.", truco: "Cerrada lunes y martes fuera de verano; la casa vecina (colección de su hijo escultor) va en la misma entrada. La tarta Runeberg se come el 5 de febrero en todo el país.", salseo: "Runeberg escribió el himno nacional, cazaba pájaros desde la ventana de su cuarto, sufrió un ictus a los 59 años y siguió recibiendo visitas 14 años tumbado; su mujer Fredrika inventó la tarta que lleva el nombre de él. Muy finlandés todo.", wiki: "en:J. L. Runeberg" }
+]};
+CIUDADES.helsinki.zonas.forEach(z => z.paradas.forEach(p => { const r = CIERRES_HEL[p.n]; if (r) p.cierra = r.cierra; }));
+EXCURSION_HEL.paradas.forEach(p => { p.excursion = true; GUIA.helsinki.wiki[p.n] = p.wiki; });
+CIUDADES.helsinki.zonas.push({ nombre: "Escapada: " + EXCURSION_HEL.nombre, excursion: true, como: EXCURSION_HEL.como, paradas: EXCURSION_HEL.paradas });
+
+/* ======================================================================
+   ESTAMBUL Y LYON (ciudades nuevas, completas)
+   ====================================================================== */
+CIUDADES.estambul = {
+  nombre: "Estambul", pais: "Turquía", revisado: "agosto 2026", acento: "#8A2A3B", moneda: "TL", tz: 3, sinVerano: true,
+  centro: [41.0200, 28.9700], zoom: 12,
+  claim: "Dos continentes, tres imperios, mil minaretes y un té cada veinte minutos",
+  consejo: "Istanbulkart para todo (tranvía, ferry, funicular); los ferris del Bósforo son transporte público y el mejor crucero por 1 euro. Regatea en el bazar y no en el resto. Efectivo en liras para lo pequeño.",
+  presupuesto: "Entradas ≈ 1.500-2.500 TL por persona (Santa Sofía y Topkapi mandan); comer para dos ≈ 1.200-2.500 TL.",
+  lluvia: "Cisterna Basílica, Museo de Arte Turco e Islámico o un hammam de dos horas.",
+  comer: ["Çiya Sofrası (Kadıköy): la cocina de toda Anatolia en un comedor sin pretensiones, el mejor restaurante de la ciudad", "Karaköy Lokantası: mezze y pescado con azulejo turquesa junto al puerto, reserva", "Tarihi Sultanahmet Köftecisi: las albóndigas de siempre frente a la Mezquita Azul, desde 1920"],
+  singluten: ["Los kebabs, el pescado a la brasa, los mezze de yogur y berenjena y el arroz son seguros; el pide, el simit y el börek no", "Baklava lleva masa filo (trigo); el lokum (delicia turca) y el helado de mástic (dondurma) son aptos"],
+  zonas: [
+    { nombre: "Sultanahmet", paradas: [
+      { n: "Santa Sofía", lat: 41.0086, lng: 28.9802, tags: ["Imprescindible","Historia"], precio: 1500, dur: 90, d: "La cúpula de Justiniano de 537, iglesia mil años, mezquita 500 y museo 86, hoy mezquita otra vez con los mosaicos a la vista.", truco: "Desde 2024 los turistas entran por la galería superior con entrada de pago; la planta baja es para rezar. Ve a las 9:00 o a última hora. Hombros y rodillas cubiertos, pañuelo para ellas (lo prestan).", salseo: "Los mosaicos se taparon con yeso en 1453 y eso los salvó; en la galería hay un grafiti vikingo del siglo IX ('Halfdan estuvo aquí') tallado por un guardia aburrido. La cúpula se cayó dos veces antes de que dieran con la forma.", reservar: true },
+      { n: "Mezquita Azul", lat: 41.0054, lng: 28.9768, tags: ["Imprescindible","Historia"], precio: 0, dur: 45, d: "Los seis minaretes y 20.000 azulejos de Iznik en la mezquita de Ahmed I, enfrente de Santa Sofía.", truco: "Cierra en los cinco rezos (30 min cada uno); entra entre las 9:00 y las 11:30 o después de las 14:30. Descalzo, con bolsa para los zapatos que dan en la puerta.", salseo: "Seis minaretes era un escándalo: solo La Meca tenía seis. El sultán resolvió pagando un séptimo minarete a La Meca. Dicen que el arquitecto entendió 'altın' (oro) como 'altı' (seis) y por eso los seis minaretes; probablemente es cuento, pero es el mejor cuento del barrio." },
+      { n: "Palacio de Topkapi", lat: 41.0115, lng: 28.9834, tags: ["Imprescindible","Historia","Mirador"], precio: 2000, dur: 150, d: "Cuatro patios de sultanes con el harén, el tesoro (el diamante del Cucharero) y terrazas sobre el Bósforo.", truco: "Entrada con harén (aparte, pero es lo mejor); entra a las 9:00 y ve al harén primero, luego el tesoro. La terraza del cuarto patio para el té con vistas.", salseo: "El harén tenía 300 concubinas, 200 eunucos y una madre del sultán que mandaba en todos; los príncipes vivían en 'la jaula', unas habitaciones donde esperaban a heredar o a ser estrangulados con cuerda de seda por sus hermanos. Uno pasó 39 años dentro y salió loco. Fue sultán.", reservar: true },
+      { n: "Cisterna Basílica", lat: 41.0084, lng: 28.9779, tags: ["Imprescindible","Historia"], precio: 900, dur: 45, d: "El depósito de agua de Justiniano bajo la ciudad: 336 columnas, agua, luz roja y dos cabezas de Medusa del revés.", truco: "Entrada horaria online (la cola sin ella es de una hora); baja a la esquina del fondo a la izquierda para las Medusas. Se ve en 30 minutos.", salseo: "Se olvidó de ella todo el mundo hasta 1545, cuando un francés se preguntó por qué los vecinos sacaban peces del sótano con cubos; las Medusas están boca abajo, dicen, para no petrificar a nadie. James Bond remó aquí en Desde Rusia con amor.", reservar: true }
+    ]},
+    { nombre: "Bazares y Eminönü", paradas: [
+      { n: "Gran Bazar", lat: 41.0106, lng: 28.9680, tags: ["Imprescindible","Mercado"], precio: 0, dur: 90, d: "61 calles cubiertas, 4.000 tiendas y 500 años de regateo: alfombras, oro, lámparas y té en cada esquina.", truco: "Entra por la puerta de Nuruosmaniye, piérdete y sal por la de Beyazıt; regatea desde la mitad del precio y nunca compres alfombra el primer día. Cierra domingo.", salseo: "Es el centro comercial más antiguo del mundo y el más visitado (400.000 personas al día); los tenderos hablan 14 idiomas de saludo y saben de qué país eres por los zapatos. Hay un banco dentro, mezquitas, y un incendio cada siglo." },
+      { n: "Bazar de las Especias y Rüstem Paşa", lat: 41.0166, lng: 28.9705, tags: ["Mercado","Comida","Historia"], precio: 0, dur: 60, d: "El mercado egipcio de 1660 con pirámides de pimentón, lokum y quesos, y la mezquita de azulejos de Sinan escondida en un piso alto.", truco: "Compra lokum en Hafız Mustafa (1864) y no en el bazar; la mezquita de Rüstem Paşa se sube por una escalera entre tiendas y es la más bonita de la ciudad, sin turistas.", salseo: "Se llama egipcio porque las especias venían de El Cairo y se financió con los impuestos de Egipto; las 'viagra turca' que gritan los vendedores es miel con nueces. Rüstem Paşa, el gran visir, era un croata que se casó con la hija de Solimán y era tan odiado que a la mezquita la llamaban 'del piojoso'.", comida: true, sg: "Lokum, frutos secos, quesos y aceitunas: fácil." },
+      { n: "Mezquita de Solimán", lat: 41.0161, lng: 28.9640, tags: ["Imprescindible","Historia","Mirador"], precio: 0, dur: 60, d: "La obra maestra de Sinan sobre la colina, con jardín-cementerio y la mejor vista del Cuerno de Oro desde su terraza.", truco: "Menos gente que la Azul y más bonita; el patio de atrás tiene las tumbas de Solimán y Roxelana. Kuru fasulye (alubias) en los restaurantes de enfrente, la comida de los estudiantes desde 1924.", salseo: "Sinan puso huevos de avestruz en la lámpara para ahuyentar arañas y diseñó una habitación que recoge el hollín de las velas para hacer tinta; los ingenieros que la revisaron en 1950 no encontraron nada que reparar. Solimán mandó ejecutar a su hijo favorito; Roxelana, la esclava ucraniana que se convirtió en sultana, tuvo que ver con eso.", atardecer: true },
+      { n: "Puente de Gálata y pescadores", lat: 41.0195, lng: 28.9730, tags: ["Paseo","Comida","Imprescindible"], precio: 0, dur: 45, d: "El puente con cien pescadores arriba y restaurantes abajo, entre las mezquitas y la torre.", truco: "Balık ekmek (bocadillo de caballa) en las barcas de Eminönü, 100 TL, con zumo de nabo; cruza el puente al atardecer hacia Karaköy. Los restaurantes de debajo son turísticos.", salseo: "Los pescadores están ahí desde 1912 con el mismo cebo y venden la pesca a los restaurantes de abajo, que la venden a los turistas por diez veces más. El puente ha sido reconstruido cinco veces; el anterior se lo llevaron entero río arriba y sigue ahí, flotando.", comida: true, sg: "El pescado sí, el pan no: pide el pescado a la plancha en plato.", atardecer: true }
+    ]},
+    { nombre: "Gálata, Karaköy y Beyoğlu", paradas: [
+      { n: "Torre de Gálata", lat: 41.0256, lng: 28.9742, tags: ["Imprescindible","Mirador"], precio: 1000, dur: 45, d: "La torre genovesa de 1348 con terraza panorámica sobre el Cuerno de Oro, Sultanahmet y el Bósforo.", truco: "Entrada horaria online; a las 9:00 o al atardecer. Las calles de alrededor (Galip Dede, Serdar-ı Ekrem) para tiendas y café.", salseo: "En 1638 Hezarfen Ahmed Çelebi se lanzó desde aquí con alas de madera y cruzó volando el Bósforo hasta Üsküdar, 3 km; el sultán le dio oro y luego lo desterró a Argelia por 'demasiado capaz'. El aeropuerto asiático se llama por él.", reservar: true, atardecer: true },
+      { n: "Karaköy y el Museo de Arte Moderno", lat: 41.0255, lng: 28.9800, tags: ["Museo","Paseo","Comida"], precio: 700, dur: 90, d: "El antiguo barrio de bancos y burdeles convertido en cafés, y el Istanbul Modern de Renzo Piano en el muelle.", truco: "Karaköy Güllüoğlu para la mejor baklava de la ciudad (desde 1949, con kaymak); el museo tiene terraza sobre el Bósforo gratis con la entrada.", salseo: "Karaköy tenía la calle de los burdeles legales y el primer metro del continente (el Tünel, 1875, dos paradas, sigue funcionando); los banqueros griegos y judíos construyeron los palacios y en 1955 los echaron en dos noches de disturbios. Ahora venden cafés de especialidad.", comida: true, sg: "Baklava no; kaymak con miel, sí." },
+      { n: "İstiklal y Pasaje de las Flores", lat: 41.0330, lng: 28.9780, tags: ["Paseo","Bar","Imprescindible"], precio: 0, dur: 90, d: "La avenida peatonal de tres millones de personas al día con el tranvía rojo, las iglesias, las galerías y el pasaje de tabernas de 1876.", truco: "Sube en el Tünel desde Karaköy; Çiçek Pasajı para la foto, Nevizade (la calle de detrás) para comer mezze y beber rakı con los locales. Hazzo Pulo, el pasaje escondido, para té.", salseo: "Se llamó la Grande Rue de Péra y era París: ópera, embajadas y el Orient Express llegando a Sirkeci; el Pasaje de las Flores era un mercado de flores que se convirtió en tabernas cuando las floristas rusas blancas exiliadas se quedaron sin clientes. Atatürk bebía rakı en el Pera Palace, donde Agatha Christie escribió en la 411.", comida: true, sg: "Mezze de yogur, berenjena, pescado; rakı apto." },
+      { n: "Cihangir y Museo de la Inocencia", lat: 41.0310, lng: 28.9820, tags: ["Fuera de ruta","Museo","Bar"], precio: 500, dur: 75, d: "El barrio bohemio de gatos y cafés en cuesta, y el museo que Orhan Pamuk hizo de su propia novela: 4.213 colillas en una vitrina.", truco: "Con la novela en la mano entras gratis (hay un cupón en el libro); si no, 500 TL. Después, café en Cihangir con vistas desde Kaktüs o Journey.", salseo: "Pamuk escribió la novela y construyó el museo a la vez, comprando en anticuarios lo que sus personajes tocaban; ganó el Nobel a mitad. Cihangir tiene más gatos que vecinos y un documental (Kedi) sobre ellos; los gatos de Estambul tienen comederos municipales.", comida: true, sg: "Café y desayuno turco (queso, huevos, aceitunas), apto sin pan." }
+    ]},
+    { nombre: "Bósforo y Asia", paradas: [
+      { n: "Ferry por el Bósforo", lat: 41.0180, lng: 28.9760, tags: ["Imprescindible","Paseo","Mirador"], precio: 100, dur: 120, d: "El barco de línea Şehir Hatları de Eminönü a Kadıköy o el 'Bósforo corto' hasta el puente: yalıs de madera, palacios y dos continentes por el precio de un billete.", truco: "Ferry público a Kadıköy (20 min, con la Istanbulkart) o el tour corto de Şehir Hatları (2 h) desde Eminönü a las 14:30; té y simit a bordo, lado derecho a la ida. Evita los barcos privados de la orilla.", salseo: "Los ferris llevan 170 años y las gaviotas comen simit en el aire; el Bósforo es un río de mar con dos corrientes opuestas (el Mar Negro sale por arriba y el Mediterráneo entra por abajo) y los delfines aparecen en primavera. Los yalıs de madera cuestan 50 millones y no tienen calefacción.", atardecer: true, ninos: true },
+      { n: "Palacio de Dolmabahçe", lat: 41.0391, lng: 29.0003, tags: ["Historia","Imprescindible"], precio: 1800, dur: 90, d: "El palacio de 285 habitaciones y 14 toneladas de oro donde los últimos sultanes jugaban a ser Versalles, y donde murió Atatürk.", truco: "Cierra lunes; visita con audioguía; todos los relojes están parados a las 9:05, la hora de la muerte de Atatürk. Café en la orilla de Beşiktaş después.", salseo: "Costó el equivalente a 1.500 millones de euros y arruinó al Imperio otomano en 13 años; la lámpara del salón pesa 4,5 toneladas y la regaló la reina Victoria. Atatürk murió aquí en 1938 a las 9:05 y desde entonces los relojes marcan esa hora en todo el palacio.", reservar: true },
+      { n: "Kadıköy y mercado de Çiya", lat: 40.9900, lng: 29.0260, tags: ["Mercado","Comida","Fuera de ruta"], precio: 0, dur: 120, d: "La orilla asiática de verdad: mercado de pescado y encurtidos, bares de Kadife Sokak y el mejor restaurante de la ciudad sin mantel.", truco: "Ferry a Kadıköy; come en Çiya Sofrası (platos de Anatolia por peso), pide 'kaymak' con miel en Fazıl Bey, y vuelve en el ferry al atardecer. Los martes, mercado de Salı Pazarı, el más grande de Estambul.", salseo: "Kadıköy fue Calcedonia, la 'ciudad de los ciegos' según los griegos, porque sus fundadores no vieron la colina de enfrente, que era mucho mejor: allí se hizo Bizancio. Sigue siendo el lado donde vive la gente y no los turistas, con más bares que Beyoğlu.", comida: true, sg: "Çiya tiene guisos de carne con verdura y arroz, aptos; pide sin pan." },
+      { n: "Ortaköy y el puente", lat: 41.0473, lng: 29.0270, tags: ["Paseo","Mirador","Bar"], precio: 0, dur: 75, d: "La mezquita barroca al pie del puente del Bósforo, la plaza de los puestos de patata rellena (kumpir) y la orilla al atardecer.", truco: "Bus desde Beşiktaş (10 min); kumpir con todo en la plaza, 150 TL; mezquita abierta fuera de rezos. El puente se ilumina de colores a las 21:00.", salseo: "El puente del Bósforo (1973) es el primero que unió Europa y Asia y solo se puede cruzar a pie el día de la maratón; en 2016 murieron aquí 34 personas parando el golpe de Estado y ahora se llama 'de los Mártires del 15 de Julio'. Los turcos dicen 'el puente' y ya.", atardecer: true, comida: true, sg: "Kumpir: patata asada con relleno, sin pan, apta." }
+    ]}
+  ]
+};
+GUIA.estambul = {
+  portada: "es:Estambul",
+  historia: "Estambul ha sido Bizancio (griega), Constantinopla (romana y luego bizantina, mil años capital de un imperio) y Estambul (otomana desde 1453, cuando Mehmed II la tomó a los 21 años con cañones húngaros y barcos arrastrados por tierra). Fue la ciudad más grande del mundo en el siglo VI y en el XVI, capital de tres imperios y de dos religiones, y en 1923 Atatürk se llevó la capital a Ankara para dejar claro que el imperio se había acabado. Tiene 16 millones de habitantes, dos continentes, un estrecho en medio y los cimientos más disputados de Europa. Los gatos tienen derechos, el té se bebe en vasos de tulipán cada 20 minutos y el regateo es una conversación, no una pelea. Es ruidosa, generosa, caótica y no tiene comparación con nada.",
+  salseos: [
+    "Mehmed II tomó Constantinopla en 1453 llevando 70 barcos por tierra sobre troncos engrasados durante una noche, para saltarse la cadena que cerraba el Cuerno de Oro; los bizantinos se despertaron con la flota turca en su bañera. Tenía 21 años. Al rendirse la ciudad, prohibió el saqueo al tercer día y rezó en Santa Sofía.",
+    "El Orient Express llegaba a Sirkeci y los pasajeros dormían en el Pera Palace, el primer hotel con electricidad y ascensor de Turquía; Agatha Christie escribió allí Asesinato en el Orient Express en la 411 y Atatürk tenía la 101, hoy museo con su reloj parado a las 9:05, como todos los relojes de Estambul ese día.",
+    "En Estambul hay más gatos que en cualquier ciudad del mundo y el ayuntamiento pone casetas, comida y hasta un hospital; el gato Tombili, gordo y recostado como un señor, tiene estatua en Kadıköy tras una campaña de firmas. Los turcos dicen que los gatos son los verdaderos dueños y que 'nosotros pagamos el alquiler'.",
+    "El 'nazar', el ojo azul que verás en todas partes, protege del mal de ojo y hay que colgarlo en la puerta; cuando se rompe es que ha funcionado. Los aviones de Turkish Airlines llevan uno pintado. Se regala, no se compra para uno mismo, como el cuerno napolitano.",
+    "El Gran Bazar tiene un banco, una comisaría, dos mezquitas y una tienda que lleva vendiendo alfombras desde 1490; los tenderos calculan tu nacionalidad por los zapatos y tu presupuesto por el reloj. El té que te ofrecen no es cortesía: es la primera jugada."
+  ],
+  platos: [
+    { n: "Balık ekmek", wiki: "es:Balık ekmek", d: "Bocadillo de caballa a la plancha con cebolla en las barcas de Eminönü, con zumo de nabo fermentado." },
+    { n: "Mezze y rakı", wiki: "es:Rakı", d: "Berenjena, yogur con ajo, haydari, pulpo y el anís que se vuelve blanco con agua, a la orilla del Bósforo." },
+    { n: "Kahvaltı (desayuno turco)", wiki: "es:Desayuno turco", d: "Veinte platitos: quesos, aceitunas, miel con kaymak, huevos con sucuk, tomate, pepino y té sin fin. Van Kahvaltı Evi en Cihangir." },
+    { n: "Baklava de Güllüoğlu", wiki: "es:Baklava", d: "40 capas de filo con pistacho de Gaziantep y mantequilla clarificada, con kaymak encima. Karaköy, desde 1949." }
+  ],
+  frases: ["Merhaba (hola)", "Teşekkürler (gracias, o 'teşekkür ederim')", "Çay lütfen (un té, por favor)", "Şerefe (salud, con rakı)"],
+  wiki: {
+    "Santa Sofía": "es:Santa Sofía", "Mezquita Azul": "es:Mezquita Azul", "Palacio de Topkapi": "es:Palacio de Topkapı", "Cisterna Basílica": "es:Cisterna Basílica",
+    "Gran Bazar": "es:Gran Bazar de Estambul", "Bazar de las Especias y Rüstem Paşa": "es:Bazar de las Especias", "Mezquita de Solimán": "es:Mezquita de Süleymaniye", "Puente de Gálata y pescadores": "es:Puente de Gálata",
+    "Torre de Gálata": "es:Torre de Gálata", "Karaköy y el Museo de Arte Moderno": "es:Museo de Arte Moderno de Estambul", "İstiklal y Pasaje de las Flores": "es:Avenida İstiklal", "Cihangir y Museo de la Inocencia": "es:Museo de la Inocencia",
+    "Ferry por el Bósforo": "es:Bósforo", "Palacio de Dolmabahçe": "es:Palacio de Dolmabahçe", "Kadıköy y mercado de Çiya": "es:Kadıköy", "Ortaköy y el puente": "es:Ortaköy"
+  }
+};
+EXTRA.estambul = {
+  salseos: [
+    "Hezarfen Ahmed Çelebi voló desde la torre de Gálata hasta Asia en 1638 con alas de madera, 3 km sobre el Bósforo; el sultán lo vio desde su palacio, le regaló una bolsa de oro y lo desterró a Argelia porque 'un hombre que puede hacer eso puede hacer cualquier cosa'. Su hermano, Lagari, se lanzó con un cohete de pólvora y cayó al mar. Sobrevivió. Turquía les puso los dos aeropuertos.",
+    "El Palacio de Topkapi tiene una cocina de 200 metros donde 1.000 cocineros hacían comida para 5.000 personas al día; la porcelana china que la decora es la mayor colección fuera de China porque los sultanes creían que el celadón cambiaba de color con el veneno. Nunca funcionó, pero tienen 12.000 piezas.",
+    "Santa Sofía tiene una columna 'que llora': la de San Gregorio, con un agujero donde se mete el pulgar y se gira; si sale húmedo, se cumple el deseo. Lleva 1.400 años húmeda por la humedad del subsuelo y la cola de gente que la frota es más larga que la de los mosaicos.",
+    "Los simitçi (vendedores de rosquillas con sésamo) llevan la bandeja en la cabeza y hay 20.000 en la ciudad; el simit cuesta 15 liras y el Estado fija el precio como el del pan. Una huelga de simitçi en 2022 duró un día: la ciudad no pudo desayunar.",
+    "El metro de Estambul llega a 2 minutos de Santa Sofía atravesando 8.000 años de historia: al excavar Yenikapı encontraron 37 barcos bizantinos y un poblado neolítico, y las obras se retrasaron ocho años. El alcalde dijo 'la historia nos está esperando abajo' y los ingenieros lloraron."
+  ],
+  guiri: [
+    "Aceptar el té del vendedor de alfombras sin querer comprar: puedes, pero sabes que la conversación durará 40 minutos y saldrás con una alfombra de 4.000 euros 'que era para ti'. Di 'sadece bakıyorum' (solo miro) y sonríe.",
+    "Ir a Santa Sofía y a la Mezquita Azul a las 13:00 del viernes: es el rezo grande y cierran dos horas. Y llevar pantalón corto: no entras, y el pañuelo del préstamo ha estado en mil cabezas.",
+    "Pagar el crucero por el Bósforo a 30 € en la orilla: el ferry público hace lo mismo por 1 € con la Istanbulkart y los mismos delfines. Şehir Hatları, Eminönü, muelle Boğaz.",
+    "Pedir 'café turco' y removerlo: el poso queda abajo y el azúcar se pide antes ('orta' medio, 'sade' sin). Y no bebas el fondo; con el poso te leen el futuro si das la vuelta a la taza.",
+    "Cruzar la calle pensando que el verde es para ti: en Estambul los coches no frenan y los taxis menos; se cruza con un turco al lado y sin mirar al conductor, que es al revés que en Roma."
+  ],
+  datos: [
+    "Estambul tiene 16 millones de habitantes (más que 15 países de la UE), tres puentes sobre el Bósforo y un túnel de tren bajo el mar (Marmaray) que cruza de Europa a Asia en 4 minutos.",
+    "Santa Sofía fue la catedral más grande del mundo durante casi 1.000 años (hasta Sevilla, 1520) y su cúpula de 31 metros ha aguantado 20 terremotos.",
+    "El Gran Bazar tiene 4.000 tiendas y 61 calles; hay tiendas que llevan en la misma familia 15 generaciones y un pasaje de joyeros que mueve una tonelada de oro al día.",
+    "Turquía es el mayor consumidor de té del mundo (3,5 kilos por persona y año, más que Inglaterra), y todo se cultiva en Rize, en el Mar Negro. El café turco tiene patrimonio inmaterial de la UNESCO.",
+    "Los otomanos inventaron el tulipán como moda (los holandeses lo copiaron), la vacuna de la viruela (Lady Montagu la llevó a Londres desde aquí en 1721) y el 'chaise longue'. Y el yogur, y el kebab, y el baklava, según ellos y según los griegos, que discrepan."
+  ]
+};
+DISENOS.estambul = [
+  { nombre: "Iznik", maqueta: "mosaico", titulo: "Fraunces", cuerpo: "Manrope", paleta: { fondo: "#F5F1E6", papel: "#FFFFFF", tinta: "#1B2A44", tinta2: "#5C6A82", acento: "#1D5D8F", acento2: "#B4302D" }, motivo: "azulejo" },
+  { nombre: "Harén", maqueta: "vitrina", titulo: "Cinzel", cuerpo: "Cormorant Garamond", paleta: { fondo: "#1A0F14", papel: "#26171E", tinta: "#F4E9E2", tinta2: "#C4ABAF", acento: "#D9B25B", acento2: "#8A2A3B" }, motivo: "estrellas" },
+  { nombre: "Bósforo", maqueta: "revista", titulo: "Playfair Display", cuerpo: "Manrope", manuscrita: "Caveat", paleta: { fondo: "#F2F6F8", papel: "#FFFFFF", tinta: "#12222E", tinta2: "#586B78", acento: "#1F4E6B", acento2: "#C8792B" }, motivo: "ondas" },
+  { nombre: "Bazar pop", maqueta: "fiesta", titulo: "Bungee", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF1E0", papel: "#FFFFFF", tinta: "#241A14", tinta2: "#6B5A4C", acento: "#C1272D", acento2: "#1E88E5" }, motivo: "confeti" },
+  { nombre: "Póster del Cuerno de Oro", maqueta: "ilustrado", titulo: "Alfa Slab One", cuerpo: "Nunito", manuscrita: "Caveat", agua: "#7FB3D5", paleta: { fondo: "#FBF4E4", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#6B5E4D", acento: "#8A2A3B", acento2: "#1D5D8F" }, motivo: "acuarela" }
+];
+const CIERRES_IST = { "Palacio de Topkapi": { cierra: [2] }, "Palacio de Dolmabahçe": { cierra: [1] }, "Gran Bazar": { cierra: [0] }, "Bazar de las Especias y Rüstem Paşa": { cierra: [] }, "Cihangir y Museo de la Inocencia": { cierra: [1] }, "Karaköy y el Museo de Arte Moderno": { cierra: [1] } };
+const EXCURSION_IST = { nombre: "Islas de los Príncipes: Büyükada", como: "Ferry desde Kabataş o Eminönü, 1 h 30; sin coches en la isla", paradas: [
+  { n: "Büyükada: paseo y bicis", lat: 40.8580, lng: 29.1230, tags: ["Imprescindible","Paseo","Parque"], precio: 0, dur: 120, d: "La isla grande sin coches, con mansiones de madera, pinos y bicis de alquiler para dar la vuelta en dos horas.", truco: "Ferry de Şehir Hatları a primera hora (se llenan); alquila bici en el puerto (200 TL) y da la vuelta por la carretera del sur con paradas de baño. Vuelve antes de las 18:00 en verano por las colas.", salseo: "Trotski vivió aquí cuatro años tras ser expulsado de la URSS, escribiendo y pescando; su casa está en ruinas y con una valla. Las islas eran el exilio de los príncipes bizantinos que se quedaban sin trono y sin ojos. Ahora son el exilio de fin de semana de los estambulíes.", wiki: "es:Büyükada" },
+  { n: "Monasterio de San Jorge (Aya Yorgi)", lat: 40.8515, lng: 29.1130, tags: ["Mirador","Historia"], precio: 0, dur: 90, d: "La subida de 40 minutos a la cima de la isla, con el monasterio griego, vistas a todas las islas y una taberna con vino.", truco: "Sube andando desde la plaza de los coches eléctricos (la cuesta es de aúpa); el 23 de abril suben descalzos miles de personas de todas las religiones a pedir deseos con hilo. La taberna Yücetepe arriba, para el vino con vistas.", salseo: "La tradición de subir descalzo en silencio desenrollando un hilo de carrete es de los cristianos griegos y hoy la hacen musulmanes turcos en masa: 100.000 el 23 de abril. El deseo se cumple si no hablas en la subida. El wifi tampoco funciona, ayuda.", atardecer: true, wiki: "en:Aya Yorgi" },
+  { n: "Heybeliada y el helado del puerto", lat: 40.8745, lng: 29.0910, tags: ["Comida","Fuera de ruta"], precio: 0, dur: 90, d: "La segunda isla, con la escuela naval, el seminario griego cerrado y playas pequeñas; helado de mástic en el puerto.", truco: "El ferry para en Heybeliada antes de Büyükada; baja aquí a la vuelta: pescado en las tabernas del muelle y helado en el kiosco. Menos gente, más locales.", salseo: "El seminario ortodoxo de Halki, cerrado por Turquía desde 1971, es el tema de conversación de cada visita del patriarca y de cada presidente americano; sigue cerrado y sigue con biblioteca de 120.000 libros. La escuela naval es donde los cadetes turcos aprenden a remar mirando a Estambul.", comida: true, sg: "Pescado a la brasa y ensaladas, apto; helado de mástic apto.", wiki: "es:Heybeliada" }
+]};
+CIUDADES.estambul.zonas.forEach(z => z.paradas.forEach(p => { const r = CIERRES_IST[p.n]; if (r) p.cierra = r.cierra; }));
+EXCURSION_IST.paradas.forEach(p => { p.excursion = true; GUIA.estambul.wiki[p.n] = p.wiki; });
+CIUDADES.estambul.zonas.push({ nombre: "Escapada: " + EXCURSION_IST.nombre, excursion: true, como: EXCURSION_IST.como, paradas: EXCURSION_IST.paradas });
+
+/* ---------------------------------------------------------------------- */
+CIUDADES.lyon = {
+  nombre: "Lyon", pais: "Francia", revisado: "agosto 2026", acento: "#8B2F3B", moneda: "€", tz: 1,
+  centro: [45.7620, 4.8320], zoom: 13,
+  claim: "Dos ríos, una colina que reza y otra que trabaja, y la mejor cocina de Francia sin que lo diga París",
+  consejo: "Metro y funicular con billete de 24 h; el Vieux Lyon y la Presqu'île se andan. Los 'bouchons' auténticos tienen el sello 'Les Bouchons Lyonnais' en la puerta: cena a las 20:00 con reserva.",
+  presupuesto: "Entradas ≈ 10-15 € por persona (casi todo es gratis o barato); comer para dos ≈ 50-80 €.",
+  lluvia: "Museo de Bellas Artes (el 'pequeño Louvre'), Musée des Confluences o una tarde de bouchon con cuenco de beaujolais.",
+  comer: ["Le Café des Fédérations (Rue Major Martin): el bouchon canónico, quenelle y tablier de sapeur, con mantel de cuadros", "Les Halles Paul Bocuse: el mercado cubierto de los grandes, ostras, quesos de la Mère Richard y praliné en Sève", "Daniel et Denise (Croix-Rousse): la mejor pâté en croûte del mundo, de un campeón del mundo de pâté en croûte, que existe"],
+  singluten: ["La quenelle lleva harina; el saucisson de Lyon, el pollo con nata y la ensalada lionesa (sin picatostes) son aptos", "Chez Maman (Croix-Rousse) es 100 % sin gluten; en los bouchons pide 'sans gluten' y el chef sabrá"],
+  zonas: [
+    { nombre: "Vieux Lyon y Fourvière", paradas: [
+      { n: "Basílica de Fourvière", lat: 45.7624, lng: 4.8226, tags: ["Imprescindible","Mirador","Historia"], precio: 0, dur: 60, d: "La basílica blanca y dorada de cuatro torres en lo alto de la colina, con mosaicos por dentro y la ciudad entera desde la explanada.", truco: "Funicular F2 desde Vieux Lyon (billete de metro); la explanada es gratis y la mejor vista; la visita a los tejados (10 €) sube a la torre. Baja andando por los jardines del Rosaire.", salseo: "Los lioneses la llaman 'el elefante boca arriba' por las cuatro patas; se construyó por una promesa a la Virgen si Lyon se libraba de los prusianos en 1870, y se libró. El 8 de diciembre la ciudad pone velas en las ventanas por otra promesa (la peste de 1643) y ahí nació la Fiesta de las Luces.", atardecer: true },
+      { n: "Teatros romanos de Fourvière", lat: 45.7600, lng: 4.8200, tags: ["Historia","Museo"], precio: 0, dur: 60, d: "El teatro romano más antiguo de Francia (15 a. C.) y el Odeón, con el museo Lugdunum enterrado en la ladera.", truco: "Los teatros son gratis y abiertos; el museo Lugdunum (4 €) tiene la tabla claudiana, un discurso del emperador Claudio en bronce, y una sala con vistas al teatro. Nuits de Fourvière en junio-julio: conciertos en el teatro.", salseo: "Lugdunum fue la capital de las Galias y aquí nacieron dos emperadores, Claudio y Caracalla; la Tabla Claudiana es un discurso del 48 en que Claudio pide dejar entrar a los galos en el Senado, y la encontró un vinatero cavando en su viña en 1528. Está sin terminar porque el vinatero vendió la otra mitad como chatarra." },
+      { n: "Catedral de Saint-Jean y reloj astronómico", lat: 45.7607, lng: 4.8272, tags: ["Historia","Imprescindible"], precio: 0, dur: 40, d: "La catedral gótica de la colina baja, con un reloj astronómico del siglo XIV que canta a las 12, 14, 15 y 16.", truco: "A las 12:00 el reloj hace su teatro (gallo, ángeles, Anunciación); entra por el jardín arqueológico de al lado y mira las bóvedas que sobrevivieron a la revolución.", salseo: "Aquí se casó Enrique IV con María de Médici en 1600, con novia por poderes que llegó dos meses tarde; y el papa Juan XXII fue coronado aquí en 1316. Los revolucionarios decapitaron las estatuas de la fachada y dejaron los cuerpos: se ven las cabezas nuevas más claras." },
+      { n: "Traboules del Vieux Lyon", lat: 45.7635, lng: 4.8275, tags: ["Imprescindible","Fuera de ruta","Paseo"], precio: 0, dur: 60, d: "Los pasadizos secretos que cruzan las manzanas renacentistas del barrio de los sederos, con patios, escaleras de caracol y galerías.", truco: "Busca las placas con el emblema en la puerta (27 Rue du Bœuf, 54 Rue Saint-Jean, la 'Longue Traboule'); son privados y se entra en silencio, cerrando la puerta. Lista en la oficina de turismo.", salseo: "Los canuts (tejedores de seda) los usaban para llevar los rollos sin mojarlos y la Resistencia para escapar de la Gestapo, que nunca aprendió el mapa; Klaus Barbie, 'el carnicero de Lyon', tenía su cuartel a 500 metros y no entendía por qué desaparecían los perseguidos. Hay 400 traboules y 40 se pueden visitar." }
+    ]},
+    { nombre: "Presqu'île", paradas: [
+      { n: "Place Bellecour", lat: 45.7578, lng: 4.8320, tags: ["Imprescindible","Paseo"], precio: 0, dur: 30, d: "La plaza peatonal más grande de Europa, roja de arena, con Luis XIV a caballo y el Principito con Saint-Exupéry en una esquina.", truco: "La estatua del Principito está en la esquina suroeste sobre una columna; la oficina de turismo en la plaza; el 'Rhône vs Saône' se ve desde aquí: ríos a los dos lados.", salseo: "Saint-Exupéry nació a 200 metros y la plaza tiene su estatua desde 2000; la estatua de Luis XIV fue fundida en la Revolución y refundida; el escultor de la nueva, Lemot, se olvidó de los estribos y se suicidó de vergüenza, dice la leyenda. Los caballos a la romana no llevan estribos." },
+      { n: "Museo de Bellas Artes", lat: 45.7670, lng: 4.8335, tags: ["Museo","Imprescindible"], precio: 8, dur: 120, d: "El 'pequeño Louvre' en una abadía benedictina de la plaza de los Terreaux: egipcios, Rubens, impresionistas y un jardín con Rodin.", truco: "El jardín del claustro es gratis y tiene sillas; la sección de impresionistas y Picasso en la segunda planta. Cierra martes. Fuente de Bartholdi (el de la Estatua de la Libertad) en la plaza.", salseo: "La fuente de Bartholdi la encargó Burdeos y no pudo pagarla; Lyon la compró en 1890 y los caballos son ríos que tiran de Francia. Las monjas benedictinas de la abadía eran nobles y vivían con criadas; en 1792 las echaron y pusieron el museo. La reina Cristina de Suecia se alojó aquí." },
+      { n: "Halles Paul Bocuse", lat: 45.7628, lng: 4.8565, tags: ["Mercado","Comida","Imprescindible"], precio: 0, dur: 90, d: "El mercado cubierto de los chefs: 60 puestos de quesos, ostras, embutidos y pastelería con mesas para comer en la barra.", truco: "Ostras en Maison Rousseau o Merle a mediodía con un vaso de blanco; quesos de la Mère Richard (el saint-marcellin), praliné de Sève. Cierra lunes y domingo tarde.", salseo: "Paul Bocuse vivió, cocinó y murió en Lyon con tres estrellas Michelin 53 años seguidos, récord mundial; su cara está en un mural de la calle y su restaurante en Collonges sigue con las mismas recetas. Le llamaban 'el papa'. Y los cocineros de las Halles, 'monsieur Paul', bajando la voz.", comida: true, sg: "Ostras, quesos, jamón, saucisson: el mercado perfecto para celíacos." },
+      { n: "Confluence y Musée des Confluences", lat: 45.7330, lng: 4.8180, tags: ["Museo","Paseo","Mirador"], precio: 12, dur: 120, d: "La punta de la península donde se juntan el Ródano y el Saona, con el museo-nube de cristal y el barrio de arquitectura de colores.", truco: "Tranvía T1 hasta el final; el museo tiene terraza sobre la confluencia y las salas de ciencias naturales (mamut, el 'cabinet de curiosités') para niños. El paseo por los muelles de la Saône a la vuelta.", salseo: "El museo costó cinco veces más de lo previsto y tardó 13 años; los lioneses lo llaman 'la nube' o 'el cristal aplastado' y la sala del mamut tiene el esqueleto más completo de Francia, encontrado en las obras del Ródano. La punta se ganó al río en 1770 y era el matadero y la cárcel.", atardecer: true, ninos: true }
+    ]},
+    { nombre: "Croix-Rousse: la colina que trabaja", paradas: [
+      { n: "Traboules y pendientes de la Croix-Rousse", lat: 45.7720, lng: 4.8320, tags: ["Imprescindible","Paseo","Historia"], precio: 0, dur: 75, d: "La colina de los canuts: escaleras, patios con techos altos para los telares y el pasaje Thiaffait, con la Cour des Voraces de escalera monumental.", truco: "Sube desde Terreaux por la Montée de la Grande Côte (peatonal, con vistas); Cour des Voraces (9 Place Colbert) es la traboule con la escalera de seis pisos, gratis. Mercado en el bulevar por la mañana.", salseo: "Los canuts se rebelaron en 1831 con el lema 'vivir trabajando o morir combatiendo' y el ejército tardó tres semanas en tomar la colina; fue la primera revuelta obrera de la historia y el Manifiesto comunista se inspiró en ella. Las ventanas altas son para que entrara luz a los telares Jacquard, el primer ordenador con tarjetas perforadas.", ninos: false },
+      { n: "Mur des Canuts", lat: 45.7793, lng: 4.8305, tags: ["Imprescindible","Fuera de ruta"], precio: 0, dur: 20, d: "El mural trampantojo más grande de Europa, 1.200 m² de fachada pintada con calles, escaleras y vecinos que se actualizan cada década.", truco: "Metro C a Hénon y dos calles; los vecinos pintados envejecen con cada restauración (1987, 1997, 2013), busca al niño convertido en adulto. Hay 100 murales así por la ciudad; el de los lioneses famosos junto al Saona es el otro grande.", salseo: "Los murales los hace la cooperativa CitéCréation, que ha pintado 700 en el mundo desde este; en el mural aparecen los propios pintores y, desde 2013, un perro real de un vecino que exigió salir. Los turistas intentan subir la escalera pintada y hay vídeos.", ninos: true },
+      { n: "Maison des Canuts", lat: 45.7752, lng: 4.8345, tags: ["Museo","Historia"], precio: 9, dur: 60, d: "El museo-taller de la seda con telares Jacquard funcionando y demostración de tejido de brocado.", truco: "Demostración a las 11:00 y 15:30 (martes a sábado); la tienda vende seda de Lyon de verdad, no de China. Combínalo con el mercado de la Croix-Rousse.", salseo: "Jacquard inventó aquí en 1801 el telar con tarjetas perforadas que Babbage copió para su máquina analítica: el ordenador nace en una buhardilla de tejedores de Lyon. Los canuts destrozaron los primeros telares por miedo al paro. Luego los adoptaron y tejían retratos de Jacquard con su propio telar." },
+      { n: "Bouchon en Croix-Rousse: Daniel et Denise", lat: 45.7735, lng: 4.8290, tags: ["Comida","Bar"], precio: 35, dur: 120, d: "El bouchon de Joseph Viola, campeón del mundo de pâté en croûte, con mantel de cuadros, quenelle, tablier de sapeur y cuencos de beaujolais.", truco: "Reserva para las 20:00 (cierran domingo y lunes); pide la pâté en croûte de foie y ris de veau y la quenelle de lucio con salsa Nantua. El 'pot lyonnais' es una botella de 46 cl de fondo grueso: es la medida oficial.", salseo: "Los bouchons nacieron cuando las 'mères' (cocineras despedidas de las casas ricas en 1900) abrieron comedores para los sederos: la Mère Brazier fue la primera mujer con tres estrellas y Bocuse aprendió en su cocina. El 'pot' de 46 cl era la ración de vino de los canuts y su forma evitaba que se volcara en la mesa del telar.", comida: true, sg: "Pide el pollo con nata o el saucisson chaud sin brioche: aptos; la quenelle no.", reservar: true }
+    ]},
+    { nombre: "Ródano, Tête d'Or y Brotteaux", paradas: [
+      { n: "Parque de la Tête d'Or", lat: 45.7770, lng: 4.8540, tags: ["Parque","Imprescindible"], precio: 0, dur: 120, d: "117 hectáreas con lago, zoo gratis con jirafas, rosaleda de 30.000 rosas e invernaderos del XIX, el Central Park lionés.", truco: "Entra por la puerta de los Enfants du Rhône (la dorada); zoo gratuito con la 'llanura africana'; barcas en el lago; la rosaleda en mayo-junio. Domingos, medio Lyon corriendo.", salseo: "Se llama 'cabeza de oro' porque una leyenda dice que los cruzados enterraron una cabeza de Cristo de oro; se excavó tanto en el XIX que el lago es el agujero de buscarla. No apareció. El zoo tiene jirafas desde 1910 y las jirafas son el 'símbolo no oficial' de la ciudad, junto al león que nadie sabe por qué.", ninos: true },
+      { n: "Muelles del Ródano y Berges", lat: 45.7620, lng: 4.8420, tags: ["Paseo","Bar","Mirador"], precio: 0, dur: 60, d: "Los muelles renovados del Ródano: 5 km de paseo con barcos-bar amarrados, pistas de petanca y la vista de Fourvière al atardecer.", truco: "Las 'péniches' (barcos-bar) frente al puente de la Guillotière para el aperitivo; la piscina del Ródano (verano, 4 €) junto al río. Bicis Vélo'v para bajar hasta Confluence.", salseo: "Los muelles eran un aparcamiento de 5 km hasta 2007; los quitaron y hoy es el paseo de la ciudad. Lyon tiene dos ríos con carácter: el Ródano es el marido bruto que viene de los Alpes y el Saona la mujer tranquila; el dicho lionés es que 'el Ródano se casa con el Saona en Confluence y la vida sigue'.", atardecer: true, comida: true, sg: "Aperitivo en péniche con planchas de queso y saucisson." },
+      { n: "Estación de Brotteaux y Halles", lat: 45.7665, lng: 4.8600, tags: ["Historia","Fuera de ruta","Comida"], precio: 0, dur: 60, d: "La antigua estación Belle Époque de 1908 convertida en brasserie, casa de subastas y patio, a dos calles de las Halles Paul Bocuse.", truco: "Brasserie de l'Est de Bocuse dentro de la estación (menú a 25 €, trenecito por el techo); la Halle du 'Marché de la Croix-Rousse' no, esta zona es para Bocuse y las Halles.", salseo: "La estación se quedó sin trenes en 1983 cuando abrió Part-Dieu al lado y Bocuse compró la sala de espera para poner una brasserie con un tren de juguete que da vueltas por el techo; los subastadores de al lado venden Picassos en el antiguo vestíbulo. El reloj sigue parado.", comida: true, sg: "Brasserie con carne y pescado a la plancha, aptos." },
+      { n: "Fresque des Lyonnais y Saona al atardecer", lat: 45.7660, lng: 4.8300, tags: ["Paseo","Mirador","Historia"], precio: 0, dur: 45, d: "El mural de los 30 lioneses famosos (los Lumière, Saint-Exupéry, Bocuse, Ampère) en una fachada del Saona y el paseo por el muelle hacia Vieux Lyon.", truco: "Esquina Rue de la Martinière con Quai Saint-Vincent; sigue por el muelle hasta la pasarela de Saint-Vincent para la vista de Fourvière iluminada. Los sábados, mercado de libros viejos en el muelle.", salseo: "Los hermanos Lumière rodaron aquí la primera película de la historia en 1895 (los obreros saliendo de su fábrica en Monplaisir) y el cine nació en Lyon; en el mural están con la cámara y Bocuse con la olla. El Principito lo pintaron en la ventana de arriba, sin escalera, y Saint-Exupéry lo mira desde la de al lado.", atardecer: true }
+    ]}
+  ]
+};
+GUIA.lyon = {
+  portada: "es:Lyon",
+  historia: "Lyon fue Lugdunum, la capital de las Galias romanas, con dos emperadores nacidos aquí y el primer teatro de Francia; la Edad Media la hizo ciudad de ferias, imprenta y banca italiana, y el Renacimiento la llenó de sederos que inventaron los pasadizos (traboules) para mover la seda sin mojarla. Los canuts, los tejedores, se rebelaron en 1831 en la primera revuelta obrera de la historia. Los Lumière inventaron el cine en 1895 en su fábrica de Monplaisir; la Resistencia tuvo aquí su capital y Klaus Barbie su cuartel. Y las 'mères', las cocineras de las casas ricas, abrieron los bouchons y fundaron la cocina que hizo de Lyon la capital gastronómica de Francia, con Bocuse de papa. Dos ríos, dos colinas, un cristal en la confluencia, y una fiesta de luces en diciembre que la vuelve del revés.",
+  salseos: [
+    "Los lioneses celebran cada 8 de diciembre la Fiesta de las Luces poniendo velas en las ventanas por una promesa a la Virgen de 1643 (la peste); ahora vienen tres millones de personas a ver proyecciones en los edificios y la ciudad cierra el centro. Los vecinos siguen poniendo la vela, sin importarles el resto.",
+    "El pot lionés de vino mide 46 cl porque era la ración de vino de un canut para una jornada de telar y el fondo grueso, para que no volcara con la vibración; los bouchons lo sirven así desde 1840 y la Unión Europea intentó normalizar la medida y perdió.",
+    "Lyon tiene un 'río escondido': la Saona pasa bajo la plaza Bellecour por un túnel de bici de 1 km (el túnel de la Croix-Rousse tiene un lado peatonal con proyecciones) y en el Vieux Lyon hay un cuarto río, el Ródano subterráneo de las alcantarillas que se visita con casco.",
+    "Interpol tiene su sede mundial en Lyon desde 1989 y Bocuse tenía la suya en Collonges; los dos edificios son igual de famosos y los taxistas los llaman 'la poli' y 'el papa'. Un menú en Bocuse cuesta 300 euros y hay lista de espera de tres meses; Interpol, gratis, pero no dejan entrar.",
+    "Guignol, la marioneta con la que Francia se ríe de la policía, nació en Lyon en 1808 de un dentista sin trabajo que lo usaba para distraer a los pacientes; habla en dialecto lionés y hoy hay teatro fijo en el Vieux Lyon. Los niños franceses no saben que Guignol es un canut; los lioneses, sí."
+  ],
+  platos: [
+    { n: "Quenelle de lucio", wiki: "es:Quenelle", d: "Una nube de pescado con salsa de cangrejo (Nantua), gratinada, el plato de bouchon por excelencia." },
+    { n: "Tablier de sapeur", wiki: "es:Tablier de sapeur", d: "Tripa de vaca marinada, empanada y frita, con salsa gribiche; 'delantal de zapador' porque parece un cuero." },
+    { n: "Praliné rojo", wiki: "es:Praliné", d: "Almendras con caramelo rosa que se meten en brioche (praluline) y en tarta; Pralus la inventó, Sève la vende en las Halles." },
+    { n: "Cervelle de canut", wiki: "es:Cervelle de canut", d: "El 'cerebro de canut': queso fresco con hierbas, ajo, chalota y vino, para untar. No lleva cerebro, tranquilo." }
+  ],
+  frases: ["Bonjour / bonsoir (siempre)", "Un pot de beaujolais, s'il vous plaît", "Merci / au revoir", "Gone (chaval, en lionés) / bugne (buñuelo de carnaval)"],
+  wiki: {
+    "Basílica de Fourvière": "es:Basílica de Notre-Dame de Fourvière", "Teatros romanos de Fourvière": "es:Teatro romano de Fourvière", "Catedral de Saint-Jean y reloj astronómico": "es:Catedral de Lyon", "Traboules del Vieux Lyon": "es:Traboule",
+    "Place Bellecour": "es:Place Bellecour", "Museo de Bellas Artes": "es:Museo de Bellas Artes de Lyon", "Halles Paul Bocuse": "en:Les Halles de Lyon-Paul Bocuse", "Confluence y Musée des Confluences": "es:Museo de las Confluencias",
+    "Traboules y pendientes de la Croix-Rousse": "es:La Croix-Rousse", "Mur des Canuts": "en:Mur des Canuts", "Maison des Canuts": "en:Maison des Canuts", "Bouchon en Croix-Rousse: Daniel et Denise": "es:Bouchon lyonnais",
+    "Parque de la Tête d'Or": "es:Parque de la Tête d'Or", "Muelles del Ródano y Berges": "es:Ródano", "Estación de Brotteaux y Halles": "en:Lyon-Brotteaux station", "Fresque des Lyonnais y Saona al atardecer": "en:La Fresque des Lyonnais"
+  }
+};
+EXTRA.lyon = {
+  salseos: [
+    "Paul Bocuse tuvo tres estrellas Michelin 53 años seguidos, tres mujeres a la vez (con casa cada una) y una estatua en vida; cuando murió en 2018, le pusieron 'Bocuse d'Or' al mundial de cocina que ya se llamaba así. Al año siguiente Michelin le quitó una estrella al restaurante y Lyon se lo tomó como una declaración de guerra.",
+    "La Mère Brazier fue la primera persona (no mujer: persona) en tener seis estrellas Michelin en 1933, con dos restaurantes; trabajaba desde los 10 años como criada, no sabía leer bien y enseñó a Bocuse a los 20 a pelar patatas durante tres meses antes de dejarle tocar una sartén. Su restaurante sigue, con dos estrellas.",
+    "Los hermanos Lumière proyectaron la primera película en París pero la rodaron en Lyon: 46 segundos de obreros saliendo de su fábrica, el 19 de marzo de 1895. Hoy la fábrica es museo y la calle se llama 'Rue du Premier-Film'. También inventaron la fotografía en color (autochrome) y se aburrieron del cine: 'no tiene futuro comercial'.",
+    "En Lyon se come 'mâchon' a las 9 de la mañana: embutido, sesos, callos y un pot de beaujolais, la comida de los canuts antes del telar; hay bouchons que solo abren para el mâchon y una cofradía (los Francs-Mâchons) que da sellos. Es legal y se hace en traje.",
+    "El túnel de la Croix-Rousse tiene un 'modo peatón' de 1,7 km con proyecciones de vídeo en las paredes y música; se abrió en 2013 y los lioneses lo usan para ir a la Tête d'Or en bici sin subir la colina. Es el único túnel del mundo con banda sonora."
+  ],
+  guiri: [
+    "Entrar en un bouchon con cortinas de encaje y menú en inglés en la puerta del Vieux Lyon: es decorado. Los de verdad tienen el sello 'Les Bouchons Lyonnais' y cierran domingo y lunes.",
+    "Pedir 'un vin de Lyon': no hay. Beaujolais al norte, Côtes du Rhône al sur, y en pot de 46 cl. Pide 'un pot de Morgon' y te miran distinto.",
+    "Ir a Fourvière andando desde el Vieux Lyon 'porque está cerca': son 300 escalones en cuesta. Funicular F2 con el billete de metro y bajada andando por los jardines.",
+    "Hacer las traboules abriendo puertas al azar y hablando alto: son patios privados de vecinos, las que se visitan tienen placa, y un 'bonjour' en voz baja abre más puertas que una guía.",
+    "Llamar 'París pequeño' a Lyon delante de un lionés. Lyon es la segunda ciudad de Francia, capital de la gastronomía y del cine, y París es 'la capitale' con tono."
+  ],
+  datos: [
+    "Lyon tiene 2.000 restaurantes, 20 estrellas Michelin, 1.000 bouchons (20 con sello oficial) y la única escuela de cocina (Institut Paul Bocuse) donde los exámenes se comen.",
+    "Es la ciudad con más murales trampantojo de Europa: más de 100, y el Mur des Canuts, de 1.200 m², es el más grande.",
+    "El Vieux Lyon es el mayor barrio renacentista de Europa después de Venecia y fue el primer 'sector protegido' de Francia (1964), lo que evitó que lo derribaran por 'insalubre'.",
+    "El aeropuerto se llama Saint-Exupéry desde 2000; el escritor nació en la Presqu'île, se estrelló en el Mediterráneo en 1944 y su pulsera apareció en una red de pesca en 1998.",
+    "Lyon es sede de Interpol, de la OMS contra el cáncer (IARC) y de Euronews, y es la ciudad francesa con más empresas de videojuegos; Arkane y sus 'Dishonored' son de aquí."
+  ]
+};
+DISENOS.lyon = [
+  { nombre: "Seda de canut", maqueta: "cuaderno", titulo: "Cormorant Garamond", cuerpo: "EB Garamond", manuscrita: "Kalam", paleta: { fondo: "#F3EBDF", papel: "#FBF6EC", tinta: "#2C2420", tinta2: "#6C6058", acento: "#8B2F3B", acento2: "#A8843A" }, motivo: "lirio" },
+  { nombre: "Bouchon", maqueta: "ticket", titulo: "Alfa Slab One", cuerpo: "Cabin", paleta: { fondo: "#F6EFE2", papel: "#FFFBF2", tinta: "#2A2118", tinta2: "#6E624F", acento: "#8B2F3B", acento2: "#2F5D3A" }, motivo: "rayas" },
+  { nombre: "Fiesta de las Luces", maqueta: "vitrina", titulo: "Bodoni Moda", cuerpo: "Lora", paleta: { fondo: "#14111C", papel: "#1F1A29", tinta: "#F2ECE4", tinta2: "#BDB4C4", acento: "#E0B45C", acento2: "#4C86B8" }, motivo: "estrellas" },
+  { nombre: "Guignol", maqueta: "fiesta", titulo: "Chonburi", cuerpo: "Nunito", manuscrita: "Permanent Marker", paleta: { fondo: "#FFF3E8", papel: "#FFFFFF", tinta: "#2A1A12", tinta2: "#6E5546", acento: "#C0392B", acento2: "#1E6E8A" }, motivo: "burbujas" },
+  { nombre: "Póster de los dos ríos", maqueta: "ilustrado", titulo: "Alfa Slab One", cuerpo: "Nunito", manuscrita: "Caveat", agua: "#86B7D3", paleta: { fondo: "#FBF4E4", papel: "#FFFDF7", tinta: "#2B2418", tinta2: "#6B5E4D", acento: "#8B2F3B", acento2: "#A8843A" }, motivo: "acuarela" }
+];
+const CIERRES_LYO = { "Museo de Bellas Artes": { cierra: [2] }, "Halles Paul Bocuse": { cierra: [1] }, "Confluence y Musée des Confluences": { cierra: [1] }, "Maison des Canuts": { cierra: [0, 1] }, "Bouchon en Croix-Rousse: Daniel et Denise": { cierra: [0, 1] }, "Teatros romanos de Fourvière": { cierra: [] } };
+const EXCURSION_LYO = { nombre: "Pérouges y el Beaujolais", como: "Tren a Meximieux-Pérouges, 30 min; o coche por el Beaujolais", paradas: [
+  { n: "Pérouges", lat: 45.9040, lng: 5.1760, tags: ["Imprescindible","Historia","Paseo"], precio: 0, dur: 120, d: "El pueblo medieval amurallado en lo alto de una colina, intacto, con calles de guijarros y la galette de azúcar que se come caliente en la plaza.", truco: "Tren a Meximieux y 25 minutos a pie (o taxi); galette de Pérouges en la Ostellerie de la plaza del Tilo, con sidra. A las 10 está vacío; a las 15, lleno de autocares.", salseo: "Iban a demolerlo en 1909 por 'insalubre' y un comité de artistas de Lyon lo compró casa por casa; los Tres Mosqueteros de 1973 y media docena de películas medievales se han rodado aquí porque no hay ni un cable. El tilo de la plaza es de 1792, plantado por la Revolución.", comida: true, sg: "La galette lleva harina; la sidra y los quesos, aptos.", wiki: "es:Pérouges" },
+  { n: "Ruta de los Beaujolais: Oingt y las Pierres Dorées", lat: 45.9530, lng: 4.5820, tags: ["Paseo","Mirador","Fuera de ruta"], precio: 0, dur: 120, d: "Los pueblos de piedra dorada del sur del Beaujolais, con Oingt en lo alto entre viñas, el 'pueblo más bonito de Francia' con galerías de artistas.", truco: "Solo con coche (o excursión organizada desde Lyon); Oingt, Ternand y Bagnols en un bucle de 40 km. La bodega de la cooperativa de Oingt para probar sin cita.", salseo: "Las piedras son doradas por el óxido de hierro y se dice que los pueblos 'parecen tostados al sol'; el Beaujolais Nouveau se inventó en 1951 como truco comercial para vender vino de un mes y se bebe el tercer jueves de noviembre en todo el mundo. Los viticultores de aquí prefieren que pruebes el Morgon.", atardecer: true, wiki: "es:Oingt" },
+  { n: "Hameau Duboeuf, el parque del vino", lat: 46.1720, lng: 4.7260, tags: ["Museo","Comida"], precio: 20, dur: 120, d: "El 'museo-parque' del vino de Georges Duboeuf en Romanèche-Thorins: sala de barricas, cine sobre la vid y cata al final, con tren de jardín.", truco: "Tren a Romanèche-Thorins (40 min desde Lyon) y está en la estación; la cata final es de tres vinos y el jardín de aromas es para niños. Come en Le Cep de Fleurie en el pueblo de al lado.", salseo: "Duboeuf fue 'el papa del Beaujolais', inventor del Nouveau como fenómeno mundial y de las etiquetas de flores; en 2005 lo condenaron por mezclar vinos de crus distintos y lo llamaron 'el rey desnudo'. El museo no lo menciona. El vino, mientras, sigue vendiéndose.", comida: true, sg: "Vino y quesos en la cata, aptos.", wiki: "en:Hameau Duboeuf" }
+]};
+CIUDADES.lyon.zonas.forEach(z => z.paradas.forEach(p => { const r = CIERRES_LYO[p.n]; if (r) p.cierra = r.cierra; }));
+EXCURSION_LYO.paradas.forEach(p => { p.excursion = true; GUIA.lyon.wiki[p.n] = p.wiki; });
+CIUDADES.lyon.zonas.push({ nombre: "Escapada: " + EXCURSION_LYO.nombre, excursion: true, como: EXCURSION_LYO.como, paradas: EXCURSION_LYO.paradas });
+
 
 /* ======================================================================
    UTILIDADES
@@ -2984,7 +3573,7 @@ function atardecerMin(fecha, ciudad) {
   const cosHa = (Math.cos(90.833 * r) / (Math.cos(lat * r) * Math.cos(decl))) - Math.tan(lat * r) * Math.tan(decl);
   const ha = Math.acos(Math.max(-1, Math.min(1, cosHa))) / r;
   const utcMin = 720 - 4 * (lng - ha) - eqt;
-  const tz = ciudad.tz + (esVerano(fecha) ? 1 : 0);
+  const tz = ciudad.tz + (!ciudad.sinVerano && esVerano(fecha) ? 1 : 0);
   return utcMin + tz * 60;
 }
 
@@ -3142,6 +3731,7 @@ function aplicarFormulario(e) {
   set("presupuesto", e.presupuesto); set("grupo", e.grupo); set("transporte", e.transporte); set("evitar", e.evitar || "");
   document.querySelectorAll('input[name="interes"]').forEach(c => { c.checked = (e.intereses || []).includes(c.value); });
   document.getElementById("escapada").checked = !!e.escapada;
+  if (typeof sincronizarBillete === "function") sincronizarBillete();
 }
 
 function cuadrar(entrada) {
@@ -3258,6 +3848,7 @@ function generar(entrada) {
   const plan = cuadrar(entrada);
   if (!plan) return null;
   ultimoPlan = plan;
+  if (typeof transicionRuta === "function") transicionRuta(plan.ciudad);
   renderResultado(plan);
   return plan;
 }
@@ -3335,15 +3926,15 @@ function renderResultado(plan) {
   html += '<div class="apartado"><h4>Sin gluten</h4><ul>' + ciudad.singluten.map(s => "<li>" + esc(s) + "</li>").join("") + '</ul></div>';
 
   html += '<div class="acciones">';
-  html += '<button class="btn-secundario" id="btn-guardar" type="button">' + (viajeActual ? 'Guardado' : 'Guardar este viaje') + '</button>';
-  html += '<button class="btn-secundario" id="btn-compartir" type="button">Copiar enlace para compartir</button>';
-  html += '<button class="btn-secundario" id="btn-guia" type="button">Guía en PDF</button>';
-  html += '<button class="btn-secundario" id="btn-guia-html" type="button">Guía en HTML</button>';
-  html += '<button class="btn-secundario" id="btn-poster-app" type="button">Póster 1 hoja</button>';
-  html += '<button class="btn-secundario" id="btn-guia-corta" type="button">Guía corta</button>';
-  html += '<button class="btn-secundario" id="btn-ics" type="button">Añadir el viaje al calendario</button>';
-  html += '<button class="btn-secundario" id="btn-md" type="button">Copiar como texto</button>';
-  html += '<button class="btn-secundario" onclick="window.print()" type="button">Imprimir o guardar en PDF</button>';
+  html += '<button class="btn-accion primario" id="btn-guia" type="button">' + ICO.libro + 'Crear la guía</button>';
+  html += '<button class="btn-accion" id="btn-guardar" type="button">' + (viajeActual ? 'Guardado' : 'Guardar este viaje') + '</button>';
+  html += '<button class="btn-accion" id="btn-exportar" type="button" aria-expanded="false">Exportar y compartir</button>';
+  html += '</div>';
+  html += '<div class="panel-exportar" id="panel-exportar">';
+  html += '<button class="exp" id="btn-ics" type="button"><b>Añadir al calendario</b><i>Un evento por día del viaje (.ics)</i></button>';
+  html += '<button class="exp" id="btn-compartir" type="button"><b>Copiar enlace</b><i>Se abre con este mismo viaje cuadrado</i></button>';
+  html += '<button class="exp" id="btn-md" type="button"><b>Copiar como texto</b><i>Para pegar en notas o mandar por el grupo</i></button>';
+  html += '<button class="exp" id="btn-imprimir" type="button"><b>Imprimir esta vista</b><i>O guardarla tal cual en PDF</i></button>';
   html += '</div>';
   html += '<div class="guardar-caja" id="guardar-caja"><input type="text" id="nombre-viaje" placeholder="Nombre del viaje, ej. Verona en octubre"><button class="btn-secundario" id="btn-guardar-ok" type="button">Guardar</button></div>';
   html += '<div class="progreso-viaje" id="progreso-viaje"></div>';
@@ -3351,14 +3942,18 @@ function renderResultado(plan) {
 
   const caja = document.getElementById("resultado");
   caja.innerHTML = html;
+  [...caja.children].forEach((el, i) => { el.classList.add("revelar"); el.style.animationDelay = Math.min(120 + i * 70, 620) + "ms"; });
   caja.scrollIntoView({ behavior: "smooth", block: "start" });
   document.getElementById("btn-ics").addEventListener("click", exportarIcs);
   document.getElementById("btn-md").addEventListener("click", copiarTexto);
   document.getElementById("btn-compartir").addEventListener("click", compartirEnlace);
-  document.getElementById("btn-guia").addEventListener("click", () => abrirGuia(null, false));
-  document.getElementById("btn-guia-html").addEventListener("click", () => abrirGuia(null, false, "html"));
-  document.getElementById("btn-poster-app").addEventListener("click", () => abrirGuia(null, "poster"));
-  document.getElementById("btn-guia-corta").addEventListener("click", () => abrirGuia(null, true));
+  document.getElementById("btn-guia").addEventListener("click", abrirModalGuia);
+  document.getElementById("btn-imprimir").addEventListener("click", () => window.print());
+  document.getElementById("btn-exportar").addEventListener("click", () => {
+    const p = document.getElementById("panel-exportar");
+    p.classList.toggle("visible");
+    document.getElementById("btn-exportar").setAttribute("aria-expanded", p.classList.contains("visible"));
+  });
   document.getElementById("btn-guardar").addEventListener("click", () => {
     if (viajeActual) return;
     document.getElementById("guardar-caja").classList.add("visible");
@@ -3602,10 +4197,13 @@ img { display:block; }
 .cierre { margin-top: 50px; text-align:center; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta2); padding-top: 20px; border-top: 1px solid var(--linea); }
 .cierre .t { font-size: 22px; letter-spacing: 0; text-transform: none; color: var(--acento); margin-bottom: 6px; }
 /* Barra de control (no se imprime) */
-.barra { position: sticky; top:0; z-index: 9; background: var(--tinta); color: var(--fondo); padding: 10px 18px; display:flex; gap: 10px; align-items:center; flex-wrap:wrap; font-family: system-ui, sans-serif; font-size: 13px; }
-.barra button, .barra select { font: 600 12px system-ui, sans-serif; padding: 8px 12px; border-radius: 99px; border: 1.5px solid var(--fondo); background: none; color: var(--fondo); cursor: pointer; }
-.barra button.p { background: var(--fondo); color: var(--tinta); }
-.barra .estado { margin-left:auto; opacity:.75; }
+.barra { position: sticky; top:0; z-index: 9; background: color-mix(in srgb, var(--papel) 90%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--linea); color: var(--tinta); padding: 10px 20px; display:flex; gap: 8px; align-items:center; flex-wrap:wrap; font-family: "${d.cuerpo}", system-ui, sans-serif; font-size: 13px; }
+.barra .marca { font-family: "${d.titulo}", Georgia, serif; font-size: 16px; color: var(--acento); margin-right: 10px; white-space: nowrap; }
+.barra button, .barra select { font: 600 12px "${d.cuerpo}", system-ui, sans-serif; padding: 8px 14px; border-radius: 99px; border: 1px solid var(--linea); background: var(--papel); color: var(--tinta); cursor: pointer; transition: border-color .15s, color .15s; }
+.barra button:hover, .barra select:hover { border-color: var(--acento); color: var(--acento); }
+.barra button.p { background: var(--acento); border-color: var(--acento); color: var(--papel); }
+.barra button.p:hover { color: var(--papel); opacity: .92; }
+.barra .estado { margin-left:auto; opacity:.7; font-size: 12px; }
 /* fiesta: titulos girados, pegatinas, confeti y fotos con marco grueso de color */
 .m-fiesta .portada { justify-content: center; align-items: center; background: var(--acento2); }
 .m-fiesta .portada::before { content:""; position:absolute; inset:0; background-image: var(--motivo); opacity: .5; }
@@ -4863,7 +5461,7 @@ function abrirGuia(indiceDiseno, corta, accion) {
   const d = lista[idx];
   const html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(ultimoPlan.ciudad.nombre) + ' · La Brújula</title><style>' + cssGuia(d) + '</style></head>' +
     '<body class="m-' + d.maqueta + (corta === "poster" ? ' poster' : '') + '" data-corta="' + (corta === "poster" ? "poster" : corta ? 1 : 0) + '">' +
-    '<div class="barra"><button class="p" id="btn-pdf" type="button">Descargar PDF</button><button class="p" id="btn-share" type="button" style="display:none">Compartir PDF</button><button class="p" id="btn-html" type="button">Descargar HTML</button><button id="btn-print" type="button">Imprimir</button>' +
+    '<div class="barra"><span class="marca">La Brújula — ' + esc(ultimoPlan.ciudad.nombre) + '</span><button class="p" id="btn-pdf" type="button">Descargar PDF</button><button class="p" id="btn-share" type="button" style="display:none">Compartir PDF</button><button id="btn-html" type="button">Descargar HTML</button><button id="btn-print" type="button">Imprimir</button>' +
     '<select id="sel-diseno">' + lista.map((x, i) => '<option value="' + i + '"' + (i === idx ? ' selected' : '') + '>Diseño: ' + esc(x.nombre) + '</option>').join('') + '</select>' +
     '<button id="btn-version" type="button">' + (corta === true ? 'Ver versión larga' : 'Ver versión corta') + '</button>' +
     '<button id="btn-poster" type="button">' + (corta === "poster" ? 'Ver guía completa' : 'Póster 1 hoja') + '</button>' +
@@ -4940,11 +5538,14 @@ function pintarViajes() {
     const f = new Date(v.entrada.fecha + "T12:00:00");
     const total = paradasDe(v), hechas = (v.hechas || []).length;
     const pct = total ? Math.round(100 * hechas / total) : 0;
-    return '<div class="viaje"><div class="info"><div class="titulo-viaje">' + esc(v.nombre) + '</div>' +
-      '<div class="sub-viaje">' + esc(c ? c.nombre : "?") + ' · ' + f.getDate() + ' de ' + MESES[f.getMonth()] + ' de ' + f.getFullYear() + ' · ' + v.entrada.dias + (v.entrada.dias == 1 ? ' día' : ' días') + ' · ' + hechas + '/' + total + ' paradas hechas</div>' +
+    return '<div class="viaje pase" style="--ac:' + (c ? c.acento : "#1F4E5A") + '">' +
+      '<div class="pase-info"><span class="eyebrow-pase">' + esc(c ? c.pais : "") + ' · ' + f.getDate() + ' de ' + MESES[f.getMonth()] + ' de ' + f.getFullYear() + '</span>' +
+      '<div class="titulo-viaje">' + esc(v.nombre) + '</div>' +
+      '<div class="sub-viaje">' + esc(c ? c.nombre : "?") + ' · ' + hechas + '/' + total + ' paradas hechas</div>' +
       '<div class="barra-viaje"><div style="width:' + pct + '%"></div></div></div>' +
+      '<div class="pase-talon"><span class="pase-dias">' + v.entrada.dias + '<i>' + (v.entrada.dias == 1 ? 'día' : 'días') + '</i></span>' +
       '<button type="button" class="btn-mini" data-abrir="' + v.id + '">Abrir</button>' +
-      '<button type="button" class="btn-mini peligro" data-borrar="' + v.id + '">Borrar</button></div>';
+      '<button type="button" class="btn-mini peligro" data-borrar="' + v.id + '">Borrar</button></div></div>';
   }).join("");
   lista.querySelectorAll("[data-abrir]").forEach(b => b.addEventListener("click", () => abrirViaje(b.dataset.abrir)));
   lista.querySelectorAll("[data-borrar]").forEach(b => b.addEventListener("click", () => borrarViaje(b.dataset.borrar)));
@@ -5018,6 +5619,301 @@ function abrirDesdeEnlace() {
     aplicarFormulario(entrada); generar(entrada); return true;
   } catch (e) { return false; }
 }
+
+/* ======================================================================
+   CAPA PREMIUM v29
+   El billete (formulario-frase con popovers), el panel de ciudades, el
+   modal de ediciones de la guia, los pases de embarque y la transicion
+   de ruta. Todo sincroniza con los controles nativos ocultos, asi que el
+   motor, los viajes guardados y los enlaces compartidos no se enteran.
+   ====================================================================== */
+
+const ICO = {
+  estrella: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.5 5.3 5.8.7-4.3 4 1.1 5.7-5.1-2.9-5.1 2.9 1.1-5.7-4.3-4 5.8-.7z"/></svg>',
+  museo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4.5" width="16" height="15" rx="1.2"/><rect x="7.2" y="7.7" width="9.6" height="8.6"/></svg>',
+  mirador: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16h16M7 16a5 5 0 0 1 10 0M12 5.5V8M5.8 8.8l1.5 1.5M18.2 8.8l-1.5 1.5M3.5 19.5h3.4M9.8 19.5h4.4M17.1 19.5h3.4"/></svg>',
+  mercado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.8h14l-1.3 8.6c-.16 1-.9 1.6-1.9 1.6H8.2c-1 0-1.74-.6-1.9-1.6L5 9.8z"/><path d="M8.6 9.8c0-3 1.3-5.2 3.4-5.2s3.4 2.2 3.4 5.2"/><path d="M5.6 13.4h12.8"/></svg>',
+  arbol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-4"/><path d="M12 3c3.5 0 5.5 2.3 5.5 5 0 .4-.1.9-.2 1.3C19 10 20 11.4 20 13c0 2.4-2 4-4.6 4H8.6C6 17 4 15.4 4 13c0-1.6 1-3 2.7-3.7-.1-.4-.2-.9-.2-1.3 0-2.7 2-5 5.5-5z"/></svg>',
+  paseo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M12 5.5h6.6l1.9 2-1.9 2H12"/><path d="M12 12h-5.6l-1.9 2 1.9 2H12"/></svg>',
+  bar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10l-1 6.8a4 4 0 0 1-8 0L7 3.5z"/><path d="M7.7 6.3h8.6"/><path d="M12 14.3v5.7"/><path d="M8.5 20h7"/></svg>',
+  historia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9L12 4l7.5 5h-15z"/><path d="M6.5 18V9.5M12 18V9.5M17.5 18V9.5"/><path d="M5 18h14M4 21h16"/></svg>',
+  brujula: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.9 9.1l-1.9 4.7-3.9 1.1 1.9-4.7 3.9-1.1z"/></svg>',
+  tren: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3.5" width="13" height="13" rx="2.6"/><path d="M5.5 10h13"/><path d="M9 13.7h.01M15 13.7h.01"/><path d="M8.4 16.5L6.5 20M15.6 16.5l1.9 3.5"/></svg>',
+  calendario: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5.5" width="15" height="14.5" rx="2"/><path d="M4.5 10h15"/><path d="M8.5 3.5v3.6M15.5 3.5v3.6"/><path d="M12 14.5h.01"/></svg>',
+  pareja: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C7.4 16.4 4 13.4 4 9.8 4 7.3 5.9 5.5 8.1 5.5c1.6 0 2.9.8 3.9 2.2 1-1.4 2.3-2.2 3.9-2.2 2.2 0 4.1 1.8 4.1 4.3 0 3.6-3.4 6.6-8 10.7z"/></svg>',
+  amigos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="16.5" cy="9.2" r="2.4"/><path d="M3.5 19.5c1-3.1 3-4.7 5.5-4.7s4.5 1.6 5.5 4.7"/><path d="M15.4 19.5c.5-2.1 1.9-3.3 3.6-3.3 1.3 0 2.3.6 3 1.8"/></svg>',
+  familia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7.5" r="3"/><path d="M3.8 19.5c1-3.2 2.9-4.8 5.2-4.8s4.2 1.6 5.2 4.8"/><circle cx="17" cy="11" r="2.2"/><path d="M14.6 19.5c.5-2 1.5-3.1 2.9-3.1 1.3 0 2.3.9 2.9 2.6"/></svg>',
+  solo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.3-3.4 3.8-5.1 7-5.1s5.7 1.7 7 5.1"/></svg>',
+  calma: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4.5C11.5 4.5 6.5 9.5 5.3 18"/><path d="M5.3 18c-.4 1.4-1 2-1.8 2"/><path d="M5.3 18c4.8-.4 10.6-4.3 14.7-13.5"/><path d="M8.5 13.5c2.8-.9 5.4-2.7 7.4-5.4"/></svg>',
+  normal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l3.2-4.2"/><circle cx="12" cy="15" r="1.1"/><path d="M4.5 18.5h15"/></svg>',
+  completo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 13.2h5L9 21l8-10.2h-5l1-7.8z"/></svg>',
+  publico: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3.8" width="15" height="13" rx="2.6"/><path d="M4.5 9.5h15"/><path d="M8.3 13.6h.01M15.7 13.6h.01"/><path d="M7.5 16.8v2.7M16.5 16.8v2.7"/></svg>',
+  motor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16l1.4-4.7c.3-1 1.1-1.8 2.3-1.8h6.6c1.2 0 2 .8 2.3 1.8L19 16"/><path d="M3.5 16.2h17"/><circle cx="7.5" cy="18.6" r="1.5"/><circle cx="16.5" cy="18.6" r="1.5"/></svg>',
+  pie: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="9" cy="8" rx="2.4" ry="3.6" transform="rotate(-12 9 8)"/><ellipse cx="8.4" cy="15.3" rx="1.5" ry="1.8" transform="rotate(-12 8.4 15.3)"/><ellipse cx="15.4" cy="12.4" rx="2.4" ry="3.6" transform="rotate(10 15.4 12.4)"/><ellipse cx="15.9" cy="19.6" rx="1.5" ry="1.8" transform="rotate(10 15.9 19.6)"/></svg>',
+  ajustado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><path d="M14.6 9.3c-.5-.8-1.4-1.3-2.5-1.3-1.6 0-2.7.9-2.7 2.1 0 2.8 5.4 1.6 5.4 4.2 0 1.2-1.2 2.1-2.7 2.1-1.2 0-2.2-.5-2.7-1.4"/><path d="M12 6.5v11"/></svg>',
+  medio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.3" cy="10.5" r="5.8"/><path d="M13.6 6.9a5.8 5.8 0 1 1-2.2 11.2"/><path d="M9.3 7.5v6M7.2 9h4.2"/></svg>',
+  alto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5L6 9.2l6 11.3 6-11.3-6-5.7z"/><path d="M6 9.2h12"/><path d="M9.2 9.2L12 3.5l2.8 5.7M9.2 9.2L12 20.5M14.8 9.2L12 20.5"/></svg>',
+  libro: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.8C5 3.8 5.8 3 6.8 3H19v15.5H6.8"/><path d="M5 19.2C5 18.2 5.8 17.5 6.8 17.5H19"/><path d="M5 4.8v14.4"/></svg>',
+  lupa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg>'
+};
+
+const ETIQUETAS = {
+  grupo: { pareja: "en pareja", amigos: "con amigos", familia: "en familia", solo: "en solitario" },
+  ritmo: { "3": "con calma", "4": "normal", "5": "completo" },
+  transporte: { publico: "a pie y en transporte público", motor: "en coche o moto", pie: "solo a pie" },
+  presupuesto: { ajustado: "ajustado", medio: "medio", alto: "a lo grande" }
+};
+
+const OPCIONES_POP = {
+  grupo: { titulo: "Con quién", lista: [
+    { v: "pareja", ico: "pareja", b: "En pareja", i: "mesas de dos y miradores al caer la tarde" },
+    { v: "amigos", ico: "amigos", b: "Con amigos", i: "ritmo de cuadrilla, bares incluidos" },
+    { v: "familia", ico: "familia", b: "En familia con niños", i: "sin palizas ni colas imposibles" },
+    { v: "solo", ico: "solo", b: "En solitario", i: "a tu aire, sin negociar con nadie" }
+  ]},
+  ritmo: { titulo: "El ritmo", lista: [
+    { v: "3", ico: "calma", b: "Con calma", i: "3 paradas al día y mucho café" },
+    { v: "4", ico: "normal", b: "Normal", i: "4 paradas bien medidas" },
+    { v: "5", ico: "completo", b: "Completo", i: "5 paradas, día lleno" }
+  ]},
+  transporte: { titulo: "Cómo os movéis", lista: [
+    { v: "publico", ico: "publico", b: "A pie y transporte público", i: "metro, tranvía y suela de zapato" },
+    { v: "motor", ico: "motor", b: "En coche o moto", i: "las distancias pesan menos" },
+    { v: "pie", ico: "pie", b: "Solo a pie", i: "todo andando, zonas compactas" }
+  ]},
+  presupuesto: { titulo: "El presupuesto", lista: [
+    { v: "ajustado", ico: "ajustado", b: "Ajustado", i: "gratis y tapeo" },
+    { v: "medio", ico: "medio", b: "Medio", i: "sin mirar mucho" },
+    { v: "alto", ico: "alto", b: "A lo grande", i: "reservas y caprichos" }
+  ]}
+};
+
+/* ---------- Popovers ---------- */
+let popAbierto = null;
+function cerrarPops() {
+  document.querySelectorAll(".pop.abierto").forEach(p => p.classList.remove("abierto"));
+  document.querySelectorAll(".ranura[aria-expanded]").forEach(r => r.setAttribute("aria-expanded", "false"));
+  popAbierto = null;
+}
+function abrirPop(id, ancla) {
+  const pop = document.getElementById(id);
+  if (popAbierto === pop) { cerrarPops(); return; }
+  cerrarPops();
+  // Marcar la opcion activa segun el valor actual
+  pop.querySelectorAll(".opcion[data-campo]").forEach(o => {
+    o.classList.toggle("activa", document.getElementById(o.dataset.campo).value === o.dataset.valor);
+  });
+  const r = ancla.getBoundingClientRect();
+  pop.style.top = (r.bottom + window.scrollY + 8) + "px";
+  pop.style.left = Math.max(12, Math.min(r.left + window.scrollX, window.scrollX + window.innerWidth - pop.offsetWidth - 12)) + "px";
+  pop.classList.add("abierto");
+  ancla.setAttribute("aria-expanded", "true");
+  popAbierto = pop;
+}
+document.addEventListener("click", e => {
+  if (popAbierto && !e.target.closest(".pop") && !e.target.closest(".ranura")) cerrarPops();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") { cerrarPops(); cerrarPanel(); } });
+
+function construirPops() {
+  const cont = document.createElement("div");
+  cont.id = "capas";
+  let html = "";
+  Object.keys(OPCIONES_POP).forEach(campo => {
+    const o = OPCIONES_POP[campo];
+    html += '<div class="pop" id="pop-' + campo + '" role="menu"><h6>' + o.titulo + '</h6>' +
+      o.lista.map(x => '<button type="button" class="opcion" data-campo="' + campo + '" data-valor="' + x.v + '">' + ICO[x.ico] + '<span><b>' + x.b + '</b><i>' + x.i + '</i></span></button>').join("") + '</div>';
+  });
+  html += '<div class="pop" id="pop-fecha"><h6>Fecha de llegada</h6><div style="padding:2px 8px 6px"></div><div class="pista">Tranquilidad: los días arrancan a las 11:00.</div></div>';
+  html += '<div class="pop" id="pop-dias"><h6>Días completos</h6><div class="stepper">' +
+    '<button type="button" id="dias-menos" aria-label="Un día menos">−</button>' +
+    '<output id="dias-valor">3<small>días completos</small></output>' +
+    '<button type="button" id="dias-mas" aria-label="Un día más">+</button></div>' +
+    '<div class="pista">Entre 1 y 8, sin contar los días de vuelo.</div></div>';
+  html += '<div class="velo" id="velo"></div>';
+  html += '<div class="panel" id="panel-ciudades" role="dialog" aria-modal="true" aria-label="Elegir ciudad">' +
+    '<div class="panel-cab"><div class="fila"><h3>¿A dónde nos vamos?</h3><button type="button" class="cerrar" data-cerrar aria-label="Cerrar">✕</button></div>' +
+    '<div class="buscador">' + ICO.lupa + '<input type="text" id="busca-ciudad" placeholder="Escribe una ciudad o un país..." autocomplete="off"></div></div>' +
+    '<div class="panel-cuerpo" id="cuerpo-ciudades"></div></div>';
+  html += '<div class="panel" id="panel-guia" role="dialog" aria-modal="true" aria-label="Crear la guía"></div>';
+  cont.innerHTML = html;
+  document.body.appendChild(cont);
+
+  // Fecha: el input nativo real vive dentro del popover
+  document.querySelector("#pop-fecha > div").appendChild(document.getElementById("fecha"));
+  document.getElementById("fecha").addEventListener("change", sincronizarBillete);
+
+  // Opciones de los popovers de seleccion
+  cont.querySelectorAll(".opcion[data-campo]").forEach(o => o.addEventListener("click", () => {
+    document.getElementById(o.dataset.campo).value = o.dataset.valor;
+    sincronizarBillete(); cerrarPops();
+  }));
+
+  // Stepper de dias
+  const dias = document.getElementById("dias");
+  const paso = n => { dias.value = Math.min(8, Math.max(1, (parseInt(dias.value, 10) || 3) + n)); sincronizarBillete(); };
+  document.getElementById("dias-menos").addEventListener("click", () => paso(-1));
+  document.getElementById("dias-mas").addEventListener("click", () => paso(1));
+
+  document.getElementById("velo").addEventListener("click", cerrarPanel);
+  cont.querySelectorAll("[data-cerrar]").forEach(b => b.addEventListener("click", cerrarPanel));
+}
+
+/* ---------- Panel de ciudades ---------- */
+let panelAbierto = null;
+function abrirPanel(id) {
+  cerrarPops();
+  document.getElementById("velo").classList.add("abierto");
+  const p = document.getElementById(id);
+  p.classList.add("abierto");
+  panelAbierto = p;
+  document.body.style.overflow = "hidden";
+}
+function cerrarPanel() {
+  if (!panelAbierto) return;
+  document.getElementById("velo").classList.remove("abierto");
+  panelAbierto.classList.remove("abierto");
+  panelAbierto = null;
+  document.body.style.overflow = "";
+}
+function normalizar(t) { return String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+
+function pintarCiudades(filtro) {
+  const f = normalizar(filtro || "");
+  const actual = document.getElementById("destino").value;
+  const porPais = {};
+  Object.keys(CIUDADES).forEach(k => {
+    const c = CIUDADES[k];
+    if (f && !normalizar(c.nombre + " " + c.pais).includes(f)) return;
+    (porPais[c.pais] = porPais[c.pais] || []).push(k);
+  });
+  const paises = Object.keys(porPais).sort((a, b) => a.localeCompare(b, "es"));
+  const cuerpo = document.getElementById("cuerpo-ciudades");
+  if (!paises.length) { cuerpo.innerHTML = '<div class="sin-resultados">Esa no la tenemos todavía en el repositorio…</div>'; return; }
+  cuerpo.innerHTML = paises.map(pais =>
+    '<div class="grupo-pais"><h6>' + esc(pais) + '</h6><div class="malla-ciudades">' +
+    porPais[pais].sort((a, b) => CIUDADES[a].nombre.localeCompare(CIUDADES[b].nombre, "es")).map(k => {
+      const c = CIUDADES[k];
+      const paradas = c.zonas.reduce((s, z) => s + z.paradas.length, 0);
+      const extra = paradas + " paradas · " + c.zonas.length + " zonas" + (typeof EXCURSIONES !== "undefined" && EXCURSIONES[k] ? " · excursión" : "");
+      return '<button type="button" class="tarjeta-ciudad' + (k === actual ? ' activa' : '') + '" style="--ac:' + c.acento + '" data-ciudad="' + k + '">' +
+        '<i>' + esc(c.pais) + '</i><b>' + esc(c.nombre) + '</b><em>' + extra + '</em></button>';
+    }).join("") + '</div></div>'
+  ).join("");
+  cuerpo.querySelectorAll("[data-ciudad]").forEach(t => t.addEventListener("click", () => {
+    document.getElementById("destino").value = t.dataset.ciudad;
+    sincronizarBillete(); cerrarPanel();
+  }));
+}
+
+/* ---------- Sincronizar el billete con los controles nativos ---------- */
+function ponerRanura(id, texto) { document.querySelector("#" + id + " > span").textContent = texto; }
+function sincronizarBillete() {
+  const v = id => document.getElementById(id).value;
+  const c = CIUDADES[v("destino")];
+  ponerRanura("ranura-ciudad", c ? c.nombre : "elegir ciudad");
+  const claim = document.getElementById("claim-ciudad");
+  if (c) {
+    const paradas = c.zonas.reduce((s, z) => s + z.paradas.length, 0);
+    claim.innerHTML = "«" + esc(c.claim) + "»<b>" + paradas + " paradas · " + c.zonas.length + " zonas</b>";
+    document.documentElement.style.setProperty("--acento", c.acento);
+  } else claim.textContent = "";
+  const fIso = v("fecha");
+  if (fIso) { const f = new Date(fIso + "T12:00:00"); ponerRanura("ranura-fecha", f.getDate() + " de " + MESES[f.getMonth()]); }
+  const nd = Math.min(8, Math.max(1, parseInt(v("dias"), 10) || 3));
+  ponerRanura("ranura-dias", nd + (nd === 1 ? " día" : " días"));
+  const dv = document.getElementById("dias-valor");
+  if (dv) dv.innerHTML = nd + "<small>" + (nd === 1 ? "día completo" : "días completos") + "</small>";
+  ponerRanura("ranura-grupo", ETIQUETAS.grupo[v("grupo")] || "en pareja");
+  ponerRanura("ranura-ritmo", ETIQUETAS.ritmo[v("ritmo")] || "normal");
+  ponerRanura("ranura-transporte", ETIQUETAS.transporte[v("transporte")] || "a pie y en transporte público");
+  ponerRanura("ranura-presupuesto", ETIQUETAS.presupuesto[v("presupuesto")] || "medio");
+  document.getElementById("cta-texto").textContent = c ? "Cuadrar " + c.nombre + " · " + nd + (nd === 1 ? " día" : " días") : "Cuadrar el itinerario";
+  const marcados = document.querySelectorAll('input[name="interes"]:checked').length;
+  document.getElementById("chips-contador").textContent = marcados ? "· " + marcados + (marcados === 1 ? " marcado" : " marcados") : "";
+}
+
+/* ---------- Modal de la guia: elegir edicion y formato ---------- */
+let mgDiseno = 0, mgFormato = "completa";
+function cargarFuentesGuia(lista) {
+  const familias = [...new Set(lista.map(d => d.titulo))];
+  const idLink = "fuentes-guia";
+  const href = "https://fonts.googleapis.com/css2?" + familias.map(f => "family=" + encodeURIComponent(f).replace(/%20/g, "+") + ":wght@400;700").join("&") + "&display=swap";
+  let link = document.getElementById(idLink);
+  if (link && link.href === href) return;
+  if (!link) { link = document.createElement("link"); link.id = idLink; link.rel = "stylesheet"; document.head.appendChild(link); }
+  link.href = href;
+}
+function abrirModalGuia() {
+  if (!ultimoPlan) return;
+  const clave = ultimoPlan.entrada.ciudad;
+  const lista = DISENOS[clave] || DISENOS.lisboa;
+  const poster = (typeof ILUSTRADO !== "undefined" && ILUSTRADO[clave]) ? ILUSTRADO[clave] : null;
+  cargarFuentesGuia(lista);
+  mgDiseno = Math.floor(Math.random() * lista.length);
+  mgFormato = "completa";
+  const panel = document.getElementById("panel-guia");
+  panel.innerHTML =
+    '<div class="panel-cab"><div class="fila"><div><span class="eyebrow">La guía de ' + esc(ultimoPlan.ciudad.nombre) + '</span><h3>Elige la edición</h3></div>' +
+    '<button type="button" class="cerrar" data-cerrar aria-label="Cerrar">✕</button></div></div>' +
+    '<div class="panel-cuerpo">' +
+    '<div class="malla-disenos">' + lista.map((d, i) => {
+      const p = d.paleta;
+      return '<button type="button" class="tarjeta-diseno' + (i === mgDiseno ? ' activa' : '') + '" data-diseno="' + i + '">' +
+        '<span class="vista" style="background:' + p.fondo + ';color:' + p.acento + ';font-family:\'' + d.titulo + '\', Georgia, serif">' + esc(ultimoPlan.ciudad.nombre) + '</span>' +
+        '<span class="pie"><b>' + esc(d.nombre) + '</b><i>Maqueta ' + esc(d.maqueta) + '</i>' +
+        '<span class="muestras"><span style="background:' + p.fondo + '"></span><span style="background:' + p.papel + '"></span><span style="background:' + p.acento + '"></span><span style="background:' + p.acento2 + '"></span></span></span></button>';
+    }).join("") + '</div>' +
+    '<div class="formatos">' +
+    '<button type="button" class="formato activa" data-formato="completa"><b>Guía completa</b><i>todo el viaje, con fotos y salseos</i></button>' +
+    '<button type="button" class="formato" data-formato="corta"><b>Guía corta</b><i>lo esencial en pocas hojas</i></button>' +
+    '<button type="button" class="formato" data-formato="poster"><b>' + esc(poster ? poster.nombre : "Póster 1 hoja") + '</b><i>lámina ilustrada para imprimir</i></button>' +
+    '</div></div>' +
+    '<div class="panel-pie"><button type="button" class="btn-principal" id="mg-abrir">Abrir la guía</button>' +
+    '<button type="button" class="btn-fantasma" id="mg-html">Descargar en HTML</button>' +
+    '<span class="nota">La guía se abre en su propia pestaña: desde allí se descarga el PDF con el diseño elegido.</span></div>';
+  panel.querySelectorAll("[data-diseno]").forEach(t => t.addEventListener("click", () => {
+    mgDiseno = parseInt(t.dataset.diseno, 10);
+    panel.querySelectorAll("[data-diseno]").forEach(x => x.classList.toggle("activa", x === t));
+  }));
+  panel.querySelectorAll("[data-formato]").forEach(t => t.addEventListener("click", () => {
+    mgFormato = t.dataset.formato;
+    panel.querySelectorAll("[data-formato]").forEach(x => x.classList.toggle("activa", x === t));
+  }));
+  const formatoValor = () => mgFormato === "poster" ? "poster" : mgFormato === "corta";
+  document.getElementById("mg-abrir").addEventListener("click", () => { cerrarPanel(); abrirGuia(mgDiseno, formatoValor()); });
+  document.getElementById("mg-html").addEventListener("click", () => { cerrarPanel(); abrirGuia(mgDiseno, formatoValor(), "html"); });
+  panel.querySelector("[data-cerrar]").addEventListener("click", cerrarPanel);
+  abrirPanel("panel-guia");
+}
+
+/* ---------- Transicion de ruta al cuadrar ---------- */
+function transicionRuta(ciudad) {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const t = document.createElement("div");
+  t.className = "transicion";
+  t.innerHTML = '<div class="caja-t"><svg viewBox="0 0 320 96" aria-hidden="true">' +
+    '<path class="ruta-t" d="M10 74 C 66 18, 118 96, 172 46 S 268 14, 306 40"/>' +
+    '<circle class="punto-t" cx="10" cy="74" r="4"/>' +
+    '<circle class="destino-t" cx="306" cy="40" r="7"/><circle class="punto-t" cx="306" cy="40" r="3"/></svg>' +
+    '<div class="t-texto">Cuadrando ' + esc(ciudad.nombre) + '…</div></div>';
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add("fuera"), 950);
+  setTimeout(() => t.remove(), 1500);
+}
+
+/* ---------- Arranque de la capa premium ---------- */
+(function () {
+  // Iconos de los chips
+  document.querySelectorAll(".ci[data-ico]").forEach(s => { s.innerHTML = ICO[s.dataset.ico] || ""; });
+  construirPops();
+  pintarCiudades("");
+  document.getElementById("ranura-ciudad").addEventListener("click", () => { pintarCiudades(document.getElementById("busca-ciudad").value); abrirPanel("panel-ciudades"); setTimeout(() => document.getElementById("busca-ciudad").focus(), 120); });
+  document.getElementById("busca-ciudad").addEventListener("input", e => pintarCiudades(e.target.value));
+  document.querySelectorAll(".ranura[data-pop]").forEach(r => r.addEventListener("click", () => abrirPop(r.dataset.pop, r)));
+  document.querySelectorAll('input[name="interes"], #escapada').forEach(c => c.addEventListener("change", sincronizarBillete));
+  sincronizarBillete();
+})();
 
 // Aviso de version nueva: se compara el archivo del servidor con el que corre
 async function comprobarVersion() {
