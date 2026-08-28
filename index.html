@@ -396,6 +396,134 @@
   }
   @media print { .panel-exportar, .pop, .panel, .velo, .transicion, .claim-ciudad { display: none !important; } }
 </style>
+<style id="premium-v30">
+  /* ==================================================================
+     CAPA v30 · foto de portada, tiempo, stories, sorpresa, en ruta,
+     cuenta atras, maleta, arrastrar paradas, deshacer, instalar.
+     ================================================================== */
+
+  /* --- Foto de portada en duotono (dentro del sello) --- */
+  .sello-interior > .sello-foto { position: absolute; inset: 0; z-index: 0; overflow: hidden; opacity: 0; transition: opacity .9s ease; pointer-events: none; }
+  .sello-interior > .sello-foto.lista { opacity: 1; }
+  .sello-foto img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.06) brightness(.96); display: block; }
+  .sello-interior > .sello-tinte { position: absolute; inset: 0; z-index: 0; background: var(--acento); mix-blend-mode: color; opacity: 0; transition: opacity .9s ease; pointer-events: none; }
+  .sello-interior > .sello-velo { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity .9s ease; pointer-events: none;
+    background: linear-gradient(100deg, var(--papel) 32%, color-mix(in srgb, var(--papel) 72%, transparent) 58%, color-mix(in srgb, var(--papel) 18%, transparent) 100%); }
+  .sello-foto.lista ~ .sello-tinte, .sello-foto.lista ~ .sello-velo { opacity: 1; }
+  @media (max-width: 640px) { .sello-interior > .sello-velo { background: linear-gradient(160deg, var(--papel) 30%, color-mix(in srgb, var(--papel) 74%, transparent) 62%, color-mix(in srgb, var(--papel) 26%, transparent) 100%); } }
+
+  /* --- El tiempo en la cabecera de cada dia --- */
+  .clima { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; font: 700 12px/1 "JetBrains Mono", monospace; color: var(--tinta-2); letter-spacing: .02em; white-space: nowrap; }
+  .clima svg { width: 19px; height: 19px; color: var(--acento); flex: none; }
+  .clima b { color: var(--tinta); font-weight: 700; }
+  .clima .tipico { font: 600 9px/1 Manrope, sans-serif; letter-spacing: .14em; text-transform: uppercase; border: 1px solid var(--linea); border-radius: 99px; padding: 2.5px 7px; color: var(--tinta-2); }
+  .clima .gota { display: inline-flex; align-items: center; gap: 3px; color: var(--acento); font-weight: 700; }
+  .clima .gota svg { width: 12px; height: 12px; }
+  @media (max-width: 560px) { .clima { margin-left: 0; width: 100%; } }
+  .aviso-lluvia { margin-top: 14px; display: flex; gap: 12px; align-items: flex-start; background: var(--papel); border: 1px solid var(--linea); border-left: 3px solid var(--acento); border-radius: 14px; padding: 14px 18px; font-size: 13.5px; box-shadow: var(--sombra-2); }
+  .aviso-lluvia svg { width: 20px; height: 20px; color: var(--acento); flex: none; margin-top: 1px; }
+  .aviso-lluvia b { display: block; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--acento); margin-bottom: 3px; }
+
+  /* --- Que decida la brujula --- */
+  .btn-sorpresa { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font: 700 11px/1 Manrope, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-2); background: none; border: 1.5px dashed var(--linea); border-radius: 99px; padding: 11px 18px; transition: color .18s, border-color .18s; }
+  .btn-sorpresa svg { width: 15px; height: 15px; }
+  .btn-sorpresa:hover { color: var(--acento); border-color: var(--acento-linea); }
+  .aguja span.girando { animation: girar-sorpresa 1.15s cubic-bezier(.32,0,.15,1) !important; }
+  @keyframes girar-sorpresa { 0% { transform: rotate(-18deg); } 100% { transform: rotate(942deg); } }
+  @media (prefers-reduced-motion: reduce) { .aguja span.girando { animation: none !important; } }
+
+  /* --- Modo en ruta: franja viva --- */
+  .en-ruta { position: fixed; z-index: 66; left: 50%; bottom: 14px; transform: translate(-50%, 0); width: min(680px, calc(100vw - 24px)); background: var(--papel); border: 1px solid var(--linea); border-radius: 16px; box-shadow: 0 18px 60px rgba(0,0,0,.28); padding: 12px 16px; display: none; align-items: center; gap: 13px; }
+  .en-ruta.visible { display: flex; animation: subir-ruta .4s ease; }
+  @keyframes subir-ruta { from { transform: translate(-50%, 16px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+  .en-ruta .pulso { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 0 0 color-mix(in srgb, var(--acento) 45%, transparent); animation: pulso-ruta 2.2s ease-out infinite; }
+  @keyframes pulso-ruta { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acento) 45%, transparent); } 70% { box-shadow: 0 0 0 11px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .en-ruta .texto { flex: 1; min-width: 0; font-size: 13px; line-height: 1.45; }
+  .en-ruta .texto b { font-weight: 700; }
+  .en-ruta .texto .mono { font-size: 12px; color: var(--acento); }
+  .en-ruta .ir { flex: none; cursor: pointer; font: 700 10.5px/1 Manrope, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--acento); border: none; border-radius: 99px; padding: 9px 15px; }
+  .en-ruta .cerrar-ruta { flex: none; cursor: pointer; width: 26px; height: 26px; border-radius: 50%; border: none; background: var(--fondo); color: var(--tinta-2); font-size: 14px; line-height: 1; }
+  @media (prefers-reduced-motion: reduce) { .en-ruta.visible { animation: none; } .en-ruta .pulso { animation: none; } }
+  .parada.ahora { border-left: 3px solid var(--acento); padding-left: 14px; margin-left: -17px; }
+  @media (max-width: 560px) { .parada.ahora { margin-left: -14px; padding-left: 11px; } }
+
+  /* --- Cuenta atras en los pases --- */
+  .cuenta { display: inline-flex; align-items: center; gap: 5px; font: 700 10px/1 Manrope, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--ac, var(--acento)); border: 1px solid color-mix(in srgb, var(--ac, var(--acento)) 40%, transparent); border-radius: 99px; padding: 3.5px 9px; margin-left: 10px; vertical-align: 2px; white-space: nowrap; }
+  .cuenta.hoy { color: #fff; background: var(--ac, var(--acento)); border-color: var(--ac, var(--acento)); }
+
+  /* --- La maleta --- */
+  .grupo-maleta { margin-top: 18px; }
+  .grupo-maleta h6 { font-size: 10.5px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--tinta-2); padding-left: 4px; }
+  .cosas { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  @media (max-width: 560px) { .cosas { grid-template-columns: 1fr; } }
+  .cosa { display: flex; align-items: flex-start; gap: 10px; background: var(--fondo); border: 1px solid var(--linea); border-radius: 12px; padding: 11px 13px; cursor: pointer; font-size: 13.5px; line-height: 1.45; user-select: none; transition: border-color .15s, opacity .15s; }
+  .cosa input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .cosa .caja { flex: none; width: 18px; height: 18px; border: 1.5px solid var(--linea); border-radius: 6px; margin-top: 1px; display: grid; place-items: center; color: transparent; transition: background .15s, border-color .15s, color .15s; }
+  .cosa .caja svg { width: 11px; height: 11px; }
+  .cosa:has(input:checked) { border-color: var(--acento-linea); opacity: .62; }
+  .cosa:has(input:checked) .caja { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .cosa:has(input:checked) .texto-cosa { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--tinta) 40%, transparent); }
+  .cosa:has(input:focus-visible) { outline: 2px solid var(--acento); }
+  .cosa .porque { display: block; font-size: 11.5px; color: var(--tinta-2); margin-top: 1px; }
+  .maleta-cuenta { font: 700 12px/1 "JetBrains Mono", monospace; color: var(--tinta-2); }
+
+  /* --- Arrastrar paradas --- */
+  .asa { grid-column: 1; grid-row: 1; align-self: start; margin-top: 2px; cursor: grab; touch-action: none; color: var(--linea); width: 20px; height: 22px; display: none; place-items: center; border: none; background: none; padding: 0; transition: color .15s; }
+  .asa:hover { color: var(--tinta-2); }
+  .asa svg { width: 15px; height: 15px; }
+  .dia.ordenable .parada { grid-template-columns: 22px 62px 1fr; }
+  .dia.ordenable .asa { display: grid; }
+  .dia.ordenable .hora { grid-column: 2; }
+  .dia.ordenable .cabecera-parada { grid-column: 3; }
+  .dia.ordenable .traslado, .dia.ordenable .desc, .dia.ordenable .extras, .dia.ordenable .sg, .dia.ordenable .hecho-caja { grid-column: 3; }
+  @media (max-width: 560px) { .dia.ordenable .parada { grid-template-columns: 22px 1fr; } .dia.ordenable .hora { grid-column: 2; } .dia.ordenable .cabecera-parada, .dia.ordenable .traslado, .dia.ordenable .desc, .dia.ordenable .extras, .dia.ordenable .sg, .dia.ordenable .hecho-caja { grid-column: 2; } }
+  .parada.arrastrando { opacity: .35; }
+  .parada.hueco-destino { box-shadow: inset 0 3px 0 -1px var(--acento); }
+  .fantasma-parada { position: fixed; z-index: 80; pointer-events: none; background: var(--papel); border: 1px solid var(--acento-linea); border-radius: 14px; box-shadow: 0 22px 60px rgba(0,0,0,.3); padding: 10px 16px; font: 700 14px/1.3 Manrope, sans-serif; max-width: 70vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transform: rotate(-1.2deg); }
+  .fantasma-parada .mono { color: var(--acento); margin-right: 8px; font-size: 12.5px; }
+
+  /* --- Toast con deshacer --- */
+  .toast { position: fixed; z-index: 90; left: 50%; bottom: 20px; transform: translate(-50%, 14px); background: var(--tinta); color: var(--fondo); border-radius: 99px; padding: 12px 8px 12px 20px; display: flex; align-items: center; gap: 6px; font-size: 13.5px; box-shadow: 0 18px 55px rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s; max-width: calc(100vw - 32px); }
+  .toast.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .toast button { cursor: pointer; flex: none; font: 700 11px/1 Manrope, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--fondo); background: color-mix(in srgb, var(--fondo) 16%, transparent); border: none; border-radius: 99px; padding: 9px 14px; }
+  .toast button:hover { background: color-mix(in srgb, var(--fondo) 26%, transparent); }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: opacity .22s; } }
+
+  /* --- Llevala en el bolsillo (instalar) --- */
+  .instalar { display: none; margin-top: 18px; background: var(--papel); border: 1px solid var(--linea); border-radius: 16px; padding: 15px 19px; box-shadow: var(--sombra-2); align-items: center; gap: 14px; }
+  .instalar.visible { display: flex; }
+  .instalar svg { width: 22px; height: 22px; color: var(--acento); flex: none; }
+  .instalar .texto { flex: 1; font-size: 13.5px; line-height: 1.45; }
+  .instalar .texto b { display: block; }
+  .instalar .texto span { color: var(--tinta-2); font-size: 12.5px; }
+
+  /* --- Tarjeta para stories (se pinta fuera de pantalla) --- */
+  .tarjeta-stories { position: fixed; left: -2000px; top: 0; width: 540px; height: 960px; background: var(--st-ac, #1F4E5A); color: #F7F3EA; font-family: Manrope, sans-serif; display: flex; flex-direction: column; padding: 46px 44px 40px; box-sizing: border-box; overflow: hidden; }
+  .tarjeta-stories .marco-st { position: absolute; inset: 16px; border: 1.5px solid rgba(247,243,234,.4); border-radius: 6px; pointer-events: none; }
+  .tarjeta-stories .perfora { position: absolute; inset: 0; background: radial-gradient(circle, rgba(0,0,0,.28) 4.5px, transparent 5px) -6px -6px / 12px 12px; opacity: .5; pointer-events: none; }
+  .tarjeta-stories .eyebrow-st { position: relative; font: 700 15px/1 Manrope, sans-serif; letter-spacing: .3em; text-transform: uppercase; opacity: .85; }
+  .tarjeta-stories h2 { position: relative; font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 88px; line-height: .95; letter-spacing: -0.01em; margin: 18px 0 10px; }
+  .tarjeta-stories .claim-st { position: relative; font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-size: 24px; opacity: .9; }
+  .tarjeta-stories .ruta-st { position: relative; margin-top: 44px; flex: 1; }
+  .tarjeta-stories .paso-st { position: relative; padding: 0 0 26px 34px; font-size: 21px; line-height: 1.35; }
+  .tarjeta-stories .paso-st::before { content: ""; position: absolute; left: 7px; top: 9px; width: 10px; height: 10px; border-radius: 50%; background: #F7F3EA; }
+  .tarjeta-stories .paso-st::after { content: ""; position: absolute; left: 11.5px; top: 23px; bottom: -4px; border-left: 2px dotted rgba(247,243,234,.55); }
+  .tarjeta-stories .paso-st:last-child::after { display: none; }
+  .tarjeta-stories .paso-st b { display: block; font: 700 13px/1.6 "JetBrains Mono", monospace; letter-spacing: .18em; text-transform: uppercase; opacity: .8; }
+  .tarjeta-stories .mata-st { position: absolute; right: 40px; top: 42px; width: 118px; height: 118px; border-radius: 50%; border: 2px solid rgba(247,243,234,.55); transform: rotate(-11deg); display: grid; place-items: center; text-align: center; font: 600 11px/1.4 "JetBrains Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .tarjeta-stories .mata-st::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; border: 1px solid rgba(247,243,234,.45); }
+  .tarjeta-stories .mata-st b { font-size: 26px; display: block; }
+  .tarjeta-stories .pie-st { position: relative; display: flex; align-items: baseline; justify-content: space-between; font: 700 14px/1 Manrope, sans-serif; letter-spacing: .26em; text-transform: uppercase; opacity: .9; }
+  .tarjeta-stories .pie-st i { font-family: "Instrument Serif", Georgia, serif; font-style: italic; text-transform: none; letter-spacing: 0; font-size: 19px; }
+
+  /* --- Transicion de vista al cuadrar --- */
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .38s; animation-timing-function: ease; }
+  @media (prefers-reduced-motion: reduce) { ::view-transition-old(root), ::view-transition-new(root) { animation: none; } }
+
+  @media print { .en-ruta, .toast, .instalar, .asa, .btn-sorpresa, .clima .tipico { display: none !important; } .sello-foto, .sello-tinte, .sello-velo { display: none !important; } }
+</style>
+
 </head>
 <body>
 <div class="contenedor">
@@ -501,7 +629,7 @@
    Las 24 ciudades van aqui incrustadas. Para anadir una, basta con copiar
    la estructura de cualquiera (ficha, zonas, paradas) con su misma clave.
    ====================================================================== */
-const VERSION_APP = "v29";
+const VERSION_APP = "v30";
 const CIUDADES = {};
 const GUIA = {};
 const EXTRA = {};
@@ -3965,6 +4093,7 @@ function renderResultado(plan) {
   document.querySelectorAll(".hecho").forEach(c => c.addEventListener("change", () => marcarHecha(c)));
   pintarHechas();
   pintarMapas(plan);
+  mejorasViaje(plan);
 }
 
 // Hora a la que acaba la ultima parada del dia
@@ -5549,6 +5678,7 @@ function pintarViajes() {
   }).join("");
   lista.querySelectorAll("[data-abrir]").forEach(b => b.addEventListener("click", () => abrirViaje(b.dataset.abrir)));
   lista.querySelectorAll("[data-borrar]").forEach(b => b.addEventListener("click", () => borrarViaje(b.dataset.borrar)));
+  decorarPases(viajes);
 }
 
 /* Paradas hechas: checkbox por parada, persistente si el viaje esta guardado */
@@ -5914,6 +6044,572 @@ function transicionRuta(ciudad) {
   document.querySelectorAll('input[name="interes"], #escapada').forEach(c => c.addEventListener("change", sincronizarBillete));
   sincronizarBillete();
 })();
+
+/* ======================================================================
+   CAPA v30
+   Foto de portada en duotono, el tiempo por dia (Open-Meteo), tarjeta
+   para stories, "que decida la brujula", modo en ruta, cuenta atras en
+   los pases, la maleta, paradas arrastrables con horas recalculadas,
+   deshacer con toast, compartir nativo, view transitions e instalacion.
+   Todo con caida elegante: sin red o sin soporte, la app ni se inmuta.
+   ====================================================================== */
+
+const ICO30 = {
+  sol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg>',
+  solnube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 8.9a3.4 3.4 0 1 1 5.9-2.3M8.9 3.2v1.5M3.6 8.5h1.5M4.9 4.9l1.1 1.1"/><path d="M7.3 19.5h9.2c2 0 3.5-1.4 3.5-3.2 0-1.7-1.3-3-3-3.2-.4-2.1-2.2-3.6-4.4-3.6-2 0-3.7 1.3-4.3 3.1-1.9.1-3.3 1.6-3.3 3.4 0 1.9 1.5 3.5 2.3 3.5z"/></svg>',
+  nube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 18.5h10.1c2.1 0 3.6-1.5 3.6-3.4 0-1.8-1.4-3.2-3.2-3.4-.4-2.2-2.3-3.9-4.7-3.9-2.2 0-4 1.4-4.6 3.4-2 .1-3.5 1.7-3.5 3.6 0 2 1.6 3.7 2.3 3.7z"/></svg>',
+  niebla: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 9.5h16M4 13h16M6.5 16.5h11M9 20h6"/></svg>',
+  lluvia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 14.5h10.1c2.1 0 3.6-1.5 3.6-3.4 0-1.8-1.4-3.2-3.2-3.4C16.9 5.5 15 3.8 12.6 3.8c-2.2 0-4 1.4-4.6 3.4-2 .1-3.5 1.7-3.5 3.6 0 2 1.6 3.7 2.3 3.7z"/><path d="M8.5 17.5l-1 2.6M12.5 17.5l-1 2.6M16.5 17.5l-1 2.6"/></svg>',
+  nieve: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.8l14.8 8.4M4.6 16.2l14.8-8.4M12 3.5l-2 2M12 3.5l2 2M12 20.5l-2-2M12 20.5l2-2"/></svg>',
+  tormenta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 13.5h10.1c2.1 0 3.6-1.5 3.6-3.4 0-1.8-1.4-3.2-3.2-3.4C16.9 4.5 15 2.8 12.6 2.8c-2.2 0-4 1.4-4.6 3.4-2 .1-3.5 1.7-3.5 3.6 0 2 1.6 3.7 2.3 3.7z"/><path d="M12.8 15.5l-2.4 3.4h3.2l-2.4 3.4"/></svg>',
+  gota: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8s5.6 6 5.6 10a5.6 5.6 0 1 1-11.2 0c0-4 5.6-10 5.6-10z"/></svg>',
+  maleta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7.5" width="16" height="12.5" rx="2.4"/><path d="M9 7.5V5.6c0-.9.7-1.6 1.6-1.6h2.8c.9 0 1.6.7 1.6 1.6v1.9M8.7 7.5V20M15.3 7.5V20"/></svg>',
+  asa: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"/><circle cx="15" cy="6" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="18" r="1.7"/><circle cx="15" cy="18" r="1.7"/></svg>',
+  camara: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="13" rx="2.4"/><path d="M8.5 7l1.5-2.5h4L15.5 7"/><circle cx="12" cy="13.3" r="3.4"/></svg>',
+  movil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2.4"/><path d="M11 17.8h2"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.8l5 5 10-11"/></svg>'
+};
+
+/* ---------- Toast con accion (deshacer) ---------- */
+let toastTimer = null;
+function toast(mensaje, accion, alPulsar, dur) {
+  let t = document.getElementById("toast");
+  if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; document.body.appendChild(t); }
+  t.innerHTML = '<span>' + esc(mensaje) + '</span>' + (accion ? '<button type="button">' + esc(accion) + '</button>' : '<span style="width:12px"></span>');
+  if (accion) t.querySelector("button").addEventListener("click", () => { ocultarToast(); if (alPulsar) alPulsar(); });
+  clearTimeout(toastTimer);
+  requestAnimationFrame(() => t.classList.add("visible"));
+  toastTimer = setTimeout(ocultarToast, dur || 5000);
+}
+function ocultarToast() { const t = document.getElementById("toast"); if (t) t.classList.remove("visible"); clearTimeout(toastTimer); }
+
+/* ---------- Deshacer al cambiar una parada ---------- */
+const _cambiarParada = cambiarParada;
+cambiarParada = function (nombre) {
+  const antes = ultimoPlan ? JSON.parse(JSON.stringify(ultimoPlan.entrada)) : null;
+  const idViaje = viajeActual;
+  _cambiarParada(nombre);
+  if (!antes) return;
+  toast("Cambiada: " + nombre, "Deshacer", () => {
+    if (idViaje) { const vs = leerViajes(); const v = vs.find(x => x.id === idViaje); if (v) { v.entrada = antes; escribirViajes(vs); } }
+    generar(antes);
+  }, 6000);
+};
+
+/* ---------- Deshacer al marcar hecha ---------- */
+const _marcarHecha = marcarHecha;
+marcarHecha = function (c) {
+  _marcarHecha(c);
+  if (!c.checked) return;
+  const nombre = c.dataset.nombre;
+  toast("Hecha: " + nombre, "Deshacer", () => {
+    const chk = [...document.querySelectorAll(".hecho")].find(x => x.dataset.nombre === nombre);
+    if (chk && chk.checked) { chk.checked = false; _marcarHecha(chk); }
+  }, 4500);
+};
+
+/* ---------- Compartir con la hoja nativa del movil ---------- */
+compartirEnlace = function () {
+  if (!ultimoPlan) return;
+  const datos = btoa(unescape(encodeURIComponent(JSON.stringify(ultimoPlan.entrada))));
+  const url = location.origin + location.pathname + "#v=" + datos;
+  const c = ultimoPlan.ciudad, f = ultimoPlan.fecha;
+  if (navigator.share) {
+    navigator.share({ title: "La Brújula — " + c.nombre, text: c.nombre + ", " + ultimoPlan.dias.length + (ultimoPlan.dias.length === 1 ? " día" : " días") + " desde el " + f.getDate() + " de " + MESES[f.getMonth()], url: url }).catch(() => {});
+    return;
+  }
+  navigator.clipboard.writeText(url).then(() => {
+    const b = document.getElementById("btn-compartir");
+    if (b) { const antes = b.innerHTML; b.textContent = "Enlace copiado"; setTimeout(() => { b.innerHTML = antes; }, 1800); }
+  });
+};
+
+/* ---------- View transition al pintar un resultado nuevo ---------- */
+const _renderConVT = renderResultado;
+renderResultado = function (plan) {
+  const pintar = () => {
+    if (v30SinScroll) {
+      const y = window.scrollY;
+      const svi = HTMLElement.prototype.scrollIntoView;
+      HTMLElement.prototype.scrollIntoView = function () {};
+      try { _renderConVT(plan); } finally { HTMLElement.prototype.scrollIntoView = svi; }
+      window.scrollTo(0, y);
+    } else _renderConVT(plan);
+  };
+  const sinMovimiento = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (document.startViewTransition && !sinMovimiento) { try { document.startViewTransition(pintar); return; } catch (e) {} }
+  pintar();
+};
+let v30SinScroll = false;
+
+/* ---------- Foto de portada en duotono ---------- */
+function fotosGuardadas() { try { return JSON.parse(localStorage.getItem("brujula:fotos") || "{}"); } catch (e) { return {}; } }
+async function urlFotoCiudad(clave, nombre) {
+  const cache = fotosGuardadas();
+  if (cache[clave]) return cache[clave];
+  const ctrl = new AbortController(); const corte = setTimeout(() => ctrl.abort(), 7000);
+  try {
+    const r = await fetch("https://es.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(nombre), { signal: ctrl.signal });
+    const j = await r.json();
+    let url = null;
+    if (j.thumbnail && /\/\d+px-/.test(j.thumbnail.source)) url = j.thumbnail.source.replace(/\/\d+px-/, "/1400px-");
+    else if (j.originalimage && j.originalimage.width <= 4200) url = j.originalimage.source;
+    else if (j.thumbnail) url = j.thumbnail.source;
+    if (!url) throw new Error("sin imagen");
+    cache[clave] = url;
+    try { localStorage.setItem("brujula:fotos", JSON.stringify(cache)); } catch (e) {}
+    return url;
+  } finally { clearTimeout(corte); }
+}
+async function fotoPortada(plan) {
+  const interior = document.querySelector(".sello-interior");
+  if (!interior || interior.querySelector(".sello-foto")) return;
+  const capaFoto = document.createElement("div"); capaFoto.className = "sello-foto";
+  const capaTinte = document.createElement("div"); capaTinte.className = "sello-tinte";
+  const capaVelo = document.createElement("div"); capaVelo.className = "sello-velo";
+  interior.prepend(capaVelo); interior.prepend(capaTinte); interior.prepend(capaFoto);
+  try {
+    const url = await urlFotoCiudad(plan.entrada.ciudad, plan.ciudad.nombre);
+    const img = document.createElement("img");
+    img.alt = ""; img.referrerPolicy = "no-referrer"; img.decoding = "async"; img.src = url;
+    img.addEventListener("load", () => capaFoto.classList.add("lista"));
+    img.addEventListener("error", () => { const c = fotosGuardadas(); delete c[plan.entrada.ciudad]; try { localStorage.setItem("brujula:fotos", JSON.stringify(c)); } catch (e) {} });
+    capaFoto.appendChild(img);
+  } catch (e) { /* sin foto, la portada de siempre */ }
+}
+
+/* ---------- El tiempo por dia (Open-Meteo, sin clave) ---------- */
+const climaCache = {};
+function iconoClima(codigo) {
+  if (codigo === 0) return ICO30.sol;
+  if (codigo <= 2) return ICO30.solnube;
+  if (codigo === 3) return ICO30.nube;
+  if (codigo === 45 || codigo === 48) return ICO30.niebla;
+  if (codigo >= 95) return ICO30.tormenta;
+  if ((codigo >= 71 && codigo <= 77) || codigo === 85 || codigo === 86) return ICO30.nieve;
+  return ICO30.lluvia;
+}
+function fIso(d) { return d.toISOString().slice(0, 10); }
+async function cargarTiempo(plan) {
+  try {
+    const [lat, lng] = plan.ciudad.centro;
+    const ini = new Date(plan.fecha); ini.setHours(12, 0, 0, 0);
+    const fin = new Date(ini); fin.setDate(fin.getDate() + plan.dias.length - 1);
+    const hoy = new Date(); hoy.setHours(12, 0, 0, 0);
+    const dif = Math.round((ini - hoy) / 86400000);
+    const clave = plan.entrada.ciudad + "|" + fIso(ini) + "|" + plan.dias.length;
+    let datos = climaCache[clave], tipico = false;
+    if (!datos) {
+      if (dif >= -1 && dif <= 14) {
+        const tope = new Date(hoy); tope.setDate(tope.getDate() + 15);
+        const finPedir = fin > tope ? tope : fin;
+        const u = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&start_date=" + fIso(ini) + "&end_date=" + fIso(finPedir);
+        datos = (await (await fetch(u)).json()).daily;
+      } else {
+        const iniPas = new Date(ini); iniPas.setFullYear(iniPas.getFullYear() - 1);
+        const finPas = new Date(fin); finPas.setFullYear(finPas.getFullYear() - 1);
+        const u = "https://archive-api.open-meteo.com/v1/archive?latitude=" + lat + "&longitude=" + lng + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&start_date=" + fIso(iniPas) + "&end_date=" + fIso(finPas);
+        datos = (await (await fetch(u)).json()).daily;
+        tipico = true;
+      }
+      if (!datos || !datos.time) return;
+      datos.tipico = tipico;
+      climaCache[clave] = datos;
+    }
+    tipico = datos.tipico;
+    const lluviosos = [];
+    plan.dias.forEach((dia, i) => {
+      if (i >= datos.time.length) return;
+      const codigo = datos.weather_code[i], max = Math.round(datos.temperature_2m_max[i]), min = Math.round(datos.temperature_2m_min[i]);
+      if (codigo == null || isNaN(max)) return;
+      const prob = tipico ? null : (datos.precipitation_probability_max || [])[i];
+      const mm = tipico ? (datos.precipitation_sum || [])[i] : null;
+      const llueve = tipico ? (mm != null && mm >= 2) || codigo >= 51 : (prob != null && prob >= 55) || (codigo >= 51 && codigo <= 99 && codigo !== 71 && codigo !== 73 && codigo !== 75 && codigo !== 77 && codigo !== 85 && codigo !== 86);
+      const cab = document.querySelector("#dia-" + i + " .cabecera-dia");
+      if (!cab) return;
+      const chip = document.createElement("span");
+      chip.className = "clima";
+      chip.title = tipico ? "Clima del año pasado por estas fechas, para hacerse una idea" : "Previsión para ese día";
+      chip.innerHTML = iconoClima(codigo) + '<span><b>' + max + '°</b> / ' + min + '°</span>' +
+        (llueve && !tipico && prob != null ? '<span class="gota">' + ICO30.gota + prob + '%</span>' : (llueve ? '<span class="gota">' + ICO30.gota + '</span>' : '')) +
+        (tipico ? '<span class="tipico">Típico</span>' : '');
+      const franja = cab.querySelector(".franja");
+      cab.insertBefore(chip, franja);
+      if (llueve) lluviosos.push({ i, dia });
+    });
+    if (lluviosos.length && !tipico) {
+      const ficha = document.querySelector("#resultado .ficha");
+      if (ficha && !document.querySelector(".aviso-lluvia")) {
+        const aviso = document.createElement("div"); aviso.className = "aviso-lluvia";
+        const cuales = lluviosos.map(x => "el día " + (x.i + 1)).join(lluviosos.length === 2 ? " y " : ", ").replace(/, ([^,]*)$/, " y $1");
+        aviso.innerHTML = ICO30.lluvia + '<div><b>Pinta lluvia ' + esc(cuales) + '</b>' + esc(plan.ciudad.lluvia) + '</div>';
+        ficha.after(aviso);
+      }
+    }
+  } catch (e) { /* sin red o sin datos: no pasa nada */ }
+}
+
+/* ---------- Tarjeta 9:16 para stories ---------- */
+let cargaH2C = null;
+function traerHtml2canvas() {
+  if (window.html2canvas) return Promise.resolve();
+  if (!cargaH2C) cargaH2C = new Promise((si, no) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload = si; s.onerror = () => { cargaH2C = null; no(new Error("no cargó html2canvas")); };
+    document.head.appendChild(s);
+  });
+  return cargaH2C;
+}
+async function tarjetaStories() {
+  if (!ultimoPlan) return;
+  const boton = document.getElementById("btn-stories");
+  if (boton) { boton.disabled = true; boton.textContent = "Preparando la tarjeta…"; }
+  try {
+    await traerHtml2canvas();
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const { ciudad, dias, fecha } = ultimoPlan;
+    const fin = new Date(fecha); fin.setDate(fin.getDate() + dias.length - 1);
+    const nodo = document.createElement("div");
+    nodo.className = "tarjeta-stories";
+    nodo.style.setProperty("--st-ac", ciudad.acento);
+    nodo.innerHTML =
+      '<div class="perfora"></div><div class="marco-st"></div>' +
+      '<div class="mata-st"><div>' + MESES[fecha.getMonth()].slice(0, 3) + '<b>' + fecha.getDate() + '</b>' + fecha.getFullYear() + '</div></div>' +
+      '<div class="eyebrow-st">' + dias.length + (dias.length === 1 ? ' día' : ' días') + ' · a fuego lento</div>' +
+      '<h2>' + esc(ciudad.nombre) + '</h2>' +
+      '<div class="claim-st">' + esc(ciudad.claim) + '</div>' +
+      '<div class="ruta-st">' + dias.slice(0, 6).map((d, i) =>
+        '<div class="paso-st"><b>Día ' + (i + 1) + '</b>' + esc(d.excursion ? d.zona : (d.libre ? "Día libre, a criterio del paseante" : d.zona)) + '</div>'
+      ).join("") + (dias.length > 6 ? '<div class="paso-st"><b>Y más</b>Hasta el día ' + dias.length + '</div>' : '') + '</div>' +
+      '<div class="pie-st"><span>Del ' + fecha.getDate() + ' de ' + MESES[fecha.getMonth()] + ' al ' + fin.getDate() + ' de ' + MESES[fin.getMonth()] + '</span><i>La Brújula</i></div>';
+    document.body.appendChild(nodo);
+    const lienzo = await html2canvas(nodo, { scale: 2, backgroundColor: ciudad.acento, logging: false });
+    nodo.remove();
+    const blob = await new Promise(si => lienzo.toBlob(si, "image/png"));
+    const archivo = new File([blob], "brujula-" + ultimoPlan.entrada.ciudad + ".png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+      await navigator.share({ files: [archivo], title: "La Brújula — " + ciudad.nombre }).catch(() => {});
+    } else {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = archivo.name; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 20000);
+    }
+  } catch (e) {
+    toast("No se ha podido montar la tarjeta: revisa la conexión", null, null, 4000);
+  } finally {
+    if (boton) { boton.disabled = false; boton.textContent = "Tarjeta para stories"; }
+  }
+}
+
+/* ---------- Que decida la brujula ---------- */
+function sorpresa() {
+  const claves = Object.keys(CIUDADES).filter(k => k !== document.getElementById("destino").value);
+  const elegida = claves[Math.floor(Math.random() * claves.length)];
+  const aguja = document.querySelector(".aguja span");
+  const sinMovimiento = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const aplicar = () => {
+    document.getElementById("destino").value = elegida;
+    if (typeof sincronizarBillete === "function") sincronizarBillete();
+    toast("La brújula dice: " + CIUDADES[elegida].nombre, null, null, 3200);
+  };
+  if (aguja && !sinMovimiento) {
+    aguja.classList.add("girando");
+    setTimeout(() => { aguja.classList.remove("girando"); aplicar(); }, 1080);
+  } else aplicar();
+}
+
+/* ---------- Cuenta atras en los pases de embarque ---------- */
+function decorarPases(viajes) {
+  const hoy = new Date(); hoy.setHours(12, 0, 0, 0);
+  const tarjetas = document.querySelectorAll("#lista-viajes .pase");
+  viajes.forEach((v, i) => {
+    const pase = tarjetas[i]; if (!pase) return;
+    const ini = new Date(v.entrada.fecha + "T12:00:00");
+    const fin = new Date(ini); fin.setDate(fin.getDate() + parseInt(v.entrada.dias, 10) - 1);
+    const faltan = Math.round((ini - hoy) / 86400000);
+    let chip = null;
+    if (hoy >= ini && hoy <= fin) chip = { t: "Día " + (Math.round((hoy - ini) / 86400000) + 1) + " de " + v.entrada.dias, hoy: true };
+    else if (faltan === 0) chip = { t: "¡Es hoy!", hoy: true };
+    else if (faltan === 1) chip = { t: "Mañana", hoy: true };
+    else if (faltan > 1) chip = { t: "Faltan " + faltan + " días", hoy: false };
+    else if (fin < hoy) chip = { t: "Paseado", hoy: false };
+    if (!chip) return;
+    const sitio = pase.querySelector(".titulo-viaje");
+    if (sitio && !sitio.querySelector(".cuenta")) {
+      const s = document.createElement("span");
+      s.className = "cuenta" + (chip.hoy ? " hoy" : "");
+      s.textContent = chip.t;
+      sitio.appendChild(s);
+    }
+  });
+}
+
+/* ---------- La maleta ---------- */
+function claveMaleta() { return "brujula:maleta:" + ultimoPlan.entrada.ciudad + ":" + ultimoPlan.entrada.fecha; }
+function listaMaleta(plan) {
+  const { ciudad, dias, entrada } = plan;
+  const mes = plan.fecha.getMonth();
+  const frio = mes <= 2 || mes === 11, calor = mes >= 5 && mes <= 7;
+  const lluviosas = ["londres", "edimburgo", "dublin", "amsterdam", "bruselas", "copenhague", "oslo", "estocolmo", "helsinki", "oporto"];
+  const enchufeUK = ["londres", "edimburgo", "dublin"];
+  const norte = ciudad.centro[0] >= 50;
+  const g = [];
+  const basicos = [
+    { t: "Documentación y tarjeta sanitaria europea", p: "Y una foto de todo en el móvil, por si acaso" },
+    { t: "Calzado ya domado", p: entrada.ritmo == 5 ? "Con ritmo completo caen 12-15 km al día" : "Se camina más de lo que parece" },
+    { t: "Cargador y batería externa", p: "El mapa y las fotos se comen el móvil" },
+    { t: "Botella de agua reutilizable", p: "Fuentes gratis por toda la ciudad" }
+  ];
+  if (entrada.dias >= 5) basicos.push({ t: "Bolsa para la ropa usada", p: dias.length + " días dan para separar" });
+  g.push({ nombre: "Básicos", items: basicos });
+  const ropa = [];
+  if (frio) { ropa.push({ t: "Abrigo de verdad, gorro y guantes", p: "El frío de " + MESES[mes] + (norte ? " en el norte no es broma" : " pide capas") }); ropa.push({ t: "Capas finas para los interiores", p: "Museos y cafés van con calefacción a tope" }); }
+  else if (calor) { ropa.push({ t: "Ropa ligera y gorra o sombrero", p: "Y crema solar: se pasea a pleno sol" }); ropa.push({ t: "Algo de manga larga para la noche", p: "Refresca al caer el sol, sobre todo junto al agua" }); }
+  else { ropa.push({ t: "Capas de entretiempo", p: MESES[mes].charAt(0).toUpperCase() + MESES[mes].slice(1) + " cambia de opinión varias veces al día" }); }
+  if (frio || lluviosas.includes(entrada.ciudad)) ropa.push({ t: "Capa de lluvia o paraguas plegable", p: MESES[mes] + " en " + ciudad.nombre + " no perdona" });
+  g.push({ nombre: "Ropa", items: ropa });
+  const extras = [];
+  if (enchufeUK.includes(entrada.ciudad)) extras.push({ t: "Adaptador de enchufe tipo G", p: "En " + ciudad.nombre + " el europeo no entra" });
+  if (ciudad.moneda !== "€") extras.push({ t: "Algo de efectivo en " + ciudad.moneda.replace("≈", "").trim(), p: "Con tarjeta va casi todo, pero un mercadillo es un mercadillo" });
+  extras.push({ t: "Tarjeta de celiaco en el idioma local", p: "Se enseña en el restaurante y quedan claras las trazas" });
+  if (entrada.escapada) extras.push({ t: "Mochila pequeña para la excursión", p: "El día fuera se hace largo sin ella" });
+  if (entrada.transporte === "motor") extras.push({ t: "Carné de conducir y app de aparcamiento", p: "Las ZTL y zonas verdes no avisan dos veces" });
+  extras.push({ t: "Entradas de lo marcado como Reservar", p: "Un vistazo a las webs oficiales la semana antes" });
+  g.push({ nombre: "Que no se olvide", items: extras });
+  return g;
+}
+function abrirMaleta() {
+  if (!ultimoPlan) return;
+  let panel = document.getElementById("panel-maleta");
+  if (!panel) {
+    panel = document.createElement("div");
+    panel.id = "panel-maleta"; panel.className = "panel";
+    document.body.appendChild(panel);
+  }
+  const grupos = listaMaleta(ultimoPlan);
+  let marcadas = [];
+  try { marcadas = JSON.parse(localStorage.getItem(claveMaleta()) || "[]"); } catch (e) {}
+  const total = grupos.reduce((s, x) => s + x.items.length, 0);
+  panel.innerHTML =
+    '<div class="panel-cab"><div class="fila"><div><span class="eyebrow">' + ultimoPlan.dias.length + (ultimoPlan.dias.length === 1 ? ' día' : ' días') + ' de ' + MESES[ultimoPlan.fecha.getMonth()] + '</span>' +
+    '<h3>La maleta para ' + esc(ultimoPlan.ciudad.nombre) + '</h3></div><button type="button" class="cerrar" data-cerrar>×</button></div></div>' +
+    '<div class="panel-cuerpo">' + grupos.map((gr, gi) =>
+      '<div class="grupo-maleta"><h6>' + esc(gr.nombre) + '</h6><div class="cosas">' + gr.items.map((it, ii) => {
+        const id = gi + ":" + ii;
+        return '<label class="cosa"><input type="checkbox" data-cosa="' + id + '"' + (marcadas.includes(id) ? ' checked' : '') + '><span class="caja">' + ICO30.check + '</span><span class="texto-cosa">' + esc(it.t) + (it.p ? '<span class="porque">' + esc(it.p) + '</span>' : '') + '</span></label>';
+      }).join("") + '</div></div>'
+    ).join("") + '</div>' +
+    '<div class="panel-pie"><span class="maleta-cuenta" id="maleta-cuenta"></span><span style="flex:1"></span><button type="button" class="btn-secundario" id="maleta-reset">Vaciar la lista</button></div>';
+  const contar = () => {
+    const n = panel.querySelectorAll("[data-cosa]:checked").length;
+    panel.querySelector("#maleta-cuenta").textContent = n + " de " + total + " en la maleta" + (n === total ? " · lista" : "");
+  };
+  panel.querySelectorAll("[data-cosa]").forEach(c => c.addEventListener("change", () => {
+    const hechas = [...panel.querySelectorAll("[data-cosa]:checked")].map(x => x.dataset.cosa);
+    try { localStorage.setItem(claveMaleta(), JSON.stringify(hechas)); } catch (e) {}
+    contar();
+  }));
+  panel.querySelector("#maleta-reset").addEventListener("click", () => {
+    panel.querySelectorAll("[data-cosa]").forEach(c => c.checked = false);
+    try { localStorage.removeItem(claveMaleta()); } catch (e) {}
+    contar();
+  });
+  panel.querySelector("[data-cerrar]").addEventListener("click", cerrarPanel);
+  contar();
+  abrirPanel("panel-maleta");
+}
+
+/* ---------- Paradas arrastrables con horas recalculadas ---------- */
+function activarArrastre(plan) {
+  plan.dias.forEach((dia, i) => {
+    if (dia.libre || dia.excursion || !dia.paradas || dia.paradas.length < 2) return;
+    const cajaDia = document.getElementById("dia-" + i);
+    if (!cajaDia) return;
+    cajaDia.classList.add("ordenable");
+    cajaDia.querySelectorAll(".parada").forEach(fila => {
+      const asa = document.createElement("button");
+      asa.type = "button"; asa.className = "asa"; asa.innerHTML = ICO30.asa;
+      asa.setAttribute("aria-label", "Arrastrar para reordenar");
+      fila.prepend(asa);
+      asa.addEventListener("pointerdown", e => empezarArrastre(e, fila, cajaDia, dia, plan));
+    });
+  });
+}
+function empezarArrastre(e, fila, cajaDia, dia, plan) {
+  e.preventDefault();
+  const filas = [...cajaDia.querySelectorAll(".parada")];
+  const nombre = fila.querySelector(".nombre").textContent;
+  const hora = fila.querySelector(".hora").textContent;
+  const fantasma = document.createElement("div");
+  fantasma.className = "fantasma-parada";
+  fantasma.innerHTML = '<span class="mono">' + esc(hora) + '</span>' + esc(nombre);
+  document.body.appendChild(fantasma);
+  fila.classList.add("arrastrando");
+  let destino = filas.indexOf(fila);
+  const mover = ev => {
+    fantasma.style.left = Math.min(ev.clientX + 14, window.innerWidth - fantasma.offsetWidth - 8) + "px";
+    fantasma.style.top = (ev.clientY - 20) + "px";
+    filas.forEach(f => f.classList.remove("hueco-destino"));
+    destino = filas.length - 1;
+    for (let j = 0; j < filas.length; j++) {
+      const r = filas[j].getBoundingClientRect();
+      if (ev.clientY < r.top + r.height / 2) { destino = j; break; }
+    }
+    if (filas[destino] !== fila) filas[destino].classList.add("hueco-destino");
+  };
+  const soltar = () => {
+    document.removeEventListener("pointermove", mover);
+    document.removeEventListener("pointerup", soltar);
+    document.removeEventListener("pointercancel", soltar);
+    fantasma.remove();
+    fila.classList.remove("arrastrando");
+    filas.forEach(f => f.classList.remove("hueco-destino"));
+    const origen = filas.indexOf(fila);
+    if (destino === origen) return;
+    const orden = filas.map(f => f.querySelector(".nombre").textContent);
+    orden.splice(destino < origen ? destino : destino, 0, orden.splice(origen, 1)[0]);
+    reordenarDia(plan, dia, orden);
+  };
+  document.addEventListener("pointermove", mover);
+  document.addEventListener("pointerup", soltar);
+  document.addEventListener("pointercancel", soltar);
+  mover(e);
+}
+function reordenarDia(plan, dia, orden) {
+  const porNombre = {}; dia.paradas.forEach(p => porNombre[p.n] = p);
+  const nuevas = orden.map(n => porNombre[n]).filter(Boolean);
+  if (nuevas.length !== dia.paradas.length) return;
+  nuevas.forEach((p, i) => {
+    delete p._esComida;
+    // El ancla del atardecer solo vale si el mirador sigue cerrando el dia:
+    // si el paseante lo arrastra a otra hora, manda el paseante.
+    if (!("atardecerOriginal" in p)) p.atardecerOriginal = !!p.atardecer;
+    p.atardecer = p.atardecerOriginal && i === nuevas.length - 1;
+  });
+  dia.paradas = nuevas;
+  dia.filas = programar(nuevas, plan.entrada.transporte, dia.ocaso);
+  v30SinScroll = true;
+  try { renderResultado(plan); } finally { setTimeout(() => { v30SinScroll = false; }, 600); }
+  toast("Día reordenado, horas recalculadas", null, null, 2600);
+}
+
+/* ---------- Modo en ruta ---------- */
+let relojRuta = null;
+function minutosDe(hhmmTexto) { const [h, m] = hhmmTexto.split(":").map(Number); return h * 60 + m; }
+function actualizarEnRuta(plan) {
+  const barra = document.getElementById("en-ruta");
+  if (!barra || barra.dataset.cerrada === "1") return;
+  const hoy = new Date(); const hoyMedio = new Date(); hoyMedio.setHours(12, 0, 0, 0);
+  const ini = new Date(plan.fecha); ini.setHours(12, 0, 0, 0);
+  const idx = Math.round((hoyMedio - ini) / 86400000);
+  if (idx < 0 || idx >= plan.dias.length) { barra.classList.remove("visible"); return; }
+  const dia = plan.dias[idx];
+  document.querySelectorAll(".parada.ahora").forEach(x => x.classList.remove("ahora"));
+  if (dia.libre || !dia.paradas.length) {
+    barra.querySelector(".texto").innerHTML = '<b>Día ' + (idx + 1) + ' en ' + esc(plan.ciudad.nombre) + '</b> · día libre, a pasearlo sin plan';
+    barra.querySelector(".ir").dataset.dia = idx;
+    barra.classList.add("visible");
+    return;
+  }
+  const ahoraMin = hoy.getHours() * 60 + hoy.getMinutes();
+  let actual = null, siguiente = null;
+  dia.paradas.forEach(p => {
+    const m = minutosDe(p._h);
+    if (m <= ahoraMin) actual = p;
+    else if (!siguiente) siguiente = p;
+  });
+  let texto = '<b>Día ' + (idx + 1) + ' · ' + esc(dia.zona) + '</b><br>';
+  if (actual && siguiente) texto += 'Ahora: ' + esc(actual.n) + ' — luego <span class="mono">' + siguiente._h + '</span> ' + esc(siguiente.n);
+  else if (actual) texto += 'Última del día: ' + esc(actual.n) + '. Remate con calma.';
+  else if (siguiente) texto += 'Arranque a las <span class="mono">' + siguiente._h + '</span>: ' + esc(siguiente.n);
+  barra.querySelector(".texto").innerHTML = texto;
+  barra.querySelector(".ir").dataset.dia = idx;
+  barra.classList.add("visible");
+  if (actual) {
+    const filaActual = [...document.querySelectorAll("#dia-" + idx + " .parada")].find(f => f.querySelector(".nombre") && f.querySelector(".nombre").textContent === actual.n);
+    if (filaActual) filaActual.classList.add("ahora");
+  }
+}
+function montarEnRuta(plan) {
+  let barra = document.getElementById("en-ruta");
+  if (!barra) {
+    barra = document.createElement("div");
+    barra.id = "en-ruta"; barra.className = "en-ruta";
+    barra.innerHTML = '<span class="pulso"></span><span class="texto"></span><button type="button" class="ir">Ir al día</button><button type="button" class="cerrar-ruta" aria-label="Cerrar">×</button>';
+    document.body.appendChild(barra);
+    barra.querySelector(".ir").addEventListener("click", () => {
+      const d = document.getElementById("dia-" + barra.querySelector(".ir").dataset.dia);
+      if (d) d.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    barra.querySelector(".cerrar-ruta").addEventListener("click", () => { barra.dataset.cerrada = "1"; barra.classList.remove("visible"); });
+  }
+  barra.dataset.cerrada = "0";
+  clearInterval(relojRuta);
+  actualizarEnRuta(plan);
+  relojRuta = setInterval(() => { if (!document.hidden && ultimoPlan === plan) actualizarEnRuta(plan); }, 60000);
+}
+
+/* ---------- Llevala en el bolsillo (instalar la PWA) ---------- */
+let eventoInstalar = null;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  eventoInstalar = e;
+  if (window.matchMedia && matchMedia("(display-mode: standalone)").matches) return;
+  let caja = document.getElementById("instalar");
+  if (!caja) {
+    caja = document.createElement("div");
+    caja.id = "instalar"; caja.className = "instalar";
+    caja.innerHTML = ICO30.movil + '<span class="texto"><b>Llévala en el bolsillo</b><span>Instalada va más rápida y funciona sin conexión</span></span><button type="button" class="btn-secundario" id="btn-instalar">Instalar</button>';
+    const viajes = document.getElementById("viajes");
+    viajes.parentNode.insertBefore(caja, viajes);
+    document.getElementById("btn-instalar").addEventListener("click", async () => {
+      if (!eventoInstalar) return;
+      eventoInstalar.prompt();
+      await eventoInstalar.userChoice.catch(() => {});
+      eventoInstalar = null;
+      caja.classList.remove("visible");
+    });
+  }
+  caja.classList.add("visible");
+});
+
+/* ---------- El gancho: se ejecuta tras pintar cada resultado ---------- */
+function mejorasViaje(plan) {
+  fotoPortada(plan);
+  cargarTiempo(plan);
+  activarArrastre(plan);
+  montarEnRuta(plan);
+  const acciones = document.querySelector("#resultado .acciones");
+  if (acciones && !document.getElementById("btn-maleta")) {
+    const b = document.createElement("button");
+    b.type = "button"; b.id = "btn-maleta"; b.className = "btn-secundario";
+    b.textContent = "La maleta";
+    acciones.appendChild(b);
+    b.addEventListener("click", abrirMaleta);
+  }
+  const panelExportar = document.getElementById("panel-exportar");
+  if (panelExportar && !document.getElementById("btn-stories")) {
+    const b = document.createElement("button");
+    b.type = "button"; b.id = "btn-stories"; b.className = "btn-secundario";
+    b.textContent = "Tarjeta para stories";
+    panelExportar.appendChild(b);
+    b.addEventListener("click", tarjetaStories);
+  }
+}
+
+/* ---------- Arranque de la capa v30 ---------- */
+(function () {
+  const pie = document.querySelector(".billete-pie");
+  if (pie && !document.getElementById("btn-sorpresa")) {
+    const b = document.createElement("button");
+    b.type = "button"; b.id = "btn-sorpresa"; b.className = "btn-sorpresa";
+    b.innerHTML = ICO.brujula + '<span>Que decida la brújula</span>';
+    pie.appendChild(b);
+    b.addEventListener("click", sorpresa);
+  }
+})();
+
 
 // Aviso de version nueva: se compara el archivo del servidor con el que corre
 async function comprobarVersion() {
